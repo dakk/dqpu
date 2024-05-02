@@ -1,5 +1,3 @@
-# DQPU
+# dqpu
 
-A disk-cached quantum simulator and decentralized quantum computation renting system.
-
-
+A disk-cached quantum simulator and cheat-proof decentralized quantum computation market.
