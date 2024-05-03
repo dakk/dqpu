@@ -1,3 +1,3 @@
 # dqpu
 
-A disk-cached quantum simulator and cheat-proof decentralized quantum computation market.
+A Web3-Powered, Decentralized Quantum Simulator with Verifiable Computation.
