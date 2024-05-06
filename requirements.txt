@@ -1,0 +1,5 @@
+dask[distributed]
+scipy
+matplotlib
+qiskit
+qiskit_aer
