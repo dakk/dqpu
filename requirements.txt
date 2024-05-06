@@ -3,3 +3,4 @@ scipy
 matplotlib
 qiskit
 qiskit_aer
+py-near
