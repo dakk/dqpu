@@ -14,34 +14,31 @@
 
 import numpy as np
 
+
 class Gate:
-	def __init__(self, iden, matrix, nq = 1):
-		self.iden = iden
-		self.nq = nq
-		self._matrix = matrix
-		
-		try:
-			self._tensor = np.reshape(self._matrix, (2, 2, 2, 2))
-		except:
-			self._tensor = None
+    def __init__(self, iden, matrix, nq=1):
+        self.iden = iden
+        self.nq = nq
+        self._matrix = matrix
 
+        try:
+            self._tensor = np.reshape(self._matrix, (2, 2, 2, 2))
+        except:
+            self._tensor = None
 
-	@property
-	def matrix(self):
-		if callable(self._matrix):
-			raise Exception ("This gate needs parameter")
-			
-		return self._matrix
+    @property
+    def matrix(self):
+        if callable(self._matrix):
+            raise Exception("This gate needs parameter")
 
-	def parametrized(self, p):
-		return Gate(self.iden, self._matrix(p), self.nq)
+        return self._matrix
 
+    def parametrized(self, p):
+        return Gate(self.iden, self._matrix(p), self.nq)
 
 
 class GateCombination:
-	def __init__(self, iden, gates, nq):
-		self.iden = iden
-		self.nq = nq
-		self.gates = [] # Pairs of (Gate, qbidx)
-
-	
+    def __init__(self, iden, gates, nq):
+        self.iden = iden
+        self.nq = nq
+        self.gates = []  # Pairs of (Gate, qbidx)

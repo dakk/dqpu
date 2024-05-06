@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .trapper import TrapInfo, Trapper
 from .dummytrapper import DummyTrapInfo, DummyTrapper
+from .trapper import TrapInfo, Trapper

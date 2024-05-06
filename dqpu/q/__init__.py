@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .circuit import Circuit, Measure, Barrier
-from .gates import Gates
-from .gate import Gate
-from . import utils
+from typing import Dict
 
-from typing import Dict 
+from . import utils
+from .circuit import Barrier, Circuit, Measure
+from .gate import Gate
+from .gates import Gates
 
 ExperimentResult = Dict[str, int]

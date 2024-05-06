@@ -13,33 +13,24 @@
 # limitations under the License.
 
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
-
-setup(name='dqpu',
-	version='0.1',
-	description='',
-	author='Davide Gessa',
-	setup_requires='setuptools',
-	author_email='gessadavide@gmail.com',
-	packages=[
-		'dqpu',
-		'dqpu.q'
-	],
-	entry_points={
-		'console_scripts': [
-			'dqpu=dqpu.main:main',
-		],
-	},
+setup(
+    name="dqpu",
+    version="0.1",
+    description="",
+    author="Davide Gessa",
+    setup_requires="setuptools",
+    author_email="gessadavide@gmail.com",
+    packages=["dqpu", "dqpu.q"],
+    entry_points={
+        "console_scripts": [
+            "dqpu=dqpu.main:main",
+        ],
+    },
     zip_safe=False,
-	install_requires=['numpy'],
+    install_requires=["numpy"],
 )
-
-
-
-
-
 
 
 # Copyright 2023-2024 Davide Gessa
@@ -72,18 +63,17 @@ setup(
     author_email="gessadavide@gmail.com",
     license="Apache 2.0",
     packages=[
-        'dqpu.q',
-        'dqpu.simulator',
-        'dqpu.verifier',
+        "dqpu.q",
+        "dqpu.simulator",
+        "dqpu.verifier",
     ],
     zip_safe=False,
-    install_requires=open('requirements.txt', 'r').read().split('\n'),
-    extras_require={
-    },
-    entry_points = {
-        'console_scripts': [
-            'dqpu-main = dqpu.main:main',
-        ],              
+    install_requires=open("requirements.txt", "r").read().split("\n"),
+    extras_require={},
+    entry_points={
+        "console_scripts": [
+            "dqpu-main = dqpu.main:main",
+        ],
     },
     classifiers=[
         "Programming Language :: Python",

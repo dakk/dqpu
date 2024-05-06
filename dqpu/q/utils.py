@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def qiskit_execute(c):
@@ -23,7 +23,7 @@ def qiskit_execute(c):
     qc = c.toQiskitCircuit()
     qc.measure_all()
 
-    sim = AerSimulator(method='statevector')
+    sim = AerSimulator(method="statevector")
     qc.save_statevector()
     circ = transpile(qc, sim)
     job = sim.run(circ, shots=1024)
@@ -39,7 +39,8 @@ def qiskit_execute(c):
 
 
 def fixbinlen(v, nq=3):
-    return ('0' * (nq - len(v)) + v)[::-1]
+    return ("0" * (nq - len(v)) + v)[::-1]
+
 
 def states_string_rep(nq=3):
     state_strs = [bin(x) for x in range(2**nq)]
@@ -56,31 +57,34 @@ def states_string_rep(nq=3):
 
     return state_strs
 
+
 def basis_state_probs(svec):
-    return np.array([np.absolute(s)**2 for s in svec])
+    return np.array([np.absolute(s) ** 2 for s in svec])
+
 
 def print_output(nq, out):
     xx = basis_state_probs(out)
     yy = states_string_rep(nq)
 
     for i in range(2**nq):
-        print (yy[i], xx[i])
+        print(yy[i], xx[i])
+
 
 def plot_output(nq, out):
     nq = int(np.log2(out.shape[0]))
-    fig, ax = plt.subplots(1,1)
+    fig, ax = plt.subplots(1, 1)
     ax.bar(range(2**nq), basis_state_probs(out))
     ax.set_xticks(range(2**nq))
     ax.set_xticklabels(states_string_rep(nq))
-    ax.set_ylim(-0,1)
+    ax.set_ylim(-0, 1)
     ax.grid(True)
-    ax.set_ylabel(r'$P(S_c)$')
-    ax.set_xlabel(r'$S_c$')
+    ax.set_ylabel(r"$P(S_c)$")
+    ax.set_xlabel(r"$S_c$")
     plt.show()
 
 
 def plot_circuit(c):
-    pass 
+    pass
 
 
 def random_circuit(qbn, depth):

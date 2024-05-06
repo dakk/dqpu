@@ -12,25 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Tuple, List, Optional
+from typing import List, Optional, Tuple
+
 from ..q import Circuit, ExperimentResult
+
 
 class TrapInfo:
     def __init__(self):
-        raise Exception('Abstract')
+        raise Exception("Abstract")
+
 
 class Trapper:
-    """ Trapper class """
+    """Trapper class"""
+
     def __init__(self):
-        raise Exception('Abstract')
-    
-    def trap(self, qc: Circuit, level: Optional[int]=None) -> Tuple[Circuit, List[TrapInfo]]:
-        """ Add traps to the quantum circuits `qc` """
-        raise Exception('Abstract')
-    
-    def untrap_results(self, traps: List[TrapInfo], results: ExperimentResult) -> ExperimentResult:
-        """ Get the results for the original circuit, stripping away trap qubits """
-        raise Exception('Abstract')        
-    
+        raise Exception("Abstract")
+
+    def trap(
+        self, qc: Circuit, level: Optional[int] = None
+    ) -> Tuple[Circuit, List[TrapInfo]]:
+        """Add traps to the quantum circuits `qc`"""
+        raise Exception("Abstract")
+
+    def untrap_results(
+        self, traps: List[TrapInfo], results: ExperimentResult
+    ) -> ExperimentResult:
+        """Get the results for the original circuit, stripping away trap qubits"""
+        raise Exception("Abstract")
+
     def verify(self, traps: List[TrapInfo], results: ExperimentResult) -> bool:
-        raise Exception('Abstract')
+        raise Exception("Abstract")

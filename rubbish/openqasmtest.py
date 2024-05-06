@@ -15,10 +15,7 @@
 import openqasm3
 from openqasm3 import ast, parser, printer
 
-
-with open('examples/e1.qasm', 'r') as f:
-	source = f.read()
-	a = openqasm3.parser.parse(source)
-	print (a)
-
-
+with open("examples/e1.qasm", "r") as f:
+    source = f.read()
+    a = openqasm3.parser.parse(source)
+    print(a)

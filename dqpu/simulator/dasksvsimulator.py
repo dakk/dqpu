@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from scipy.linalg import norm
-from scipy import sparse
 import dask.array as da
 import numpy as np
-from ..q import Gate
-from ..q import Circuit, Measure
+from dask.distributed import Client, progress
+from scipy import sparse
+from scipy.linalg import norm
+
+from ..q import Circuit, Gate, Measure
 from .simulator import Simulator
 
-from dask.distributed import Client, progress
-
-client = Client(processes=False, threads_per_worker=1, n_workers=1, memory_limit='612MB')
+client = Client(
+    processes=False, threads_per_worker=1, n_workers=1, memory_limit="612MB"
+)
 
 
 class DaskStateVectorSimulator(Simulator):
@@ -36,7 +37,10 @@ class DaskStateVectorSimulator(Simulator):
         self.hs = da.zeros(((2,) * self.circuit.n_qbits), dtype=self.dtype)
         self.hs[(0,) * self.circuit.n_qbits] = 1
         self.measures = []
-        projectors = [ da.array([[1,0], [0,0]], dtype=self.dtype), da.array([[0,0], [0,1]], dtype=self.dtype) ]
+        projectors = [
+            da.array([[1, 0], [0, 0]], dtype=self.dtype),
+            da.array([[0, 0], [0, 1]], dtype=self.dtype),
+        ]
 
         for x in self.circuit:
             a, p = x
@@ -51,6 +55,7 @@ class DaskStateVectorSimulator(Simulator):
                 self.hs = da.moveaxis(self.hs, 0, p)
 
             elif isinstance(a, Measure):
+
                 def project(i, j):
                     projected = da.tensordot(projectors[j], self.hs, (1, i))
                     return da.moveaxis(projected, 0, i)
@@ -58,25 +63,26 @@ class DaskStateVectorSimulator(Simulator):
                 pa, pb = p
                 projected = project(pa, 0)
                 norm_projected = norm(projected.flatten())
-                if da.random.random() < norm_projected ** 2:
+                if da.random.random() < norm_projected**2:
                     self.hs = projected / norm_projected
                     self.measures.append((pa, pb, 0))
                 else:
-                    projected = project(p[0],1)
+                    projected = project(p[0], 1)
                     self.hs = projected / norm(projected)
                     self.measures.append((pa, pb, 1))
 
         return self.hs.flatten()
 
-
     def compute_sep(self):
         def tensor_product(matrix1, matrix2):
             m, n = matrix1.shape
             p, q = matrix2.shape
-            result = da.zeros((m*p, n*q), dtype=matrix1.dtype)
+            result = da.zeros((m * p, n * q), dtype=matrix1.dtype)
             for i in range(m):
                 for j in range(n):
-                    result[i*p:(i+1)*p, j*q:(j+1)*q] = matrix1[i, j] * matrix2
+                    result[i * p : (i + 1) * p, j * q : (j + 1) * q] = (
+                        matrix1[i, j] * matrix2
+                    )
             return result
 
         def perform_quantum_gate(state_vector, gate, qbit):
@@ -111,8 +117,7 @@ class DaskStateVectorSimulator(Simulator):
                     new_state_vector[i] += state_vector[j] * mat[j][i]
             return new_state_vector
 
-
-        self.hs = da.zeros((2 ** self.circuit.n_qbits), dtype=self.dtype)
+        self.hs = da.zeros((2**self.circuit.n_qbits), dtype=self.dtype)
         self.hs[0] = 1
 
         for x in self.circuit:
@@ -120,12 +125,15 @@ class DaskStateVectorSimulator(Simulator):
 
             if isinstance(a, Gate) and a.nq == 2:
                 pa, pb = p
-                self.hs = perform_controlled_gate(self.hs, a.matrix.reshape(4,4)[2:,2:], pa, pb)
+                self.hs = perform_controlled_gate(
+                    self.hs, a.matrix.reshape(4, 4)[2:, 2:], pa, pb
+                )
 
             elif isinstance(a, Gate) and a.nq == 1:
                 self.hs = perform_quantum_gate(self.hs, a.matrix, p)
 
             elif isinstance(a, Measure):
+
                 def project(i, j):
                     projected = da.tensordot(projectors[j], self.hs, (1, i))
                     return da.moveaxis(projected, 0, i)
@@ -133,11 +141,11 @@ class DaskStateVectorSimulator(Simulator):
                 pa, pb = p
                 projected = project(pa, 0)
                 norm_projected = norm(projected.flatten())
-                if da.random.random() < norm_projected ** 2:
+                if da.random.random() < norm_projected**2:
                     self.hs = projected / norm_projected
                     self.measures.append((pa, pb, 0))
                 else:
-                    projected = project(p[0],1)
+                    projected = project(p[0], 1)
                     self.hs = projected / norm(projected)
                     self.measures.append((pa, pb, 1))
 

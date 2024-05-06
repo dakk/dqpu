@@ -14,114 +14,119 @@
 
 import copy
 import random
-from typing import Tuple, List, Optional
+from typing import List, Optional, Tuple
+
 from ..q import Circuit, ExperimentResult, Gates
 from .trapper import TrapInfo, Trapper
 
+
 # TODO: make it base for other strategies, or move helpers to Trapper
 class DummyTrapInfo(TrapInfo):
-    def __init__(self, q_idx, val, prob = 1.0):
+    def __init__(self, q_idx, val, prob=1.0):
         self.qubit = q_idx
         self.value_expected = val
         self.probability = prob
-        
+
     def __repr__(self):
-        return f'qubit {self.qubit} expect to have value {self.value_expected} with probability {self.probability}'
+        return f"qubit {self.qubit} expect to have value {self.value_expected} with probability {self.probability}"
+
 
 class DummyTrapper:
-    """ A dummy trapper, just adds `n` qubits initialized in a random choice of |0> and |1> """
+    """A dummy trapper, just adds `n` qubits initialized in a random choice of |0> and |1>"""
+
     def __init__(self):
         pass
-    
-    def trap(self, qc: Circuit, level: Optional[int]=None) -> Tuple[Circuit, List[DummyTrapInfo]]:
-        """ Add traps to the quantum circuit """
+
+    def trap(
+        self, qc: Circuit, level: Optional[int] = None
+    ) -> Tuple[Circuit, List[DummyTrapInfo]]:
+        """Add traps to the quantum circuit"""
         if level is None:
             level = 1
-            
+
         qc = copy.deepcopy(qc)
-            
+
         traps = []
         gates = qc.gates
         for i in range(level):
             qc.n_qbits += 1
             i_r = random.randint(0, qc.n_qbits - 1)
-            
+
             def remap_qbit(q_idx):
                 return q_idx + 1 if q_idx >= i_r else q_idx
-            
+
             def remap_gate(gq):
                 a, p = gq
                 if a.nq == 1:
                     p = remap_qbit(p)
                 else:
                     p = list(map(remap_qbit, p))
-                return (a,p)
-                        
+                return (a, p)
+
             def remap_trap(t):
                 t.qubit = remap_qbit(t.qubit)
                 return t
-                       
-            gates = list(map(remap_gate, gates))            
+
+            gates = list(map(remap_gate, gates))
             traps = list(map(remap_trap, traps))
 
             v_e = False
             if not random.choice([True, False]):
                 v_e = True
                 gates.insert(random.randint(0, len(gates) - 1), (Gates.X, i_r))
-            
+
             traps.append(DummyTrapInfo(i_r, v_e))
-            
+
         qc.gates = gates
         return (qc, traps)
-    
-    def untrap_results(self, traps: List[DummyTrapInfo], results: ExperimentResult) -> ExperimentResult:
-        """ Get the results for the original circuit, stripping away dummy qubits """
+
+    def untrap_results(
+        self, traps: List[DummyTrapInfo], results: ExperimentResult
+    ) -> ExperimentResult:
+        """Get the results for the original circuit, stripping away dummy qubits"""
         qbits = list(map(lambda x: x.qubit, traps))
         qbits.sort(reverse=True)
         n_results = {}
-        
-        for (bs, counts) in results.items():
+
+        for bs, counts in results.items():
             n_bs = bs
             for q in qbits:
-                n_bs = n_bs[::-1][:q] + n_bs[::-1][q+1:]
+                n_bs = n_bs[::-1][:q] + n_bs[::-1][q + 1 :]
                 n_bs = n_bs[::-1]
 
             if n_bs in n_results:
                 n_results[n_bs] += counts
             else:
                 n_results[n_bs] = counts
-        
+
         return n_results
-        
-            
+
     def verify(self, traps: List[DummyTrapInfo], results: ExperimentResult) -> bool:
-        """ Get bitstring result for trap qubits, and check for the result """
+        """Get bitstring result for trap qubits, and check for the result"""
         tl = {}
-        
+
         for t in traps:
-            tl[t.qubit] = { '0': 0, '1': 0 }
-        
-        for (bs, counts) in results.items():
-                bs = bs[::-1] # This is for qiskit 
-                for t in traps:
-                    idx = t.qubit
-                    
-                    if bool(int(bs[idx])):
-                        tl[idx]['1'] += counts
-                    else:
-                        tl[idx]['0'] += counts
+            tl[t.qubit] = {"0": 0, "1": 0}
+
+        for bs, counts in results.items():
+            bs = bs[::-1]  # This is for qiskit
+            for t in traps:
+                idx = t.qubit
+
+                if bool(int(bs[idx])):
+                    tl[idx]["1"] += counts
+                else:
+                    tl[idx]["0"] += counts
 
         for t in traps:
             v = tl[t.qubit]
-            v_prob = abs((v['1'] - v['0']) / (v['1'] + v['0']))
-            
+            v_prob = abs((v["1"] - v["0"]) / (v["1"] + v["0"]))
+
             if v_prob < t.probability - 0.05 and v_prob > t.probability + 0.05:
                 return False
-            
-            vmax = False if v['0'] > v['1'] else True 
+
+            vmax = False if v["0"] > v["1"] else True
             if vmax != t.value_expected:
-                return False 
-            
+                return False
+
         return True
-                    
-            

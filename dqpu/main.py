@@ -12,25 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import random
+import time
+
+import numpy as np
+
 from .q import Circuit, Gates, utils
 from .simulator import DaskStateVectorSimulator
 from .verifier import DummyTrapper
-import random
-import time 
-import numpy as np
- 
+
+
 def main():
     n = 4
     depth = 2
     qc = Circuit(n, 1)
- 
+
     for x in range(n):
         qc.apply(Gates.H, x)
 
     for y in range(depth - 1):
         for x in range(n):
             if random.choice([True, False]):
-                qc.apply(random.choice([Gates.X, Gates.H, Gates.Y, Gates.Z, Gates.T]), x)
+                qc.apply(
+                    random.choice([Gates.X, Gates.H, Gates.Y, Gates.Z, Gates.T]), x
+                )
             else:
                 r1 = random.randint(0, n - 1)
                 r2 = random.randint(0, n - 1)
@@ -38,39 +43,36 @@ def main():
                 while r1 == r2:
                     r1 = random.randint(0, n - 1)
                     r2 = random.randint(0, n - 1)
-                    
+
                 qc.apply(Gates.CX, (r1, r2))
-              
+
     for x in range(n):
         qc.apply(Gates.H, x)
 
-    hs = DaskStateVectorSimulator(qc)  
-    
+    hs = DaskStateVectorSimulator(qc)
+
     s = time.time()
     a = hs.compute()
     print(a.compute())
-    print('time spent qse', time.time() - s)
-    
+    print("time spent qse", time.time() - s)
+
     trapper = DummyTrapper()
     print(qc.toQiskitCircuit().draw())
     (qc2, t) = trapper.trap(qc)
-    
-    
+
     s = time.time()
     qsk, counts = utils.qiskit_execute(qc2)
     print(qsk)
-    print('time spent qsk', time.time() - s)
-    
-    
+    print("time spent qsk", time.time() - s)
+
     print(qc2.toQiskitCircuit().draw())
     print(t)
     print(counts)
-    
+
     print(trapper.verify(t, counts))
-    
+
     print(trapper.untrap_results(t, counts))
-    
-    
+
     s = time.time()
     qsk, counts = utils.qiskit_execute(qc)
     print(counts)
