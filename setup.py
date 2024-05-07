@@ -63,8 +63,9 @@ setup(
     author_email="gessadavide@gmail.com",
     license="Apache 2.0",
     packages=[
+        "dqpu",
         "dqpu.q",
-        "dqpu.simulator",
+        "dqpu.sampler",
         "dqpu.verifier",
     ],
     zip_safe=False,
@@ -72,7 +73,7 @@ setup(
     extras_require={},
     entry_points={
         "console_scripts": [
-            "dqpu-main = dqpu.main:main",
+            "dqpu-sim_trap_test_main = dqpu.sim_trap_test_main:main",
         ],
     },
     classifiers=[
@@ -85,10 +86,10 @@ setup(
         "Topic :: Scientific/Engineering :: Physics",
         "Operating System :: OS Independent",
     ],
-    url="https://github.com/dakk/DQPU",
+    url="https://github.com/dakk/dqpu",
     project_urls={
-        "Bug Tracker": "https://github.com/dakk/DQPU/issues/",
-        "Documentation": "https://dakk.github.io/DQPU",
-        "Source": "https://github.com/dakk/DQPU",
+        "Bug Tracker": "https://github.com/dakk/dqpu/issues/",
+        "Documentation": "https://dakk.github.io/dqpu",
+        "Source": "https://github.com/dakk/dqpu",
     },
 )

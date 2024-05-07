@@ -13,4 +13,4 @@
 # limitations under the License.
 
 from .dasksimulator import DaskSimulator  # noqa: F401
-from .simulator import Simulator  # noqa: F401
+from .sampler import Sampler  # noqa: F401
