@@ -1,9 +1,10 @@
 # dqpu
 
-![CI Status](https://github.com/dakk/qlasskit/actions/workflows/ci.yaml/badge.svg)
+![CI Status](https://github.com/dakk/dqpu/actions/workflows/ci.yaml/badge.svg)
 ![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue)
 
-A Web3-Powered, Decentralized Quantum Simulator with Verifiable Computation. 
+A Web3-Powered (Near), Decentralized Quantum Simulator with Verifiable Computation. 
+
 
 
 ## Workflow
