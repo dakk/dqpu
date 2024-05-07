@@ -14,7 +14,10 @@
 
 import argparse
 
+
 def sampler_node():
     parser = argparse.ArgumentParser()
     parser.add_argument("--verbosity", help="increase output verbosity")
-    args = parser.parse_args()
+    args = parser.parse_args()  # noqa: F841
+
+    # Start contract polling for new jobs
