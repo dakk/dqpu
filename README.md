@@ -11,22 +11,23 @@ A Web3-Powered (Near), Decentralized Quantum Simulator with Verifiable Computati
 
 The DQPU system is composed of 3 actors:
 
-- Clients: users who need to perform a quantum sampling in exchange of a reward
-- Verifiers: delegated who check for data validity and detect cheating users
-- Samplers: users who run quantum samplers (either simulator or real quantum computers) and receive
+- *Clients*: users who need to perform a quantum sampling in exchange of a reward
+- *Verifiers*: delegated who check for data validity and detect cheating users; it receives a reward for its validation job.
+- *Samplers*: users who run quantum samplers (either simulator or real quantum computers) and receive
 a reward for doing sampling
 
 The following process outlines how clients can submit quantum circuits for sampling using the DQPU contract:
 
-1. **Client Submits Job**: A Client sends a quantum circuit along with a reward to the DQPU smart contract. The circuit data is uploaded to a distributed file storage system like IPFS. The smart contract adds the job to a queue in a 'pending' state with the associated reward.
+1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract. The circuit data is uploaded to a distributed file storage system like IPFS. The smart contract adds the job to a queue in a 'pending' state with the associated reward.
 
-2. **Verifier Validates Circuit**: A Verifier designated by the smart contract validates the submitted circuit. This might involve checks for syntax errors or ensuring the circuit is within allowed parameters. The verifier also adds special verification elements (traps) into the circuit. Once validated, the job moves to a 'waiting' state.
+2. **Verifier Validates Circuit**: A *Verifier* designated by the smart contract validates the submitted circuit. This might involve checks for syntax errors or ensuring the circuit is within allowed parameters. The verifier also adds special verification elements (traps) into the circuit. Once validated, the job moves to a 'waiting' state.
 
-3. **Simulation or Hardware Execution**: A Sampler retrieves a job from the waiting list. It then either simulates the circuit on a software program or executes it on real quantum hardware, depending on the job requirements and available resources. The simulation or execution result is submitted back to the smart contract. The job status changes to 'validating'.
+3. **Simulation or Hardware Execution**: A *Sampler* retrieves a job from the waiting list. It then either simulates the circuit on a software program or executes it on real quantum hardware, depending on the job requirements and available resources. The simulation or execution result is submitted back to the smart contract with a cautional deposit (a percentage of the reward). The job status changes to 'validating'.
 
-4. **Verifier Checks Result**: The same Verifier from step 2 examines the returned result. The Verifier specifically checks the traps inserted earlier to ensure the result hasn't been tampered with. If the trap verification succeeds, the job status is updated to 'executed' and the Sampler account receives the reward.
+4. **Verifier Checks Result**: The same *Verifier* from step 2 examines the returned result. The *Verifier* specifically checks the traps inserted earlier to ensure the result hasn't been tampered with. If the trap verification succeeds, the job status is updated to 'executed' and the *Sampler* account receives the reward.
+If the trap verification fails, the job returns in 'waiting' state (and the *Verifier* receives the cautional deposit of the *Sampler*).
 
-5. **Client Receives Result**: Once the job is marked as 'executed', the Client can retrieve the final result from the smart contract.
+5. **Client Receives Result**: Once the job is marked as 'executed', the *Client* can retrieve the final result from the smart contract.
 
 
 ## Installation
@@ -35,7 +36,7 @@ The following process outlines how clients can submit quantum circuits for sampl
 
 ## Usage: running a sampling job
 
-The workflow described before is hidden to the final user: DQPU can be used seamleassy as any other quantum backend as any other quantum sampler. Currently DQPU implements a **qiskit** wrapper, and a low level library for accessing the system primitives.
+The workflow described before is hidden to the final user: DQPU can be used seamleassy as any other quantum backend as any other quantum sampler. Currently DQPU implements a **qiskit** wrapper, a low level library for accessing the system primitives and a cli tool.
 
 ### Qiskit example
 
@@ -77,6 +78,27 @@ from dqpu import *
 ```
 
 
+### Cli tool usage
+
+```bash
+$ dpqu-cli submit test.qasm --reward 0.01 --shots 1024
+JOBID
+
+$ dpqu-cli info JOBID
+Job: JOBID
+Status: WAITING
+Qubits: 4
+Deep: 9
+Circuit uri: ipfs://.../test.qasm
+
+$ dpqu-cli status JOBID
+EXECUTED
+
+$ dpqu-cli get-result JOBID
+{ "0010": 1024 }
+```
+
+
 ## Usage: running a sampler node
 
 A sampler node continuously pool the DQPU smart contract waiting for new job. When a new job appear,
@@ -101,7 +123,7 @@ A verifier node continuously pool the DQPU smart contract waiting for new 'pendi
 - 'pending' job are checked for quantum circuit validity, and trap qubits are inserted
 - 'validating' job are checked for trap verification
 
-After every validation, the verifier receives the 10% of the job reward.
+After every validation, the verifier receives a percentage of the job reward.
 
 Verifier are special users initially selected by the smart contract creator; this will change in the future.
 
