@@ -14,9 +14,9 @@
 
 from typing import Dict
 
-from . import utils
-from .circuit import Barrier, Circuit, Measure
-from .gate import Gate
-from .gates import Gates
+from . import utils  # noqa: F401
+from .circuit import Barrier, Circuit, Measure  # noqa: F401
+from .gate import Gate  # noqa: F401
+from .gates import Gates  # noqa: F401
 
 ExperimentResult = Dict[str, int]

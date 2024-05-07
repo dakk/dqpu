@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional, Tuple
+from typing import Optional, Sequence, Tuple
 
 from ..q import Circuit, ExperimentResult
 
@@ -30,17 +30,17 @@ class Trapper:
 
     def trap(
         self, qc: Circuit, level: Optional[int] = None
-    ) -> Tuple[Circuit, List[TrapInfo]]:
+    ) -> Tuple[Circuit, Sequence[TrapInfo]]:
         """Add traps to the quantum circuits `qc`"""
         raise Exception("Abstract")
 
     def untrap_results(
-        self, traps: List[TrapInfo], results: ExperimentResult
+        self, traps: Sequence[TrapInfo], results: ExperimentResult
     ) -> ExperimentResult:
         """Get the results for the original circuit, stripping away trap qubits"""
         qbits = list(map(lambda x: x.qubit, traps))
         qbits.sort(reverse=True)
-        n_results = {}
+        n_results: ExperimentResult = {}
 
         for bs, counts in results.items():
             n_bs = bs
@@ -55,5 +55,5 @@ class Trapper:
 
         return n_results
 
-    def verify(self, traps: List[TrapInfo], results: ExperimentResult) -> bool:
+    def verify(self, traps: Sequence[TrapInfo], results: ExperimentResult) -> bool:
         raise Exception("Abstract")

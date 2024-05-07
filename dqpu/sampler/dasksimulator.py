@@ -25,7 +25,7 @@ client = Client(
 )
 
 
-class DaskStateVectorSimulator(Sampler):
+class DaskSimulator(Sampler):
     def __init__(self, circuit, dtype=np.csingle):
         self.circuit = circuit
         self.hs = None

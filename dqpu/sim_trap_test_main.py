@@ -16,7 +16,7 @@ import random
 import time
 
 from .q import Circuit, Gates, utils
-from .simulator import DaskStateVectorSimulator
+from .sampler import DaskSimulator
 from .verifier import BasicTrapper
 
 
@@ -47,7 +47,7 @@ def main():
     for x in range(n):
         qc.apply(Gates.H, x)
 
-    hs = DaskStateVectorSimulator(qc)
+    hs = DaskSimulator(qc)
 
     s = time.time()
     a = hs.compute()

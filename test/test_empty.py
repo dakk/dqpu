@@ -12,4 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# from .sampler import Sampler
+import unittest
+
+
+class TestEmpty(unittest.TestCase):
+    def test_a(self):
+        self.assertEqual(True, True)
+
+    def test_b(self):
+        self.assertEqual(3 * 2, 6)

@@ -83,7 +83,10 @@ A sampler node continuously pool the DQPU smart contract waiting for new job. Wh
 the sampler checks if it can perform the sampling with its hardware. 
 
 Every sampler node can implement its own `Sampler` class, adding supports to other simulators or 
-to real quantum hardware.
+to real quantum hardware. DQPU package offer 3 implementation:
+- AerSimulator: statevector simulator from qiskit
+- DaskSimulator: statevector simulator using Dask distributed computing library
+- NumpySimulator: statevector simulator using Numpy
 
 After every sampled job, the node receives the reward.
 

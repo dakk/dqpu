@@ -14,7 +14,7 @@
 
 import copy
 import random
-from typing import List, Optional, Tuple
+from typing import Optional, Sequence, Tuple, cast
 
 from ..q import Circuit, ExperimentResult, Gates
 from .trapper import TrapInfo, Trapper
@@ -42,14 +42,14 @@ class BasicTrapper(Trapper):
 
     def trap(
         self, qc: Circuit, level: Optional[int] = None
-    ) -> Tuple[Circuit, List[BasicTrapInfo]]:
+    ) -> Tuple[Circuit, Sequence[BasicTrapInfo]]:
         """Add traps to the quantum circuit"""
         if level is None:
             level = 1
 
         qc = copy.deepcopy(qc)
 
-        traps = []
+        traps: Sequence[BasicTrapInfo] = []
         gates = qc.gates
         for i in range(level):
             qc.n_qbits += 1
@@ -83,8 +83,7 @@ class BasicTrapper(Trapper):
         qc.gates = gates
         return (qc, traps)
 
-
-    def verify(self, traps: List[BasicTrapInfo], results: ExperimentResult) -> bool:
+    def verify(self, traps: Sequence[TrapInfo], results: ExperimentResult) -> bool:
         """Get bitstring result for trap qubits, and check for the result"""
         tl = {}
 
@@ -105,11 +104,12 @@ class BasicTrapper(Trapper):
             v = tl[t.qubit]
             v_prob = abs((v["1"] - v["0"]) / (v["1"] + v["0"]))
 
-            if v_prob < t.probability - 0.05 and v_prob > t.probability + 0.05:
+            t_ = cast(BasicTrapInfo, t)
+            if v_prob < t_.probability - 0.05 and v_prob > t_.probability + 0.05:
                 return False
 
             vmax = False if v["0"] > v["1"] else True
-            if vmax != t.value_expected:
+            if vmax != t_.value_expected:
                 return False
 
         return True
