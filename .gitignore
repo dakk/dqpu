@@ -15,5 +15,5 @@ docs/build
 *.egg
 *.egg-info
 .t_statistics
-
-contract/node_modules
+.tsimp
+node_modules
