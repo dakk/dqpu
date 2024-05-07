@@ -74,6 +74,8 @@ setup(
     entry_points={
         "console_scripts": [
             "dqpu-sim_trap_test_main = dqpu.sim_trap_test_main:main",
+            "dqpu-verifier = dqpu.verifiernode:verifier_node",
+            "dqpu-sampler = dqpu.samplernode:sampler_node",
         ],
     },
     classifiers=[
