@@ -18,8 +18,8 @@ from ..q import Circuit, ExperimentResult
 
 
 class TrapInfo:
-    def __init__(self):
-        raise Exception("Abstract")
+    def __init__(self, q_idx):
+        self.qubit = q_idx
 
 
 class Trapper:
@@ -38,7 +38,22 @@ class Trapper:
         self, traps: List[TrapInfo], results: ExperimentResult
     ) -> ExperimentResult:
         """Get the results for the original circuit, stripping away trap qubits"""
-        raise Exception("Abstract")
+        qbits = list(map(lambda x: x.qubit, traps))
+        qbits.sort(reverse=True)
+        n_results = {}
+
+        for bs, counts in results.items():
+            n_bs = bs
+            for q in qbits:
+                n_bs = n_bs[::-1][:q] + n_bs[::-1][q + 1 :]
+                n_bs = n_bs[::-1]
+
+            if n_bs in n_results:
+                n_results[n_bs] += counts
+            else:
+                n_results[n_bs] = counts
+
+        return n_results
 
     def verify(self, traps: List[TrapInfo], results: ExperimentResult) -> bool:
         raise Exception("Abstract")

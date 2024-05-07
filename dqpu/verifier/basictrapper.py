@@ -21,9 +21,9 @@ from .trapper import TrapInfo, Trapper
 
 
 # TODO: make it base for other strategies, or move helpers to Trapper
-class DummyTrapInfo(TrapInfo):
+class BasicTrapInfo(TrapInfo):
     def __init__(self, q_idx, val, prob=1.0):
-        self.qubit = q_idx
+        super().__init__(q_idx)
         self.value_expected = val
         self.probability = prob
 
@@ -34,15 +34,15 @@ class DummyTrapInfo(TrapInfo):
         )
 
 
-class DummyTrapper(Trapper):
-    """A dummy trapper, just adds `n` qubits initialized in a random choice of |0> and |1>"""
+class BasicTrapper(Trapper):
+    """A basic trapper, just adds `n` qubits initialized in a random choice of |0> and |1>"""
 
     def __init__(self):
         pass
 
     def trap(
         self, qc: Circuit, level: Optional[int] = None
-    ) -> Tuple[Circuit, List[DummyTrapInfo]]:
+    ) -> Tuple[Circuit, List[BasicTrapInfo]]:
         """Add traps to the quantum circuit"""
         if level is None:
             level = 1
@@ -78,33 +78,13 @@ class DummyTrapper(Trapper):
                 v_e = True
                 gates.insert(random.randint(0, len(gates) - 1), (Gates.X, i_r))
 
-            traps.append(DummyTrapInfo(i_r, v_e))
+            traps.append(BasicTrapInfo(i_r, v_e))
 
         qc.gates = gates
         return (qc, traps)
 
-    def untrap_results(
-        self, traps: List[DummyTrapInfo], results: ExperimentResult
-    ) -> ExperimentResult:
-        """Get the results for the original circuit, stripping away dummy qubits"""
-        qbits = list(map(lambda x: x.qubit, traps))
-        qbits.sort(reverse=True)
-        n_results = {}
 
-        for bs, counts in results.items():
-            n_bs = bs
-            for q in qbits:
-                n_bs = n_bs[::-1][:q] + n_bs[::-1][q + 1 :]
-                n_bs = n_bs[::-1]
-
-            if n_bs in n_results:
-                n_results[n_bs] += counts
-            else:
-                n_results[n_bs] = counts
-
-        return n_results
-
-    def verify(self, traps: List[DummyTrapInfo], results: ExperimentResult) -> bool:
+    def verify(self, traps: List[BasicTrapInfo], results: ExperimentResult) -> bool:
         """Get bitstring result for trap qubits, and check for the result"""
         tl = {}
 

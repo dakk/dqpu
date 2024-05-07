@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .dummytrapper import DummyTrapInfo, DummyTrapper
-from .trapper import TrapInfo, Trapper
+from .basictrapper import BasicTrapInfo, BasicTrapper  # noqa: F401
+from .trapper import TrapInfo, Trapper  # noqa: F401

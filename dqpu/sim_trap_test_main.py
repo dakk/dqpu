@@ -17,7 +17,7 @@ import time
 
 from .q import Circuit, Gates, utils
 from .simulator import DaskStateVectorSimulator
-from .verifier import DummyTrapper
+from .verifier import BasicTrapper
 
 
 def main():
@@ -54,7 +54,7 @@ def main():
     print(a.compute())
     print("time spent qse", time.time() - s)
 
-    trapper = DummyTrapper()
+    trapper = BasicTrapper()
     print(qc.toQiskitCircuit().draw())
     (qc2, t) = trapper.trap(qc)
 
