@@ -12,5 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .daskstatevectorsimulator import DaskStateVectorSimulator  # noqa: F401
-from .simulator import Simulator  # noqa: F401
+
+class Sampler:
+    """Abstract class that should be implemented by any sampler"""
+
+    def __init__(self, circuit):
+        self.circuit = circuit
+
+    def compute(self):
+        pass

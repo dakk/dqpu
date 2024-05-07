@@ -28,10 +28,13 @@ class DummyTrapInfo(TrapInfo):
         self.probability = prob
 
     def __repr__(self):
-        return f"qubit {self.qubit} expect to have value {self.value_expected} with probability {self.probability}"
+        return (
+            f"qubit {self.qubit} expect to have value {self.value_expected} "
+            f"with probability {self.probability}"
+        )
 
 
-class DummyTrapper:
+class DummyTrapper(Trapper):
     """A dummy trapper, just adds `n` qubits initialized in a random choice of |0> and |1>"""
 
     def __init__(self):

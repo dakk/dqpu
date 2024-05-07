@@ -1,5 +1,8 @@
 # dqpu
 
+![CI Status](https://github.com/dakk/qlasskit/actions/workflows/ci.yaml/badge.svg)
+![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue)
+
 A Web3-Powered, Decentralized Quantum Simulator with Verifiable Computation. 
 
 
@@ -25,9 +28,13 @@ The following process outlines how clients can submit quantum circuits for sampl
 5. **Client Receives Result**: Once the job is marked as 'executed', the client can retrieve the final result from the smart contract.
 
 
-## Usage
+## Installation
 
-The workflow described before is hidden to the final user: DQPU can be used seamleassy as any other quantum backend as any other quantum sampler. Currently DQPU implements a **qiskit** wrapper, and a raw library for accessing the system primitives.
+```pip install .```
+
+## Usage: running a sampling job
+
+The workflow described before is hidden to the final user: DQPU can be used seamleassy as any other quantum backend as any other quantum sampler. Currently DQPU implements a **qiskit** wrapper, and a low level library for accessing the system primitives.
 
 ### Qiskit example
 
@@ -35,21 +42,67 @@ The workflow described before is hidden to the final user: DQPU can be used seam
 import time
 import qiskit
 from qiskit.providers.jobstatus import JobStatus 
-from dqpu.qiskit import DQPUProvider
+from dqpu.qiskit import DQPUProvider, DQPUService
 
+# Create a quantum circuit
 qc = qiskit.QuantumCircuit(2)
 qc.h(0)
 qc.cx(0, 1)
 
-backend = DQPUProvider().get_backend('dqpu_simulator')
-job = backend.run(qc)
+# Inizialize the service by providing the Near account
+service = DQPUService()
+service.setAccount("...")
 
+# Run the sampling
+backend = DQPUProvider().get_backend('dqpu_simulator')
+job = backend.run(qc, reward="0.001")
+
+# Wait for the job
 while job.status() is JobStatus.RUNNING:
     print(f'Job {job.job_id()} is still running, please wait')
     time.sleep(1)
 
+# Get the result
 counts = job.result.get_counts()
 print(counts)
+```
+
+### Low-level example
+
+```python
+from dqpu import *
+
+# TODO
+```
+
+
+## Usage: running a sampler node
+
+A sampler node continuously pool the DQPU smart contract waiting for new job. When a new job appear,
+the sampler checks if it can perform the sampling with its hardware. 
+
+Every sampler node can implement its own `Sampler` class, adding supports to other simulators or 
+to real quantum hardware.
+
+After every sampled job, the node receives the reward.
+
+```bash
+dqpu-sampler --min-reward 0.0009 --sampler aersimulator
+```
+
+
+## Usage: running a verifier node
+
+A verifier node continuously pool the DQPU smart contract waiting for new 'pending' and 'validating' jobs. When a new job appear, the verifiers:
+- 'pending' job are checked for quantum circuit validity, and trap qubits are inserted
+- 'validating' job are checked for trap verification
+
+After every validation, the verifier receives the 10% of the job reward.
+
+Verifier are special users initially selected by the smart contract creator; this will change in the future.
+
+```bash
+dqpu-verifier
 ```
 
 

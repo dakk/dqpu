@@ -18,14 +18,14 @@ from dask.distributed import Client  # , progress
 from scipy.linalg import norm
 
 from ..q import Gate, Measure
-from .simulator import Simulator
+from .sampler import Sampler
 
 client = Client(
     processes=False, threads_per_worker=1, n_workers=1, memory_limit="612MB"
 )
 
 
-class DaskStateVectorSimulator(Simulator):
+class DaskStateVectorSimulator(Sampler):
     def __init__(self, circuit, dtype=np.csingle):
         self.circuit = circuit
         self.hs = None
