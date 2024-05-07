@@ -78,7 +78,7 @@ class Circuit:
         plt.axis("off")
         plt.show()
 
-    def toQiskitCircuit(self):
+    def toQiskitCircuit(self):  # noqa: C901
         from qiskit import QuantumCircuit
 
         qc = QuantumCircuit(self.n_qbits, 0)

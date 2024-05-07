@@ -15,8 +15,6 @@
 import random
 import time
 
-import numpy as np
-
 from .q import Circuit, Gates, utils
 from .simulator import DaskStateVectorSimulator
 from .verifier import DummyTrapper

@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .daskstatevectorsimulator import DaskStateVectorSimulator
-from .simulator import Simulator
+from .daskstatevectorsimulator import DaskStateVectorSimulator  # noqa: F401
+from .simulator import Simulator  # noqa: F401

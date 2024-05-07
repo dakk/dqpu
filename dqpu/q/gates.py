@@ -27,6 +27,8 @@ ket_one = np.array([c_zero, c_one])
 
 
 # Standard gates
+
+
 class Gates:
     R = Gate(
         "R",
@@ -34,7 +36,7 @@ class Gates:
             [[1, 0], [1, math.e ** ((2 * math.pi * complex(0, 1)) / 2**k)]]
         ),
     )
-    I = Gate("I", np.array([[1, 0], [0, 1]]))
+    I = Gate("I", np.array([[1, 0], [0, 1]]))  # noqa: E741
     X = Gate("X", np.array([[0, 1], [1, 0]]))
     Y = Gate("Y", np.array([[0, -1.0j], [+1.0j, 0]]))
     Z = Gate("Z", np.array([[1, 0], [0, -1]]))

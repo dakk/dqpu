@@ -14,11 +14,10 @@
 
 import dask.array as da
 import numpy as np
-from dask.distributed import Client, progress
-from scipy import sparse
+from dask.distributed import Client  # , progress
 from scipy.linalg import norm
 
-from ..q import Circuit, Gate, Measure
+from ..q import Gate, Measure
 from .simulator import Simulator
 
 client = Client(
@@ -73,7 +72,7 @@ class DaskStateVectorSimulator(Simulator):
 
         return self.hs.flatten()
 
-    def compute_sep(self):
+    def compute_sep(self):  # noqa: C901
         def tensor_product(matrix1, matrix2):
             m, n = matrix1.shape
             p, q = matrix2.shape
@@ -119,6 +118,10 @@ class DaskStateVectorSimulator(Simulator):
 
         self.hs = da.zeros((2**self.circuit.n_qbits), dtype=self.dtype)
         self.hs[0] = 1
+        projectors = [
+            da.array([[1, 0], [0, 0]], dtype=self.dtype),
+            da.array([[0, 0], [0, 1]], dtype=self.dtype),
+        ]
 
         for x in self.circuit:
             a, p = x
