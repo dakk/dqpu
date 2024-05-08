@@ -16,7 +16,7 @@ import { AccountId } from 'near-sdk-js/lib/types';
 export type JobStatus = 'pending-validation' | 'waiting' | 'validating-result' | 'executed' | 'invalid';
 
 export class Job {
-    id: bigint;
+    id: string;
     owner_id: AccountId;
     reward_amount: bigint;
     sampler_deposit: bigint;
