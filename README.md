@@ -18,7 +18,7 @@ a reward for doing sampling
 
 The following process outlines how clients can submit quantum circuits for sampling using the DQPU contract:
 
-1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract. The circuit data is uploaded to a distributed file storage system like IPFS. The smart contract adds the job to a queue in a 'pending' state with the associated reward.
+1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract. The circuit data is uploaded to a distributed file storage system like IPFS. The smart contract adds the job to a queue in a 'pending-validation' state with the associated reward.
 
 2. **Verifier Validates Circuit**: A *Verifier*[^1] validates the submitted circuit. This might involve checks for syntax errors or ensuring the circuit is within allowed parameters. The verifier also adds special verification elements (traps) into the circuit. Once validated, the job moves to a 'waiting' state, becomes 'invalid' otherwise.
 
@@ -121,9 +121,9 @@ dqpu-sampler --min-reward 0.0009 --sampler aersimulator
 
 ## Usage: running a verifier node
 
-A verifier node continuously pool the DQPU smart contract waiting for new 'pending' and 'validating' jobs. When a new job appear, the verifiers:
-- 'pending' job are checked for quantum circuit validity, and trap qubits are inserted
-- 'validating' job are checked for trap verification
+A verifier node continuously pool the DQPU smart contract waiting for new 'pending-validation' and 'validating-result' jobs. When a new job appear, the verifiers:
+- 'pending-validation' job are checked for quantum circuit validity, and trap qubits are inserted
+- 'validating-result' job are checked for trap verification
 
 After every validation, the verifier receives a percentage of the job reward.
 

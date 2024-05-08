@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NearBindgen, near, call, view, UnorderedMap, assert } from 'near-sdk-js';
+import { NearBindgen, near, call, view, UnorderedMap, assert, initialize } from 'near-sdk-js';
 import { AccountId } from 'near-sdk-js/lib/types';
 import { Job, JobStatus } from './model';
 
@@ -24,6 +24,7 @@ class DQPU {
   latest_jid: bigint = BigInt(0);
   money_handled: bigint = BigInt(0);
 
+  @initialize({ privateFunction: true })
   init() {
     this.owner = near.predecessorAccountId();
     this.verifiers.set(this.owner, this.owner);

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "near-sdk-js build src/contract.ts build/dqpu.wasm",
-    "test": "$npm_execpath run build && ava -- ./build/dqpu.wasm"
+    "test": "$npm_execpath run build && ava -- ./build/dqpu.wasm",
+    "only-test": "ava -- ./build/dqpu.wasm"
   },
   "dependencies": {
     "near-cli": "^4.0.8",

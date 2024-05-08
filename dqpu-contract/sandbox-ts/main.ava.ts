@@ -32,6 +32,8 @@ test.beforeEach(async (t) => {
     process.argv[2],
   );
 
+  await contract.call(contract, "init", {})
+
   // Save state for test runs, it is unique for each test
   t.context.accounts = { root, contract };
 });
@@ -43,11 +45,17 @@ test.afterEach.always(async (t) => {
   });
 });
 
-// test('returns the default greeting', async (t) => {
-//   const { contract } = t.context.accounts;
-//   const greeting: string = await contract.view('get_greeting', {});
-//   t.is(greeting, 'Hello');
-// });
+test('returns the number of handled amount', async (t) => {
+  const { contract } = t.context.accounts;
+  const amount: string = await contract.view('get_handled_amount', {});
+  t.is(amount, '0');
+});
+
+test('returns the number of jobs', async (t) => {
+  const { contract } = t.context.accounts;
+  const amount: number = await contract.view('get_number_of_jobs', {});
+  t.is(amount, 0);
+});
 
 // test('changes the greeting', async (t) => {
 //   const { root, contract } = t.context.accounts;
