@@ -13,10 +13,22 @@
 // limitations under the License.
 import { AccountId } from 'near-sdk-js/lib/types';
 
-
-export type JobStatus = 'pending' | 'waiting' | 'executed' | 'invalid';
+export type JobStatus = 'pending-validation' | 'waiting' | 'validating-result' | 'executed' | 'invalid';
 
 export class Job {
-    account_id: string;
-    total_amount: string;
+    id: bigint;
+    owner_id: AccountId;
+    reward_amount: bigint;
+    sampler_deposit: bigint;
+    status: JobStatus;
+
+    qubits: number;
+    deep: number;
+    shots: number;
+
+    job_file: string;
+    result_file: string;
+
+    verifier_id: AccountId;
+    sampler_id: AccountId;
 }
