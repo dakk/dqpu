@@ -20,6 +20,12 @@ near create-account <your-account.testnet> --useFaucet
 near deploy <your-account.testnet> build/release/dqpu.wasm
 ```
 
+Now initialize it:
+
+```bash
+near call <contractId> <initMethod> '{"owner": ""}' --accountId <accountId>
+```
+
 ### 3. Retrieve data from view
 
 ```bash

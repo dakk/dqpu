@@ -193,6 +193,26 @@ class DQPU {
     }
 
     @view({})
+    get_jobs_stats({ from_index = 0, limit = 1000 }: { from_index: number, limit: number }) {
+        const st = {};
+
+        for (const id of this.jobs.keys({ start: from_index, limit })) {
+            const j: Job = this.jobs.get(id);
+            if (! (j.status in st))
+                st[j.status] = 0;
+            
+            st[j.status] += 1
+        }
+
+        return st;
+    }
+
+    @view({})
+    get_number_of_verifiers(): number {
+        return this.verifiers.length;
+    }
+
+    @view({})
     get_handled_amount(): bigint {
         return this.money_handled;
     }

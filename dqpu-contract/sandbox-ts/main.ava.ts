@@ -66,6 +66,8 @@ test('add a verifier and check the status', async (t) => {
     let am_i: boolean = await contract.view('is_a_verifier', { account: alice.accountId });
     t.is(am_i, false);
 
+    t.is(await contract.view('get_number_of_verifiers', {}), 1);
+
     await owner.call(contract, 'add_verifier', { account: alice.accountId });
 
     am_i = await contract.view('is_a_verifier', { account: alice.accountId });
@@ -73,6 +75,8 @@ test('add a verifier and check the status', async (t) => {
 
     am_i = await contract.view('is_a_verifier', { account: owner.accountId });
     t.is(am_i, true);
+
+    t.is(await contract.view('get_number_of_verifiers', {}), 2);
 });
 
 test('add a job and mark as invalid', async (t) => {
