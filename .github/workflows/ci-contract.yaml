@@ -17,12 +17,13 @@ jobs:
     - name: Set up Python ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        python-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node-version }}
 
-    - run: cd dqpu-contract
     - name: Install dependencies
+      working-directory: dqpu-contract
       run: npm install
 
     - name: Run tests
+      working-directory: dqpu-contract
       run: npm run test
 
