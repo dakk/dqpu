@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Worker, NearAccount, NEAR } from 'near-workspaces';
-import anyTest, { TestFn } from 'ava';
-import { Job } from '../src/model';
 import { setDefaultResultOrder } from 'dns'; setDefaultResultOrder('ipv4first'); // temp fix for node >v17
 import { createTestObject } from './factory';
 

@@ -19,7 +19,7 @@ import { createTestObject } from './factory';
 // Global context
 const test = createTestObject();
 
-test('add a job and do a complete correct workflow', async (t) => {
+test('add a job and submit an invalid result', async (t) => {
     const { root, contract, alice, bob, owner } = t.context.accounts;
 
     t.is(await contract.view('get_number_of_jobs', {}), 0);
@@ -50,27 +50,13 @@ test('add a job and do a complete correct workflow', async (t) => {
 
     t.is(await contract.view('get_job_status', { id: jid }), 'waiting');
 
-    // Low deposit
-    await t.throwsAsync(async () => { await bob.call(contract, 'submit_job_result', {
-        id: jid, result_file: 'b21aa'
-    }, { attachedDeposit: NEAR.parse('0.01 N') }); });
+    await alice.call(contract, 'remove_job', {
+        id: jid
+    }, { });
 
+    t.is(await contract.view('get_number_of_jobs', {}), 0);
 
-    await bob.call(contract, 'submit_job_result', {
-        id: jid, result_file: 'b21aa'
-    }, { attachedDeposit: NEAR.parse('0.1 N') });
-
-    t.is(await contract.view('get_job_status', { id: jid }), 'validating-result');
-
-    await owner.call(contract, 'set_result_validity', {
-        id: jid, valid: true
-    });
-
-    t.is(await contract.view('get_job_status', { id: jid }), 'executed');
-
-    // TODO: bob should have INIT + reward - reward/10
+    // TODO: alice should have init
     // t.is((await alice.balance()).total, alice_initial_balance.total.sub(NEAR.parse('1N').sub(NEAR.parse('0.001 N'))));
-
-    // TODO: owner should have INIT + reward/10
 });
 

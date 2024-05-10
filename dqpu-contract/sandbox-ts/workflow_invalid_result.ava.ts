@@ -19,7 +19,7 @@ import { createTestObject } from './factory';
 // Global context
 const test = createTestObject();
 
-test('add a job and do a complete correct workflow', async (t) => {
+test('add a job and submit an invalid result', async (t) => {
     const { root, contract, alice, bob, owner } = t.context.accounts;
 
     t.is(await contract.view('get_number_of_jobs', {}), 0);
@@ -63,14 +63,12 @@ test('add a job and do a complete correct workflow', async (t) => {
     t.is(await contract.view('get_job_status', { id: jid }), 'validating-result');
 
     await owner.call(contract, 'set_result_validity', {
-        id: jid, valid: true
+        id: jid, valid: false
     });
 
-    t.is(await contract.view('get_job_status', { id: jid }), 'executed');
+    t.is(await contract.view('get_job_status', { id: jid }), 'waiting');
 
-    // TODO: bob should have INIT + reward - reward/10
+    // TODO: bob should have INIT - reward/10
     // t.is((await alice.balance()).total, alice_initial_balance.total.sub(NEAR.parse('1N').sub(NEAR.parse('0.001 N'))));
-
-    // TODO: owner should have INIT + reward/10
 });
 

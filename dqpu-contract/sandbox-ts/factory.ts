@@ -14,7 +14,6 @@
 
 import { Worker, NearAccount, NEAR } from 'near-workspaces';
 import anyTest, { TestFn } from 'ava';
-import { Job } from '../src/model';
 import { setDefaultResultOrder } from 'dns'; setDefaultResultOrder('ipv4first'); // temp fix for node >v17
 
 export function createTestObject() {
