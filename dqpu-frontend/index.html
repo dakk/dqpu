@@ -110,11 +110,11 @@
                         <template v-slot:header.result_file>Result</template>
 
                         <template v-slot:item.reward_amount="{ item }">
-                            {{item.reward_amount/1000000000000000000000000}} N
+                            {{(item.reward_amount/1000000000000000000000000).toFixed(4)}} N
                         </template>
 
                         <template v-slot:item.sampler_deposit="{ item }">
-                            {{item.sampler_deposit/1000000000000000000000000}} N
+                            {{(item.sampler_deposit/1000000000000000000000000).toFixed(4)}} N
                         </template>
 
                         <template v-slot:item.qubits="{ item }">
@@ -135,22 +135,32 @@
                         </template>
 
                         <template v-slot:item.owner_id="{ item }">
-                            <v-icon icon="fa fa-user"></v-icon>
+                            <a :href="'https://testnet.nearblocks.io/address/' + item.owner_id" target="_blank">
+                                <v-icon icon="fa fa-user"></v-icon>
+                            </a>
                         </template>
 
                         <template v-slot:item.verifier_id="{ item }">
+                            <a v-if="item.verifier_id" :href="'https://testnet.nearblocks.io/address/' + item.verifier_id" target="_blank">
                             <v-icon icon="fa fa-user"></v-icon>
+                        </a>
                         </template>
 
                         <template v-slot:item.sampler_id="{ item }">
+                            <a v-if="item.sampler_id" :href="'https://testnet.nearblocks.io/address/' + item.sampler_id" target="_blank">
                             <v-icon icon="fa fa-user"></v-icon>
+                        </a>
                         </template>
 
                         <template v-slot:item.result_file="{ item }">
-                            <v-icon icon="fa fa-file"></v-icon>
+                            <a v-if="item.result_file">
+                                <v-icon icon="fa fa-file"></v-icon>
+                            </a>
                         </template>
                         <template v-slot:item.job_file="{ item }">
-                            <v-icon icon="fa fa-file"></v-icon>
+                            <a v-if="item.job_file">
+                                <v-icon icon="fa fa-file"></v-icon>
+                            </a>
                         </template>
                     </v-data-table>
                 </v-card-text>
