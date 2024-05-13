@@ -4,6 +4,7 @@
     "target": "ES5",
     "noEmit": true,
     "noImplicitAny": false,
+    "allowImportingTsExtensions": true
   },
   "files": [
     "sandbox-ts/main.ava.ts",

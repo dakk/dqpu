@@ -17,13 +17,13 @@ You can create a new account and deploy the contract by running:
 
 ```bash
 near create-account <your-account.testnet> --useFaucet
-near deploy <your-account.testnet> build/release/dqpu.wasm
+near deploy <your-account.testnet> build/release/dqpu.wasm --initFunction init --initArgs '{"owner": "dqpu_owner.testnet"}'
 ```
 
-Now initialize it:
+Or initialize it separately:
 
 ```bash
-near call <contractId> <initMethod> '{"owner": ""}' --accountId <accountId>
+near call <contractId> init '{"owner": ""}' --accountId <accountId>
 ```
 
 ### 3. Retrieve data from view
@@ -52,3 +52,11 @@ near login
 ```
 
 and then use the logged account to sign the transaction: `--accountId <another-account>`.
+
+
+
+### 5. Delete a contract
+
+```
+near delete dqpu_VERSION.testnet dqpu_owner.testnet
+```

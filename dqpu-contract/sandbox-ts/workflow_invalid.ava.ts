@@ -13,9 +13,9 @@
 // limitations under the License.
 
 import { NEAR } from 'near-workspaces';
-import { Job } from '../src/model';
 import { setDefaultResultOrder } from 'dns'; setDefaultResultOrder('ipv4first'); // temp fix for node >v17
-import { createTestObject } from './factory';
+import { Job } from '../src/model.ts';
+import { createTestObject } from './factory.ts';
 
 // Global context
 const test = createTestObject();

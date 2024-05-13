@@ -16,6 +16,7 @@ import { NearBindgen, near, call, view, UnorderedMap, assert, initialize } from 
 import { AccountId } from 'near-sdk-js/lib/types';
 import { Job, JobStatus } from './model';
 
+const CONTRACT_VERSION = 4;
 const MAX_JOBS_STORED = 128;
 
 // TODO: add max_job handling
