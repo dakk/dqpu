@@ -39,6 +39,7 @@
         .validating { color: blue; }
         .executed { color: green; }
         .invalid { color: red; } */
+        
     </style>
 </head>
 
@@ -50,6 +51,36 @@
                 <v-card-subtitle>This list shows all the quantum sampling jobs of the DQPU smart contract on NEAR
                     blockchain.</v-card-subtitle>
                 <v-card-text>
+                    <div class="d-flex justify-space">
+                        <v-card class="mx-3" outlined elevated>
+                          <v-card-text>
+                            <div class="d-flex align-center">
+                              <v-icon class="mr-3">fas fa-download</v-icon>
+                              <div class="font-weight-bold display-1">{{ n_jobs }}</div>
+                              <div class="text-caption ml-3">Total Jobs</div>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                        <v-card class="mx-3" outlined elevated>
+                          <v-card-text>
+                            <div class="d-flex align-center">
+                              <v-icon class="mr-3">fas fa-users</v-icon>
+                              <div class="font-weight-bold display-1">{{ n_verifiers }}</div>
+                              <div class="text-caption ml-3">Verifiers</div>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                        <!-- <v-card class="mx-3" outlined elevated>
+                          <v-card-text>
+                            <div class="d-flex align-center">
+                              <v-icon class="mr-3">fas fa-rocket</v-icon>
+                              <div class="font-weight-bold display-1">789</div>
+                              <div class="text-caption ml-3">Waiting Jobs</div>
+                            </div>
+                          </v-card-text>
+                        </v-card> -->
+                      </div>
+
                     <v-data-table :items="jobs">
                         <template v-slot:header.owner_id>Owner</template>
                         <template v-slot:header.verifier_id>Verifier</template>

@@ -22,7 +22,10 @@ async function viewMethod(method, args = {}) {
 const app = Vue.createApp({
     data() {
         return {
-            jobs: []
+            jobs: [],
+            job_stats: {},
+            n_verifiers: 0,
+            n_jobs: 0
 
         };
     },
@@ -30,6 +33,11 @@ const app = Vue.createApp({
         console.log('APP mounted');
 
         this.jobs = await viewMethod('get_jobs');
+
+        this.n_jobs = await viewMethod('get_number_of_jobs');
+        this.n_verifiers = await viewMethod('get_number_of_verifiers');
+        // const c = await viewMethod('get_jobs_stats');
+        // console.log(c);
     },
     methods: {
         statusIcon(status) {
