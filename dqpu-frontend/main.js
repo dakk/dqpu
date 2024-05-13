@@ -36,8 +36,7 @@ const app = Vue.createApp({
 
         this.n_jobs = await viewMethod('get_number_of_jobs');
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
-        // const c = await viewMethod('get_jobs_stats');
-        // console.log(c);
+        this.job_stats = await viewMethod('get_jobs_stats');
     },
     methods: {
         statusIcon(status) {
