@@ -23,7 +23,7 @@ export class Job {
     status: JobStatus;
 
     qubits: number;
-    deep: number;
+    depth: number;
     shots: number;
 
     job_file: string;

@@ -26,14 +26,14 @@ test('add a job and mark as invalid', async (t) => {
     t.is(await contract.view('get_number_of_jobs', {}), 0);
 
     const failCreation = alice.call(contract, 'submit_job', {
-        qubits: 2, deep: 8, shots: 128, job_file: 'a12bff'
+        qubits: 2, depthh: 8, shots: 128, job_file: 'a12bff'
     });
     await t.throwsAsync(async () => { await failCreation });
 
     // const alice_initial_balance = await alice.balance();
 
     const jid: string = await alice.call(contract, 'submit_job', {
-        qubits: 2, deep: 8, shots: 128, job_file: 'a12bff'
+        qubits: 2, depthh: 8, shots: 128, job_file: 'a12bff'
     }, { attachedDeposit: NEAR.parse('1 N') }); //, gas: NEAR.parse('0.01 N') });
 
     // t.is((await alice.balance()).total, alice_initial_balance.total.sub(NEAR.parse('1N').sub(NEAR.parse('0.001 N'))));

@@ -91,7 +91,7 @@ $ dpqu-cli info JOBID
 Job: JOBID
 Status: WAITING
 Qubits: 4
-Deep: 9
+depth: 9
 Circuit uri: ipfs://.../test.qasm
 
 $ dpqu-cli status JOBID

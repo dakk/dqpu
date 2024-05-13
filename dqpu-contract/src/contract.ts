@@ -37,7 +37,7 @@ class DQPU {
 
     // Submit a new quantum job
     @call({ payableFunction: true })
-    submit_job({ qubits, deep, shots, job_file }: { qubits: number, deep: number, shots: number, job_file: string }) {
+    submit_job({ qubits, depth, shots, job_file }: { qubits: number, depth: number, shots: number, job_file: string }) {
         this.latest_jid += BigInt(1);
 
         const reward: bigint = near.attachedDeposit() as bigint;
@@ -51,7 +51,7 @@ class DQPU {
             status: 'pending-validation',
 
             qubits: qubits,
-            deep: deep,
+            depth: depth,
             shots: shots,
 
             job_file: job_file,
