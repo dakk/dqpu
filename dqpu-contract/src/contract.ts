@@ -169,7 +169,8 @@ class DQPU {
 
         for (const id of this.jobs.keys({ start: from_index, limit })) {
             const j: Job = this.jobs.get(id);
-            ret.push(j);
+            if (j)
+                ret.push(j);
         }
 
         return ret
@@ -195,14 +196,24 @@ class DQPU {
 
     @view({})
     get_jobs_stats({ from_index = 0, limit = 1000 }: { from_index: number, limit: number }) {
-        const st = {};
+        const st = { 
+            'pending-validation': 0,
+            'waiting': 0,
+            'validating-result': 0,
+            'executed': 0,
+            'invalid': 0
+        };
 
         for (const id of this.jobs.keys({ start: from_index, limit })) {
             const j: Job = this.jobs.get(id);
+            
+            if (!j)
+                continue;
+
             if (! (j.status in st))
                 st[j.status] = 0;
             
-            st[j.status] += 1
+            st[j.status] += 1;
         }
 
         return st;

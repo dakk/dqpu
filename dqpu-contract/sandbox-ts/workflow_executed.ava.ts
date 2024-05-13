@@ -68,6 +68,8 @@ test('add a job and do a complete correct workflow', async (t) => {
 
     t.is(await contract.view('get_job_status', { id: jid }), 'executed');
 
+    t.is((await contract.view('get_jobs_stats') as any)['executed'], 1);
+
     // TODO: bob should have INIT + reward - reward/10
     // t.is((await alice.balance()).total, alice_initial_balance.total.sub(NEAR.parse('1N').sub(NEAR.parse('0.001 N'))));
 
