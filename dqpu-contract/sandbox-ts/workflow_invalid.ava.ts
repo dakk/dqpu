@@ -14,8 +14,8 @@
 
 import { NEAR } from 'near-workspaces';
 import { setDefaultResultOrder } from 'dns'; setDefaultResultOrder('ipv4first'); // temp fix for node >v17
-import { Job } from '../src/model.ts';
-import { createTestObject } from './factory.ts';
+import { Job } from '../src/model';
+import { createTestObject } from './factory';
 
 // Global context
 const test = createTestObject();
