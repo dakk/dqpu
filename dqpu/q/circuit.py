@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import openqasm3
+from openqasm3 import ast as oast
+
 from .gate import Gate
+from .gates import Gates
 
 
 # Abstract class representing a circuit; it doesn't hold a quantum state
@@ -77,6 +81,69 @@ class Circuit:
         ax.margins(0.0010)
         plt.axis("off")
         plt.show()
+
+    def fromQasmCircuit(qasm_data):  # noqa: C901
+        def qubit_to_i(q):
+            if not isinstance(q, oast.IndexedIdentifier):
+                raise Exception("only indexed identifier allowed")
+            if len(q.indices) != 1:
+                raise Exception("only indexed identifier with 1 elemtn allowed")
+            return q.indices[0][0].value
+
+        qa = openqasm3.parser.parse(qasm_data)
+
+        n_q = None
+        n_c = None
+        gates = []
+        end = False
+
+        for s in qa.statements:
+            if end:
+                raise Exception("Last statement should me a measurement")
+
+            if isinstance(s, oast.QubitDeclaration):
+                if n_q is not None:
+                    raise Exception("Only one qubit register is allowed")
+                n_q = s.size.value
+            elif isinstance(s, oast.ClassicalDeclaration):
+                if n_c is not None:
+                    raise Exception("Only one classical register is allowed")
+                n_c = s.type.size.value
+            elif isinstance(s, oast.QuantumGate):
+                p = list(map(qubit_to_i, s.qubits))
+                gn = s.name.name.upper()
+                if not hasattr(Gates, gn):
+                    raise Exception(f"Unknown gate {gn}")
+
+                g = getattr(Gates, gn)
+                gates.append((g, p))
+            elif isinstance(s, oast.QuantumMeasurementStatement):
+                end = True
+            elif isinstance(s, oast.Include):
+                pass
+            else:
+                raise Exception(f"Unhandled {s}")
+
+        qc = Circuit(n_q, n_c)
+        qc.gates = gates
+        return qc
+
+    def toQasmCircuit(self):
+        qasm = "OPENQASM 2.0;\n"
+        qasm += 'include "qelib1.inc";\n'
+        qasm += "qreg q[" + str(self.n_qbits) + "];\n"
+        qasm += "creg c[" + str(self.n_qbits) + "];\n"
+
+        for x in self.gates:
+            # TODO: handle parameters
+            a, p = x
+
+            qbs = ", ".join(map(lambda g: "q[" + str(g) + "]", p))
+            qasm += f"{a.iden.lower()} {qbs};\n"
+
+        qasm += "measure q -> c;"
+
+        return qasm
 
     def toQiskitCircuit(self):  # noqa: C901
         from qiskit import QuantumCircuit

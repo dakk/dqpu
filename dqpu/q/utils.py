@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -71,6 +70,8 @@ def print_output(nq, out):
 
 
 def plot_output(nq, out):
+    import matplotlib.pyplot as plt
+
     nq = int(np.log2(out.shape[0]))
     fig, ax = plt.subplots(1, 1)
     ax.bar(range(2**nq), basis_state_probs(out))
@@ -81,11 +82,3 @@ def plot_output(nq, out):
     ax.set_ylabel(r"$P(S_c)$")
     ax.set_xlabel(r"$S_c$")
     plt.show()
-
-
-def plot_circuit(c):
-    pass
-
-
-def random_circuit(qbn, depth):
-    pass

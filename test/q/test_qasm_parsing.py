@@ -12,10 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import openqasm3
-from openqasm3 import ast, parser, printer
+import unittest
 
-with open("examples/e1.qasm", "r") as f:
-    source = f.read()
-    a = openqasm3.parser.parse(source)
-    print(a)
+from dqpu.q import Circuit
+
+
+class TestQ_Qasm_parsing(unittest.TestCase):
+    def test_1(self):
+        original = (
+            "OPENQASM 2.0;\n"
+            'include "qelib1.inc";\n'
+            "qreg q[2];\n"
+            "creg c[2];\n"
+            "h q[0];\n"
+            "cx q[0], q[1];\n"
+            "measure q -> c;"
+        )
+
+        qc = Circuit.fromQasmCircuit(original)
+        qc_a = qc.toQasmCircuit()
+        self.assertEqual(original, qc_a)

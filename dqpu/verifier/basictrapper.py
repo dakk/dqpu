@@ -23,7 +23,7 @@ from .trapper import TrapInfo, Trapper
 # TODO: make it base for other strategies, or move helpers to Trapper
 class BasicTrapInfo(TrapInfo):
     def __init__(self, q_idx, val, prob=1.0):
-        super().__init__('basic', q_idx)
+        super().__init__("basic", q_idx)
         self.value_expected = val
         self.probability = prob
 
