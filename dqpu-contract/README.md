@@ -56,11 +56,19 @@ and then use the logged account to sign the transaction: `--accountId <another-a
 
 #### Add a job
 
-```near call dqpu_4.testnet submit_job '{"qubits":2,"depth":2,"shots":128,"job_file": "ttt"}' --accountId dqpu_owner.testnet --deposit 1```
+```bash
+near call dqpu_4.testnet submit_job '{"qubits":2,"depth":2,"shots":128,"job_file": "ttt"}' --accountId dqpu_owner.testnet --deposit 1
+```
 
 
 ### 5. Delete a contract
 
-```
+```bash
 near delete dqpu_VERSION.testnet dqpu_owner.testnet
 ```
+
+
+## Future Ideas
+
+- Introduce an incentivized system for creating quantum datasets
+- Add a "increase_job_reward" call

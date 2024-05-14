@@ -85,7 +85,7 @@ class DQPU {
 
     // Called by validators, set the validity of a pending-validation job
     @call({})
-    set_job_validity({ id, valid }: { id: string, valid: boolean }) {
+    set_job_validity({ id, valid, trapped_file = null }: { id: string, valid: boolean, trapped_file: string }) {
         assert(this.verifiers.get(near.predecessorAccountId()) != null, 'Only a verifier can set job validity');
 
         // Set job validity
@@ -95,9 +95,10 @@ class DQPU {
 
         j.verifier_id = near.predecessorAccountId();
 
-        if (valid)
+        if (valid) {
+            j.job_file = trapped_file;
             j.status = 'waiting';
-        else {
+        } else {
             j.status = 'invalid';
 
             // Send the reward back to the client
@@ -115,8 +116,10 @@ class DQPU {
 
         let deposit: bigint = near.attachedDeposit() as bigint;
 
-        assert(deposit >= (j.reward_amount / BigInt(10)), `Deposit should be greater than ${j.reward_amount / BigInt(10)}`);
         assert(j.status == 'waiting', `Job ${id} is not in 'waiting' state`);
+        assert(deposit >= (j.reward_amount / BigInt(10)), `Deposit should be greater than ${j.reward_amount / BigInt(10)}`);
+        assert(j.owner_id != near.predecessorAccountId(), `Job owner and Verifier can't be the same account`);
+        assert(j.verifier_id != near.predecessorAccountId(), `Sampler and Verifier can't be the same account`);
 
         j.result_file = result_file;
         j.status = 'validating-result';

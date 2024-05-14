@@ -43,7 +43,7 @@ test('add a job and do a complete correct workflow', async (t) => {
     t.is(await contract.view('get_job_status', { id: jid }), 'pending-validation');
 
     await owner.call(contract, 'set_job_validity', {
-        id: jid, valid: true
+        id: jid, valid: true, trapped_file: 'ta12bff'
     });
 
     // t.is((await alice.balance()).total, alice_initial_balance.total);
