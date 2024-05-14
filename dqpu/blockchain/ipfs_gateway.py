@@ -51,7 +51,6 @@ class IPFSGateway:
 
         if response.status_code == 200:
             ipfs_hash = response.text
-            print(ipfs_hash)
             return json.loads(ipfs_hash)["Hash"]
         else:
             print(f"Error adding file to IPFS: {response.text}")

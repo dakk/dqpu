@@ -82,7 +82,8 @@ class Circuit:
         plt.axis("off")
         plt.show()
 
-    def fromQasmCircuit(qasm_data):  # noqa: C901
+    @staticmethod
+    def fromQasmCircuit(qasm_data: str):  # noqa: C901
         def qubit_to_i(q):
             if not isinstance(q, oast.IndexedIdentifier):
                 raise Exception("only indexed identifier allowed")

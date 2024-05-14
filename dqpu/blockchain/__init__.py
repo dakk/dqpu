@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .ipfs_gateway import IPFSGateway, start_ipfs_daemon, stop_ipfs_daemon  # noqa: F401
 from .near import NearBlockchain  # noqa: F401
