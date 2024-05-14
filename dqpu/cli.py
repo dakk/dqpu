@@ -44,7 +44,7 @@ def default_parser():
     return parser
 
 
-def cli():
+def cli():  # noqa: C901
     parser = default_parser()
 
     parser.add_argument("action", help="action to run", choices=ACTIONS)
@@ -65,9 +65,9 @@ def cli():
         default=0.001,
     )
 
-    group_remove = parser.add_argument_group("remove")
+    # group_remove = parser.add_argument_group("remove")
 
-    group_job_validity = parser.add_argument_group("set-job-validity")
+    # group_job_validity = parser.add_argument_group("set-job-validity")
 
     group_submit_result = parser.add_argument_group("submit-result")
     group_submit_result.add_argument(
@@ -104,7 +104,7 @@ def cli():
         # Upload job_file
         job_file = ipfs.upload(args.file)
 
-        # print(nb.submit_job(qubits, depth, args.shots, job_file, args.reward))
+        print(nb.submit_job(qubits, depth, args.shots, job_file, args.reward))
         print(nb.get_latest_jobs()[0]["id"])
 
     elif args.action == "submit-random":

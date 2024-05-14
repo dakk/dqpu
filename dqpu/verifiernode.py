@@ -14,7 +14,7 @@
 
 import time
 
-from .blockchain import NearBlockchain
+from .blockchain import IPFSGateway, NearBlockchain
 from .cli import default_parser
 
 
@@ -23,12 +23,31 @@ def verifier_node():
     args = parser.parse_args()  # noqa: F841
 
     nb = NearBlockchain(args.account, args.network)
+    ipfs = IPFSGateway()  # noqa: F841
 
     # Start contract polling for new jobs
     running = True
+    current_limit = 256
 
     while running:
-        print(nb.get_latest_jobs())
-        time.sleep(4)
+        latest_jobs = nb.get_latest_jobs(limit=current_limit)
 
         # If there is a new job that needs validation, process it
+        for j in latest_jobs:
+            if j["status"] == "pending-validation":
+                print(
+                    f"Processing pending-validation job {j['id']} from {j['owner_id']}"
+                )
+                jf = ipfs.get(j["job_file"])
+                print(jf)
+            elif (
+                j["status"] == "validating-result"
+                and j["verifier_id"] == nb.account.account_id
+            ):
+                print(
+                    f"Processing validating-result job {j['id']} from {j['owner_id']} "
+                    + f"sampled by {j['sampler_id']}"
+                )
+
+        current_limit = 48
+        time.sleep(32)

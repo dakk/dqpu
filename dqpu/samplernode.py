@@ -14,7 +14,7 @@
 
 import time
 
-from .blockchain import NearBlockchain
+from .blockchain import IPFSGateway, NearBlockchain
 from .cli import default_parser
 
 
@@ -23,6 +23,7 @@ def sampler_node():
     args = parser.parse_args()  # noqa: F841
 
     nb = NearBlockchain(args.account, args.network)
+    ipfs = IPFSGateway()  # noqa: F841
 
     # Start contract polling for new jobs
     running = True
