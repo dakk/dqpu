@@ -62,12 +62,7 @@ setup(
     setup_requires="setuptools",
     author_email="gessadavide@gmail.com",
     license="Apache 2.0",
-    packages=[
-        "dqpu",
-        "dqpu.q",
-        "dqpu.sampler",
-        "dqpu.verifier",
-    ],
+    packages=["dqpu", "dqpu.q", "dqpu.sampler", "dqpu.verifier", "dqpu.blockchain"],
     zip_safe=False,
     install_requires=open("requirements.txt", "r").read().split("\n"),
     extras_require={},

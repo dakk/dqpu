@@ -124,7 +124,7 @@ $ dpqu-cli get-result -i JOBID
 ```
 
 ```bash
-$ dpqu-cli set-validity -i JOBID BOOL
+$ dpqu-cli set-validity -i JOBID BOOL TRAPPED_CIRCUIT
 ```
 
 ```bash
