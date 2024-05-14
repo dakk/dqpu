@@ -34,12 +34,11 @@ const app = Vue.createApp({
         console.log('APP mounted');
 
         console.log('Updating data...');
-        this.jobs = await viewMethod('get_jobs');
-
         this.n_jobs = await viewMethod('get_number_of_jobs');
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
         this.amount_handled = await viewMethod('get_handled_amount');
         this.job_stats = await viewMethod('get_jobs_stats');
+        this.jobs = await viewMethod('get_latest_jobs');
         console.log('Updated.');
     },
     methods: {

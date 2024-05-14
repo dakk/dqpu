@@ -167,6 +167,22 @@ class DQPU {
 
     // Get latest quantum job list
     @view({})
+    get_latest_jobs({ limit = 50 }: { limit: number }): Job[] {
+        const ret: Job[] = [];
+        const start = this.jobs.length - limit ? this.jobs.length > limit : 0;
+
+        for (const id of this.jobs.keys({ start: start, limit: this.jobs.length })) {
+            const j: Job = this.jobs.get(id);
+            if (j)
+                ret.push(j);
+        }
+
+        return ret.reverse();
+    }
+
+
+    // Get job list
+    @view({})
     get_jobs({ from_index = 0, limit = 50 }: { from_index: number, limit: number }): Job[] {
         const ret: Job[] = [];
 
@@ -176,7 +192,7 @@ class DQPU {
                 ret.push(j);
         }
 
-        return ret
+        return ret;
     }
 
     // Get a single quantum job by its id
@@ -198,7 +214,7 @@ class DQPU {
     }
 
     @view({})
-    get_jobs_stats({ from_index = 0, limit = 1000 }: { from_index: number, limit: number }) {
+    get_jobs_stats({ limit = 1000 }: { limit: number }) {
         const st = { 
             'pending-validation': 0,
             'waiting': 0,
@@ -206,8 +222,9 @@ class DQPU {
             'executed': 0,
             'invalid': 0
         };
+        const start = this.jobs.length - limit ? this.jobs.length > limit : 0;
 
-        for (const id of this.jobs.keys({ start: from_index, limit })) {
+        for (const id of this.jobs.keys({ start: start, limit: this.jobs.length })) {
             const j: Job = this.jobs.get(id);
             
             if (!j)

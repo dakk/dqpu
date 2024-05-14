@@ -21,7 +21,8 @@ from py_near.account import Account
 
 from .blockchain import Blockchain
 
-# export type JobStatus = 'pending-validation' | 'waiting' | 'validating-result' | 'executed' | 'invalid';
+# export type JobStatus = 'pending-validation' | 'waiting' | 'validating-result'
+# | 'executed' | 'invalid';
 
 # class Job:
 #     id: string
@@ -42,7 +43,7 @@ from .blockchain import Blockchain
 
 
 def to_near(v):
-    return str(v * 1000000000000000000000000)
+    return int(v * 1000000000000000000000000)
 
 
 class NearBlockchain(Blockchain):
@@ -85,7 +86,8 @@ class NearBlockchain(Blockchain):
                 amount=to_near(amount),
             )
 
-        return asyncio.run(v()).result
+        r = asyncio.run(v())
+        return r.transaction.hash
 
     # Submit a new quantum job
     def submit_job(self, qubits, depth, shots, job_file, reward):
@@ -118,6 +120,9 @@ class NearBlockchain(Blockchain):
         return self.call("set_result_validity", {"id": id, "valid": valid})
 
     # Get latest quantum job list
+    def get_latest_jobs(self,limit=50):
+        return self.view("get_latest_jobs", {"limit": limit})
+    
     def get_jobs(self, index=0, limit=50):
         return self.view("get_jobs", {"from_index": index, "limit": limit})
 
@@ -142,8 +147,8 @@ class NearBlockchain(Blockchain):
     def clear_jobs(self):
         return self.call("clear_jobs", {})
 
-    def get_jobs_stats(self, index=0, limit=1000):
-        return self.view("get_jobs_stats", {"from_index": index, "limit": limit})
+    def get_jobs_stats(self, limit=1000):
+        return self.view("get_jobs_stats", {"limit": limit})
 
     # Add a verifier
     def add_verifier(self, account):

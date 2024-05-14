@@ -177,12 +177,12 @@
                         </template>
 
                         <template v-slot:item.result_file="{ item }">
-                            <a v-if="item.result_file">
+                            <a :href="'http://localhost:8080/ipfs/' + item.result_file" target="_blank" v-if="item.result_file">
                                 <v-icon icon="fa fa-file"></v-icon>
                             </a>
                         </template>
                         <template v-slot:item.job_file="{ item }">
-                            <a v-if="item.job_file">
+                            <a :href="'http://localhost:8080/ipfs/' + item.job_file" target="_blank" v-if="item.job_file">
                                 <v-icon icon="fa fa-file"></v-icon>
                             </a>
                         </template>
