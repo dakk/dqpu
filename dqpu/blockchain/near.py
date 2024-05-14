@@ -87,6 +87,9 @@ class NearBlockchain(Blockchain):
             )
 
         r = asyncio.run(v())
+
+        if "Failure" in r.status:
+            raise Exception(r.status["Failure"])
         return r.transaction.hash
 
     # Submit a new quantum job
@@ -120,9 +123,9 @@ class NearBlockchain(Blockchain):
         return self.call("set_result_validity", {"id": id, "valid": valid})
 
     # Get latest quantum job list
-    def get_latest_jobs(self,limit=50):
+    def get_latest_jobs(self, limit=50):
         return self.view("get_latest_jobs", {"limit": limit})
-    
+
     def get_jobs(self, index=0, limit=50):
         return self.view("get_jobs", {"from_index": index, "limit": limit})
 

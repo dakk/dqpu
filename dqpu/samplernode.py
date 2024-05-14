@@ -12,12 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
+import time
+
+from .blockchain import NearBlockchain
+from .cli import default_parser
 
 
 def sampler_node():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--verbosity", help="increase output verbosity")
+    parser = default_parser()
     args = parser.parse_args()  # noqa: F841
 
+    nb = NearBlockchain(args.account, args.network)
+
     # Start contract polling for new jobs
+    running = True
+
+    while running:
+        print(nb.get_latest_jobs())
+        time.sleep(4)

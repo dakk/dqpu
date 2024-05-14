@@ -39,6 +39,9 @@ If the trap verification fails, the job returns in 'waiting' state (and the *Ver
 
 ```python setup.py install```
 
+Install IPFS:
+- https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
+
 ## Usage: running a sampling job
 
 The workflow described before is hidden to the final user: DQPU can be used seamleassy as any other quantum backend as any other quantum sampler. Currently DQPU implements a **qiskit** wrapper, a low level library for accessing the system primitives and a cli tool.
@@ -92,12 +95,12 @@ Generic params:
 Commands:
 
 ```bash
-$ dpqu-cli submit test.qasm --reward 0.01 --shots 1024
+$ dqpu-cli -a dqpu_alice.testnet submit --file ~/test.qasm --shots 1024 --reward 0.0001
 JOBID
 ```
 
 ```bash
-$ dpqu-cli submit-result -i JOBID result.json --deposit 0.001
+$ dpqu-cli -a dqpu_bob.testnet submit-result -i 8 -rf ~/test.qasm
 ```
 
 ```bash
@@ -124,11 +127,11 @@ $ dpqu-cli get-result -i JOBID
 ```
 
 ```bash
-$ dpqu-cli set-validity -i JOBID BOOL TRAPPED_CIRCUIT
+$ dpqu-cli -a dqpu_owner.testnet set-validity -i 9 -v false
 ```
 
 ```bash
-$ dpqu-cli set-result-validity -i JOBID BOOL
+$ dpqu-cli -a dqpu_owner.testnet set-result-validity -i 8 -v true
 ```
 
 

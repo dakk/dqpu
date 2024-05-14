@@ -18,7 +18,7 @@ from .blockchain import NearBlockchain
 from .cli import default_parser
 
 
-def verifier_node():
+def random_job_node():
     parser = default_parser()
     args = parser.parse_args()  # noqa: F841
 
@@ -30,5 +30,3 @@ def verifier_node():
     while running:
         print(nb.get_latest_jobs())
         time.sleep(4)
-
-        # If there is a new job that needs validation, process it

@@ -71,6 +71,7 @@ setup(
             "dqpu-sim_trap_test_main = dqpu.sim_trap_test_main:main",
             "dqpu-verifier = dqpu.verifiernode:verifier_node",
             "dqpu-sampler = dqpu.samplernode:sampler_node",
+            "dqpu-random-job = dqpu.randomjobnode:random_job_node",
             "dqpu-cli = dqpu.cli:cli",
         ],
     },
