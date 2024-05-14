@@ -18,7 +18,8 @@ from ..q import Circuit, ExperimentResult
 
 
 class TrapInfo:
-    def __init__(self, q_idx):
+    def __init__(self, trap_method, q_idx):
+        self.trap_method = trap_method
         self.qubit = q_idx
 
 

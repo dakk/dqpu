@@ -23,14 +23,14 @@ from .trapper import TrapInfo, Trapper
 # TODO: make it base for other strategies, or move helpers to Trapper
 class BasicTrapInfo(TrapInfo):
     def __init__(self, q_idx, val, prob=1.0):
-        super().__init__(q_idx)
+        super().__init__('basic', q_idx)
         self.value_expected = val
         self.probability = prob
 
     def __repr__(self):
         return (
             f"qubit {self.qubit} expect to have value {self.value_expected} "
-            f"with probability {self.probability}"
+            f"with probability {self.probability} trapped with {self.trap_method}"
         )
 
 
