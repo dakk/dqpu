@@ -5,3 +5,4 @@ qiskit
 qiskit_aer
 py-near
 requests
+openqasm3[parser]
