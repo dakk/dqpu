@@ -20,7 +20,17 @@
                     blockchain.</v-card-subtitle>
                 <v-card-text>
                     <div class="d-flex justify-space">
-                        <v-card class="mx-1" outlined elevated>
+                        <v-card class="mx-1" flat>
+                            <v-card-text>
+                                <div class="d-flex align-center">
+                                    <v-icon class="mr-3">fas fa-wallet</v-icon>
+                                    <div class="font-weight-bold display-1">{{ (amount_handled
+                                        /1000000000000000000000000).toFixed(4) }} N</div>
+                                    <div class="text-caption ml-3">Amount Handled</div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                        <v-card class="mx-1" flat>
                             <v-card-text>
                                 <div class="d-flex align-center">
                                     <v-icon class="mr-3">fas fa-tasks</v-icon>
@@ -29,7 +39,7 @@
                                 </div>
                             </v-card-text>
                         </v-card>
-                        <v-card class="mx-1" outlined elevated>
+                        <v-card class="mx-1" flat>
                             <v-card-text>
                                 <div class="d-flex align-center">
                                     <v-icon class="mr-3">fas fa-user-check</v-icon>
@@ -38,8 +48,20 @@
                                 </div>
                             </v-card-text>
                         </v-card>
+                        <v-card class="mx-1" flat>
+                            <v-card-text>
+                                <div class="d-flex align-center">
+                                    <v-icon class="mr-3">fas fa-money-check</v-icon>
+                                    <div class="font-weight-bold display-1">{{((amount_handled/n_jobs)
+                                        /1000000000000000000000000).toFixed(4)}} N</div>
+                                    <div class="text-caption ml-3">Average Job Price</div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                    </div>
 
-                        <v-card class="mx-1" outlined elevated>
+                    <div class="d-flex justify-space">
+                        <v-card class="mx-1" flat>
                             <v-card-text>
                                 <div class="d-flex align-center">
                                     <v-icon class="mr-3" :color="statusIcon('pending-validation').color"
@@ -50,7 +72,7 @@
                             </v-card-text>
                         </v-card>
 
-                        <v-card class="mx-1" outlined elevated>
+                        <v-card class="mx-1" flat>
                             <v-card-text>
                                 <div class="d-flex align-center">
 
@@ -62,7 +84,7 @@
                             </v-card-text>
                         </v-card>
 
-                        <v-card class="mx-1" outlined elevated>
+                        <v-card class="mx-1" flat>
                             <v-card-text>
                                 <div class="d-flex align-center">
 
@@ -76,7 +98,7 @@
 
 
 
-                        <v-card class="mx-1" outlined elevated>
+                        <v-card class="mx-1" flat>
                             <v-card-text>
                                 <div class="d-flex align-center">
                                     <v-icon class="mr-3" :color="statusIcon('executed').color"
@@ -87,7 +109,7 @@
                             </v-card-text>
                         </v-card>
 
-                        <v-card class="mx-1" outlined elevated>
+                        <v-card class="mx-1" flat>
                             <v-card-text>
                                 <div class="d-flex align-center">
 
@@ -141,15 +163,17 @@
                         </template>
 
                         <template v-slot:item.verifier_id="{ item }">
-                            <a v-if="item.verifier_id" :href="'https://testnet.nearblocks.io/address/' + item.verifier_id" target="_blank">
-                            <v-icon icon="fa fa-user"></v-icon>
-                        </a>
+                            <a v-if="item.verifier_id"
+                                :href="'https://testnet.nearblocks.io/address/' + item.verifier_id" target="_blank">
+                                <v-icon icon="fa fa-user"></v-icon>
+                            </a>
                         </template>
 
                         <template v-slot:item.sampler_id="{ item }">
-                            <a v-if="item.sampler_id" :href="'https://testnet.nearblocks.io/address/' + item.sampler_id" target="_blank">
-                            <v-icon icon="fa fa-user"></v-icon>
-                        </a>
+                            <a v-if="item.sampler_id" :href="'https://testnet.nearblocks.io/address/' + item.sampler_id"
+                                target="_blank">
+                                <v-icon icon="fa fa-user"></v-icon>
+                            </a>
                         </template>
 
                         <template v-slot:item.result_file="{ item }">

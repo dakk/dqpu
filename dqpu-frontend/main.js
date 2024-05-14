@@ -25,18 +25,22 @@ const app = Vue.createApp({
             jobs: [],
             job_stats: {},
             n_verifiers: 0,
-            n_jobs: 0
+            n_jobs: 0,
+            amount_handled: 0
 
         };
     },
     async mounted() {
         console.log('APP mounted');
 
+        console.log('Updating data...');
         this.jobs = await viewMethod('get_jobs');
 
         this.n_jobs = await viewMethod('get_number_of_jobs');
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
+        this.amount_handled = await viewMethod('get_handled_amount');
         this.job_stats = await viewMethod('get_jobs_stats');
+        console.log('Updated.');
     },
     methods: {
         statusIcon(status) {

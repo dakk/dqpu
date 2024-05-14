@@ -21,7 +21,7 @@ The following process outlines how clients can submit quantum circuits for sampl
 
 1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract. The circuit data is uploaded to a distributed file storage system like IPFS. The smart contract adds the job to a queue in a 'pending-validation' state with the associated reward.
 
-2. **Verifier Validates Circuit**: A *Verifier*[^1] validates the submitted circuit. This might involve checks for syntax errors or ensuring the circuit is within allowed parameters. The verifier also adds special verification elements (traps) into the circuit. Once validated, the job moves to a 'waiting' state, becomes 'invalid' otherwise.
+2. **Verifier Validates Circuit**: A *Verifier*[^1] validates the submitted circuit. This might involve checks for syntax errors or ensuring the circuit is within allowed parameters. The verifier also adds special verification elements (traps) into the circuit and add the new circuit to the contract[^2]. Once validated, the job moves to a 'waiting' state, becomes 'invalid' otherwise.
 
 3. **Simulation or Hardware Execution**: A *Sampler* retrieves a job from the waiting list. It then either simulates the circuit on a software program or executes it on real quantum hardware, depending on the job requirements and available resources. The simulation or execution result is submitted back to the smart contract with a cautional deposit (a percentage of the reward). The job status changes to 'validating'.
 
@@ -31,6 +31,8 @@ If the trap verification fails, the job returns in 'waiting' state (and the *Ver
 5. **Client Receives Result**: Once the job is marked as 'executed', the *Client* can retrieve the final result from the smart contract.
 
 [^1]: In this first version of the contract, *Verifiers* are trusted entities designated by the smart contract creator.
+[^2]: This step will become private in future versions of the protocol.
+[^3]: In the next version of the protocol, the client will also add its trap in order to check *verifier*'s loyalty.
 
 
 ## Installation
@@ -83,22 +85,50 @@ from dqpu import *
 
 ### Cli tool usage
 
+Generic params:
+- ```-n/--network`: Default: near-testnet
+- ```-a/--account`: Account name / uri
+
+Commands:
+
 ```bash
 $ dpqu-cli submit test.qasm --reward 0.01 --shots 1024
 JOBID
+```
 
-$ dpqu-cli info JOBID
+```bash
+$ dpqu-cli submit-result -i JOBID result.json --deposit 0.001
+```
+
+```bash
+$ dpqu-cli remove -i JOBID
+```
+
+```bash
+$ dpqu-cli info -i JOBID
 Job: JOBID
 Status: WAITING
 Qubits: 4
-depth: 9
+Depth: 9
 Circuit uri: ipfs://.../test.qasm
+```
 
-$ dpqu-cli status JOBID
+```bash
+$ dpqu-cli status -i JOBID
 EXECUTED
+```
 
-$ dpqu-cli get-result JOBID
+```bash
+$ dpqu-cli get-result -i JOBID
 { "0010": 1024 }
+```
+
+```bash
+$ dpqu-cli set-validity -i JOBID BOOL
+```
+
+```bash
+$ dpqu-cli set-result-validity -i JOBID BOOL
 ```
 
 
