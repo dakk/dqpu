@@ -20,7 +20,7 @@ jobs:
           python setup.py install
       - name: Sphinx build
         run: |
-          cp dqpu-frontend docs/source/_ui
+          cp -r dqpu-frontend docs/source/_ui
           sphinx-build docs/source _build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
