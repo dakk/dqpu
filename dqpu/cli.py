@@ -63,6 +63,7 @@ def cli():  # noqa: C901
     parser.add_argument("-i", "--id", help="identifier of job")
     parser.add_argument("-v", "--validity", help="validity status", type=str)
     parser.add_argument("-vv", "--verifier", help="verifier account", type=str)
+    parser.add_argument("-mq", "--max-qubits", help="max qubits for the random submit", type=int, default=21)
 
     group_submit = parser.add_argument_group("submit")
     group_submit.add_argument("-f", "--file", help="openqasm2 file to submit")
@@ -121,7 +122,7 @@ def cli():  # noqa: C901
         print(nb.get_latest_jobs()[0]["id"])
 
     elif args.action == "submit-random":
-        nq = random.randint(4, 21)
+        nq = random.randint(4, int(args.max_qubits))
         dpt = random.randint(5, 300)
 
         print(f"Creating a random circuit of {nq} qubits (depth {dpt})...")
