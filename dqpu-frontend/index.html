@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Computing Tasks</title>
+    <title>DQPU - Near Smart Contract Interface</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.6.4/dist/vuetify.min.css">
     <style>
@@ -224,6 +224,10 @@
                                 <template v-slot:header.sampler_id>Sampler</template>
                                 <template v-slot:header.max_qubits>Max Qubits</template>
 
+                                <template v-slot:item.reward="{ item }">
+                                    {{(item.reward/1000000000000000000000000).toFixed(4)}}
+                                </template>
+
                                 <template v-slot:item.sampler_id="{ item }">
                                     <a v-if="item.sampler_id"
                                         :href="'https://testnet.nearblocks.io/address/' + item.sampler_id"
@@ -239,6 +243,10 @@
                             <v-data-table :items="verifiers">
                                 <template v-slot:header.verifier_id>Verifier</template>
                                 
+                                <template v-slot:item.reward="{ item }">
+                                    {{(item.reward/1000000000000000000000000).toFixed(5)}}
+                                </template>
+
                                 <template v-slot:item.verifier_id="{ item }">
                                     <a v-if="item.verifier_id"
                                         :href="'https://testnet.nearblocks.io/address/' + item.verifier_id"

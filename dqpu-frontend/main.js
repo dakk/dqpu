@@ -34,7 +34,7 @@ const app = Vue.createApp({
             amount_handled: 0,
             verifiers: [],
             samplers: [],
-            max_qubits: [[0,0]]
+            max_qubits: [[0, 0]]
         };
     },
     async mounted() {
@@ -45,39 +45,56 @@ const app = Vue.createApp({
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
         this.amount_handled = await viewMethod('get_handled_amount');
         this.job_stats = await viewMethod('get_jobs_stats');
-        this.jobs = await viewMethod('get_latest_jobs', {limit:1000});
+        this.jobs = await viewMethod('get_latest_jobs', { limit: 1000 });
 
         const samplers = {};
         const verifiers = {};
         const max_qubits = {};
 
         this.jobs.forEach(element => {
-            if (! (element.sampler_id in samplers))
-                samplers[element.sampler_id] = 0
-            samplers[element.sampler_id] += 1
+            if (element.sampler_id != '') {
+                if (!(element.sampler_id in samplers))
+                    samplers[element.sampler_id] = {
+                        sampler_id: element.sampler_id,
+                        max_qubits: 0,
+                        jobs: 0,
+                        reward: 0
+                    }
 
-            if (! (element.sampler_id in max_qubits))
-                max_qubits[element.sampler_id] = element.qubits;
-            max_qubits[element.sampler_id] = max(element.qubits, max_qubits[element.sampler_id]);
+                samplers[element.sampler_id].jobs += 1;
+                samplers[element.sampler_id].reward += parseInt(element.reward_amount);
+                samplers[element.sampler_id].max_qubits = max(element.qubits, samplers[element.sampler_id].max_qubits);
+            }
 
-            if (! (element.verifier_id in verifiers))
-                verifiers[element.verifier_id] = 0
-            verifiers[element.verifier_id] += 1
+            if (element.sampler_id != '') {
+                if (!(element.sampler_id in max_qubits))
+                    max_qubits[element.sampler_id] = element.qubits;
+                max_qubits[element.sampler_id] = max(element.qubits, max_qubits[element.sampler_id]);
+            }
+
+            if (element.verifier_id != '') {
+                if (!(element.verifier_id in verifiers))
+                    verifiers[element.verifier_id] = {
+                        verifier_id: element.verifier_id,
+                        jobs: 0,
+                        reward: 0
+                    }
+
+                verifiers[element.verifier_id].jobs += 1
+                verifiers[element.verifier_id].reward += parseInt(element.reward_amount) / 10;
+            }
         });
 
-        this.verifiers = Object.entries(verifiers).sort((a, b) => { return b[1] - a[1]; });
-        this.samplers = Object.entries(samplers).sort((a, b) => { return b[1] - a[1]; });
+        this.verifiers = Object.entries(verifiers).map(a => { return a[1]; }).sort((a, b) => { return b[1] - a[1]; });
+        this.samplers = Object.entries(samplers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
         this.max_qubits = Object.entries(max_qubits).sort((a, b) => { return b[1] - a[1]; });
 
-        this.samplers = this.samplers.map(function(a) {
-            return { sampler_id: a[0], jobs: a[1], max_qubits: max_qubits[a[0]] }
-        });
-
-        this.verifiers = this.verifiers.map(function(a) {
-            return { verifier_id: a[0], jobs: a[1] }
-        });
+        // this.samplers = this.samplers.map(function(a) {
+        //     return { sampler_id: a[0], jobs: a[1], max_qubits: max_qubits[a[0]] }
+        // });
 
         // console.log(this.verifiers, this.samplers, this.max_qubits)
+
 
         console.log('Updated.');
     },
