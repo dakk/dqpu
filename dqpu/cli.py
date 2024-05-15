@@ -121,7 +121,7 @@ def cli():  # noqa: C901
 
     elif args.action == "submit-random":
         nq = random.randint(4, 21)
-        dpt = random.randint(1, 200)
+        dpt = random.randint(5, 300)
 
         print(f"Creating a random circuit of {nq} qubits (depth {dpt})...")
 
