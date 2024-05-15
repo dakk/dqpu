@@ -182,7 +182,7 @@ class NearBlockchain(Blockchain):
     def is_a_verifier(self, account):
         return self.view("is_a_verifier", {"account": account})
     
-    def get_verifiers(self, account):
+    def get_verifiers(self):
         return self.view("get_verifiers", {})
 
     # Change contract owner
