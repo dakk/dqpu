@@ -85,7 +85,7 @@ const app = Vue.createApp({
             }
         });
 
-        this.verifiers = Object.entries(verifiers).map(a => { return a[1]; }).sort((a, b) => { return b[1] - a[1]; });
+        this.verifiers = Object.entries(verifiers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
         this.samplers = Object.entries(samplers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
         this.max_qubits = Object.entries(max_qubits).sort((a, b) => { return b[1] - a[1]; });
 
