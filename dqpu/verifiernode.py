@@ -24,7 +24,7 @@ from .utils import create_dqpu_dirs
 from .verifier import BasicTrapper  # BasicTrapInfo,
 
 
-def verifier_node():
+def verifier_node(): # noqa: C901
     parser = default_parser()
     args = parser.parse_args()  # noqa: F841
 
@@ -83,7 +83,7 @@ def verifier_node():
                     print("\t", nb.set_job_validity(j["id"], True, jf_trapped))
                     n_verified += 1
                 except Exception as e:
-                    print('\tFailed to set',e)
+                    print("\tFailed to set", e)
 
             elif (
                 j["status"] == "validating-result"
@@ -123,7 +123,7 @@ def verifier_node():
                     print("\t", nb.set_result_validity(j["id"], validity))
                     n_vresult += 1
                 except Exception as e:
-                    print('\tFailed to set',e)
+                    print("\tFailed to set", e)
 
         current_limit = 48
         print(

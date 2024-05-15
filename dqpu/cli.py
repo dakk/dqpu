@@ -43,7 +43,7 @@ ACTIONS = [
     "add-verifier",
     "remove-verifier",
     "is-a-verifier",
-    "verifiers"
+    "verifiers",
 ]
 
 
@@ -64,7 +64,13 @@ def cli():  # noqa: C901
     parser.add_argument("-i", "--id", help="identifier of job")
     parser.add_argument("-v", "--validity", help="validity status", type=str)
     parser.add_argument("-vv", "--verifier", help="verifier account", type=str)
-    parser.add_argument("-mq", "--max-qubits", help="max qubits for the random submit", type=int, default=21)
+    parser.add_argument(
+        "-mq",
+        "--max-qubits",
+        help="max qubits for the random submit",
+        type=int,
+        default=21,
+    )
 
     group_submit = parser.add_argument_group("submit")
     group_submit.add_argument("-f", "--file", help="openqasm2 file to submit")
@@ -198,10 +204,10 @@ def cli():  # noqa: C901
 
     elif args.action == "remove-verifier":
         print(nb.remove_verifier(args.verifier))
-        
+
     elif args.action == "is-a-verifier":
         print(nb.is_a_verifier(args.verifier))
-        
+
     elif args.action == "verifiers":
         print(nb.get_verifiers())
 

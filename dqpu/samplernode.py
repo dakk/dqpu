@@ -98,7 +98,7 @@ def sampler_node():
                     )
                     n_sampled += 1
                 except Exception as e:
-                    print('Failed to submit:', e)
+                    print("Failed to submit:", e)
 
         current_limit = 48
         print(f"Account balance is {nb.balance():0.5f} N, sampled jobs {n_sampled}")
