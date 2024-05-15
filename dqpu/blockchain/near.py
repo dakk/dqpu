@@ -45,8 +45,9 @@ from .blockchain import Blockchain
 def to_near(v):
     return int(v * 1000000000000000000000000)
 
+
 def from_near(v):
-    return int(v) / 1000000000000000000000000.
+    return int(v) / 1000000000000000000000000.0
 
 
 class NearBlockchain(Blockchain):
@@ -64,7 +65,7 @@ class NearBlockchain(Blockchain):
     def balance(self):
         async def v():
             return await self.account.get_balance()
-        
+
         return from_near(asyncio.run(v()))
 
     def loadAccount(self, account: str):
@@ -76,12 +77,12 @@ class NearBlockchain(Blockchain):
 
         with open(fn, "r") as wf:
             w = json.loads(wf.read())
-            
+
             acc = Account(w["account_id"], w["private_key"], self.rpc_addr)
-            
+
             async def v():
                 await acc.startup()
-            
+
             asyncio.run(v())
             return acc
 

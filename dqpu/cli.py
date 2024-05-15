@@ -123,8 +123,8 @@ def cli():  # noqa: C901
         nq = random.randint(1, 21)
         dpt = random.randint(1, 200)
 
-        print(f'Creating a random circuit of {nq} qubits (depth {dpt})...')
-        
+        print(f"Creating a random circuit of {nq} qubits (depth {dpt})...")
+
         qc = Circuit.random(nq, dpt)
         qasm_data = qc.toQasmCircuit()
 
@@ -136,18 +136,18 @@ def cli():  # noqa: C901
         circuit_file = base_dir + f"/cache/random_circuit_{nq}_{dpt}_{dig}.qasm"
         with open(circuit_file, "w") as f:
             f.write(qasm_data)
-            
-        print(f'Submitting...')
+
+        print("Submitting...")
 
         # Upload job_file
         job_file = ipfs.upload(circuit_file)
-        print(f'Circuit file is {job_file}')
+        print(f"Circuit file is {job_file}")
 
         shots = random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384])
         sh_fact = int(round((shots + 1024) / 1024))
         reward = random.randint(1 * nq * sh_fact, 10 * nq * sh_fact) / 30000.0
-        
-        print(f'Submitting with a reward of {reward:.6f} for {shots} shots')
+
+        print(f"Submitting with a reward of {reward:.6f} for {shots} shots")
 
         print(nb.submit_job(nq, dpt, shots, job_file, reward))
         print(nb.get_latest_jobs()[0]["id"])

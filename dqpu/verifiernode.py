@@ -14,8 +14,8 @@
 
 import json
 import pickle
-import time
 import random
+import time
 
 from .blockchain import IPFSGateway, NearBlockchain
 from .cli import default_parser
@@ -36,6 +36,8 @@ def verifier_node():
     # Start contract polling for new jobs
     running = True
     current_limit = 256
+    n_vresult = 0
+    n_verified = 0
 
     print("Verifier node started.")
 
@@ -54,7 +56,7 @@ def verifier_node():
                 try:
                     qc = Circuit.fromQasmCircuit(jf.decode("ascii"))
                 except Exception as e:
-                    print('\t', "Failed to parse", j["id"], e)
+                    print("\t", "Failed to parse", j["id"], e)
                     nb.set_job_validity(j["id"], False)
                     continue
 
@@ -74,10 +76,11 @@ def verifier_node():
 
                 # Upload the file
                 jf_trapped = ipfs.upload(trapped_qasm_file)
-                print('\t', 'Trapped file uploaded', jf_trapped)
+                print("\t", "Trapped file uploaded", jf_trapped)
 
                 # Send the set_validity
-                print('\t', nb.set_job_validity(j["id"], True, jf_trapped))
+                print("\t", nb.set_job_validity(j["id"], True, jf_trapped))
+                n_verified += 1
 
             elif (
                 j["status"] == "validating-result"
@@ -94,16 +97,15 @@ def verifier_node():
                 try:
                     counts = json.loads(rf)
                 except:
-                    print('\t', "Invalid result data")
+                    print("\t", "Invalid result data")
                     continue
-                
+
                 # Check if shots match
                 ctot = sum(counts.values())
                 if j["shots"] > ctot:
-                    print ('\t', "Invalid number of shots")
+                    print("\t", "Invalid number of shots")
                     print(nb.set_result_validity(j["id"], False))
                     continue
-                
 
                 # Load the trap from file
                 with open(f"{base_dir}/{j['id']}_qc_trap.qasm", "rb") as inp:
@@ -114,8 +116,12 @@ def verifier_node():
                 validity = trapper.verify(t, counts)
 
                 # Send the set_result_validity
-                print('\t', nb.set_result_validity(j["id"], validity))
+                print("\t", nb.set_result_validity(j["id"], validity))
+                n_vresult += 1
 
         current_limit = 48
-        print(f'Account balance is {nb.balance():0.5f} N')
+        print(
+            f"Account balance is {nb.balance():0.5f} N, job verified {n_verified}, "
+            + f"result verified {n_vresult}"
+        )
         time.sleep(random.randint(0, 60))

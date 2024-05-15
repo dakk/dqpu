@@ -20,8 +20,8 @@ class Sampler:
         self.circuit = circuit
 
     def sample(self, shots):
-        pass 
-    
+        pass
+
     def compute(self):
-        """ Compute the statevector """
+        """Compute the statevector"""
         pass

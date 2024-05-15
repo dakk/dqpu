@@ -60,7 +60,9 @@ class Circuit:
                         r1 = random.randint(0, n - 1)
                         r2 = random.randint(0, n - 1)
 
-                    qc.apply(random.choice([Gates.CX, Gates.CZ]), (r1, r2)) #Gates.SWAP, 
+                    qc.apply(
+                        random.choice([Gates.CX, Gates.CZ]), (r1, r2)
+                    )  # Gates.SWAP,
 
         if measure:
             for x in range(n):

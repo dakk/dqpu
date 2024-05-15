@@ -16,7 +16,7 @@ import random
 import time
 
 from .q import Circuit, Gates, utils
-from .sampler import DaskSimulator
+from .sampler import DaskSimulatorSampler
 from .verifier import BasicTrapper
 
 
@@ -47,7 +47,7 @@ def main():
     for x in range(n):
         qc.apply(Gates.H, x)
 
-    hs = DaskSimulator(qc)
+    hs = DaskSimulatorSampler(qc)
 
     s = time.time()
     a = hs.compute()
