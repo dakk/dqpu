@@ -171,7 +171,7 @@ to real quantum hardware. DQPU package offer 3 implementation:
 After every sampled job, the node receives the reward.
 
 ```bash
-dqpu-sampler -a verifier_account --min-reward 0.0009 --sampler aersimulator
+dqpu-sampler -a sampler_account --max-deposit 0.1 --sampler aersimulator --max-qubits 21
 ```
 
 

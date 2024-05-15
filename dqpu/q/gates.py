@@ -56,8 +56,8 @@ class Gates:
         "CZ", np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, -1]]), 2
     )
 
-    SW = Gate(
-        "SW", np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]), 2
+    SWAP = Gate(
+        "SWAP", np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]), 2
     )
 
     P0 = I  # Gate('P0', np.array([[1, 0], [0, 0]]))
@@ -72,4 +72,4 @@ class Gates:
         # T,
         H,
     ]
-    Gates2 = [CX, CZ, SW]
+    Gates2 = [CX, CZ, SWAP]

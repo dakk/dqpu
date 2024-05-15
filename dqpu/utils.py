@@ -40,5 +40,10 @@ def create_dqpu_dirs():  # noqa: C901
         os.mkdir(os.path.expanduser("~/.dqpu/sampler"))
     except FileExistsError:
         pass
+    
+    try:
+        os.mkdir(os.path.expanduser("~/.dqpu/sampler/cache"))
+    except FileExistsError:
+        pass
 
     return os.path.expanduser("~/.dqpu/")

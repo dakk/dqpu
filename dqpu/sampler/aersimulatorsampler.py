@@ -12,4 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# from .sampler import Sampler
+from qiskit_aer import AerSimulator
+from qiskit import QuantumCircuit, transpile, qasm2
+
+from ..q import Circuit
+from .sampler import Sampler
+
+
+class AerSimulatorSampler(Sampler):
+    def sample(self, shots):
+        qc = qasm2.loads(self.circuit.decode('ascii')) #.toQasmCircuit())
+        simulator = AerSimulator()
+        circ = transpile(qc, simulator)
+        result = simulator.run(circ, shots=shots).result()
+        counts = result.get_counts(circ)
+        return counts
+    

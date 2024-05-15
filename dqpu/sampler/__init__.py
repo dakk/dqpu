@@ -12,5 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .dasksimulator import DaskSimulator  # noqa: F401
+from .dasksimulatorsampler import DaskSimulatorSampler  # noqa: F401
+from .aersimulatorsampler import AerSimulatorSampler  # noqa: F401
 from .sampler import Sampler  # noqa: F401
+
+
+SAMPLERS = {
+    'aersimulator': AerSimulatorSampler,
+    'dasksimulator': DaskSimulatorSampler
+}
+

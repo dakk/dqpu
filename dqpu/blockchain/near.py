@@ -45,6 +45,9 @@ from .blockchain import Blockchain
 def to_near(v):
     return int(v * 1000000000000000000000000)
 
+def from_near(v):
+    return int(v) / 1000000000000000000000000.
+
 
 class NearBlockchain(Blockchain):
     def __init__(self, account: str, network="testnet"):
@@ -58,6 +61,12 @@ class NearBlockchain(Blockchain):
 
         self.account = self.loadAccount(account)
 
+    def balance(self):
+        async def v():
+            return await self.account.get_balance()
+        
+        return from_near(asyncio.run(v()))
+
     def loadAccount(self, account: str):
         fn = account
         if "/" not in account:
@@ -67,7 +76,14 @@ class NearBlockchain(Blockchain):
 
         with open(fn, "r") as wf:
             w = json.loads(wf.read())
-            return Account(w["account_id"], w["private_key"], self.rpc_addr)
+            
+            acc = Account(w["account_id"], w["private_key"], self.rpc_addr)
+            
+            async def v():
+                await acc.startup()
+            
+            asyncio.run(v())
+            return acc
 
         raise Exception("No wallet")
 

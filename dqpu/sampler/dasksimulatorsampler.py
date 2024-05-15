@@ -25,7 +25,7 @@ client = Client(
 )
 
 
-class DaskSimulator(Sampler):
+class DaskSimulatorSampler(Sampler):
     def __init__(self, circuit, dtype=np.csingle):
         self.circuit = circuit
         self.hs = None

@@ -19,5 +19,9 @@ class Sampler:
     def __init__(self, circuit):
         self.circuit = circuit
 
+    def sample(self, shots):
+        pass 
+    
     def compute(self):
+        """ Compute the statevector """
         pass

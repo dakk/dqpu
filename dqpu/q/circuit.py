@@ -60,7 +60,7 @@ class Circuit:
                         r1 = random.randint(0, n - 1)
                         r2 = random.randint(0, n - 1)
 
-                    qc.apply(random.choice([Gates.SW, Gates.CX, Gates.CZ]), (r1, r2))
+                    qc.apply(random.choice([Gates.CX, Gates.CZ]), (r1, r2)) #Gates.SWAP, 
 
         if measure:
             for x in range(n):
@@ -190,7 +190,7 @@ class Circuit:
                     qc.cx(p[0], p[1])
                 elif a.iden == "CZ":
                     qc.cz(p[0], p[1])
-                elif a.iden == "SW":
+                elif a.iden == "SWAP":
                     qc.swap(p[0], p[1])
                 elif a.iden == "X":
                     qc.x(p)

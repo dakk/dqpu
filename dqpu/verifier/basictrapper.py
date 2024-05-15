@@ -73,7 +73,7 @@ class BasicTrapper(Trapper):
             v_e = False
             if not random.choice([True, False]):
                 v_e = True
-                gates.insert(random.randint(0, len(gates) - 1), (Gates.X, i_r))
+                gates.insert(random.randint(0, len(gates) - 1), (Gates.X, [i_r]))
 
             traps.append(BasicTrapInfo(i_r, v_e))
 

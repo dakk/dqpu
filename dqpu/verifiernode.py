@@ -15,6 +15,7 @@
 import json
 import pickle
 import time
+import random
 
 from .blockchain import IPFSGateway, NearBlockchain
 from .cli import default_parser
@@ -53,7 +54,7 @@ def verifier_node():
                 try:
                     qc = Circuit.fromQasmCircuit(jf.decode("ascii"))
                 except Exception as e:
-                    print("Failed to parse", j["id"], e)
+                    print('\t', "Failed to parse", j["id"], e)
                     nb.set_job_validity(j["id"], False)
                     continue
 
@@ -73,9 +74,10 @@ def verifier_node():
 
                 # Upload the file
                 jf_trapped = ipfs.upload(trapped_qasm_file)
+                print('\t', 'Trapped file uploaded', jf_trapped)
 
                 # Send the set_validity
-                print(nb.set_job_validity(j["id"], True, jf_trapped))
+                print('\t', nb.set_job_validity(j["id"], True, jf_trapped))
 
             elif (
                 j["status"] == "validating-result"
@@ -92,8 +94,16 @@ def verifier_node():
                 try:
                     counts = json.loads(rf)
                 except:
-                    print("Invalid result data")
+                    print('\t', "Invalid result data")
                     continue
+                
+                # Check if shots match
+                ctot = sum(counts.values())
+                if j["shots"] > ctot:
+                    print ('\t', "Invalid number of shots")
+                    print(nb.set_result_validity(j["id"], False))
+                    continue
+                
 
                 # Load the trap from file
                 with open(f"{base_dir}/{j['id']}_qc_trap.qasm", "rb") as inp:
@@ -104,7 +114,8 @@ def verifier_node():
                 validity = trapper.verify(t, counts)
 
                 # Send the set_result_validity
-                print(nb.set_result_validity(j["id"], validity))
+                print('\t', nb.set_result_validity(j["id"], validity))
 
         current_limit = 48
-        time.sleep(32)
+        print(f'Account balance is {nb.balance():0.5f} N')
+        time.sleep(random.randint(0, 60))
