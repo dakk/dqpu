@@ -150,6 +150,7 @@ def cli():  # noqa: C901
         print(f"Submitting with a reward of {reward:.6f} for {shots} shots")
 
         print(nb.submit_job(nq, dpt, shots, job_file, reward))
+        print(f"Account balance is {nb.balance():0.5f} N")
         print(nb.get_latest_jobs()[0]["id"])
 
     elif args.action == "remove":
