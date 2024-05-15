@@ -79,8 +79,11 @@ def verifier_node():
                 print("\t", "Trapped file uploaded", jf_trapped)
 
                 # Send the set_validity
-                print("\t", nb.set_job_validity(j["id"], True, jf_trapped))
-                n_verified += 1
+                try:
+                    print("\t", nb.set_job_validity(j["id"], True, jf_trapped))
+                    n_verified += 1
+                except Exception as e:
+                    print('\tFailed to set',e)
 
             elif (
                 j["status"] == "validating-result"
@@ -116,8 +119,11 @@ def verifier_node():
                 validity = trapper.verify(t, counts)
 
                 # Send the set_result_validity
-                print("\t", nb.set_result_validity(j["id"], validity))
-                n_vresult += 1
+                try:
+                    print("\t", nb.set_result_validity(j["id"], validity))
+                    n_vresult += 1
+                except Exception as e:
+                    print('\tFailed to set',e)
 
         current_limit = 48
         print(
