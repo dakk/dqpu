@@ -174,6 +174,7 @@ After every sampled job, the node receives the reward.
 dqpu-sampler -a sampler_account --max-deposit 0.1 --sampler aersimulator --max-qubits 21
 ```
 
+Read more on [README_SAMPLER.md](README_SAMPLER.md).
 
 ## Usage: running a verifier node
 
@@ -189,6 +190,7 @@ Verifier are special users initially selected by the smart contract creator; thi
 dqpu-verifier -a verifier_account
 ```
 
+Read more on [README_VERIFIER.md](README_VERIFIER.md).
 
 
 ## Contributing

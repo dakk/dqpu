@@ -47,7 +47,7 @@ class Circuit:
 
         for y in range(dp - 1):
             for x in range(n):
-                if random.choice([True, False]):
+                if random.choice([True, False]) or n == 1:
                     qc.apply(
                         random.choice([Gates.X, Gates.H, Gates.Y, Gates.Z, Gates.T]),
                         [x],

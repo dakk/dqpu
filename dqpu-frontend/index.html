@@ -132,11 +132,11 @@
                         <template v-slot:header.result_file>Result</template>
 
                         <template v-slot:item.reward_amount="{ item }">
-                            {{(item.reward_amount/1000000000000000000000000).toFixed(4)}} N
+                            {{(item.reward_amount/1000000000000000000000000).toFixed(4)}}
                         </template>
 
                         <template v-slot:item.sampler_deposit="{ item }">
-                            {{(item.sampler_deposit/1000000000000000000000000).toFixed(4)}} N
+                            {{(item.sampler_deposit/1000000000000000000000000).toFixed(4)}}
                         </template>
 
                         <template v-slot:item.qubits="{ item }">
@@ -158,21 +158,24 @@
 
                         <template v-slot:item.owner_id="{ item }">
                             <a :href="'https://testnet.nearblocks.io/address/' + item.owner_id" target="_blank">
-                                <v-icon icon="fa fa-user"></v-icon>
+                                <!-- <v-icon icon="fa fa-user"></v-icon> -->
+                                <small>{{item.owner_id}}</small>
                             </a>
                         </template>
 
                         <template v-slot:item.verifier_id="{ item }">
                             <a v-if="item.verifier_id"
                                 :href="'https://testnet.nearblocks.io/address/' + item.verifier_id" target="_blank">
-                                <v-icon icon="fa fa-user"></v-icon>
+                                <!-- <v-icon icon="fa fa-user"></v-icon> -->
+                                <small>{{item.verifier_id}}</small>
                             </a>
                         </template>
 
                         <template v-slot:item.sampler_id="{ item }">
                             <a v-if="item.sampler_id" :href="'https://testnet.nearblocks.io/address/' + item.sampler_id"
                                 target="_blank">
-                                <v-icon icon="fa fa-user"></v-icon>
+                                <!-- <v-icon icon="fa fa-user"></v-icon> -->
+                                <small>{{item.sampler_id}}</small>
                             </a>
                         </template>
 

@@ -1,8 +1,10 @@
-dask[distributed]
-scipy
+dask[distributed]==2024.4.2
+scipy==1.13.0
 matplotlib
-qiskit
-qiskit_aer
+qiskit==1.0.2
+qiskit_aer==0.14.1
 py-near
 requests
+numpy==1.26.4
 openqasm3[parser]
+scikit-build

@@ -120,7 +120,7 @@ def cli():  # noqa: C901
         print(nb.get_latest_jobs()[0]["id"])
 
     elif args.action == "submit-random":
-        nq = random.randint(1, 21)
+        nq = random.randint(4, 21)
         dpt = random.randint(1, 200)
 
         print(f"Creating a random circuit of {nq} qubits (depth {dpt})...")
