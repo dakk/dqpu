@@ -32,6 +32,7 @@ Install the sampler software:
 ```bash
 git clone https://github.com/dakk/dqpu
 cd dqpu
+pip install -r requirements.txt
 python setup.py install
 ```
 
