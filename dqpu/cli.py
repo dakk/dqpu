@@ -14,12 +14,18 @@
 
 import argparse
 import json
+import random 
+from qiskit import qasm2
+from qiskit.circuit.random import random_circuit
+
+from hashlib import sha256
 
 from .blockchain import (
     IPFSGateway,
     NearBlockchain,
 )  # , start_ipfs_daemon, stop_ipfs_daemon
 from .q import Circuit
+from .utils import create_dqpu_dirs
 
 ACTIONS = [
     "list",
@@ -32,8 +38,10 @@ ACTIONS = [
     "set-result-validity",
     "submit-result",
     "submit-random",
+    "clear-jobs",
+    "add-verifier",
+    "remove-verifier"
 ]
-
 
 def default_parser():
     parser = argparse.ArgumentParser()
@@ -51,6 +59,7 @@ def cli():  # noqa: C901
 
     parser.add_argument("-i", "--id", help="identifier of job")
     parser.add_argument("-v", "--validity", help="validity status", type=str)
+    parser.add_argument("-vv", "--verifier", help="verifier account", type=str)
 
     group_submit = parser.add_argument_group("submit")
     group_submit.add_argument("-f", "--file", help="openqasm2 file to submit")
@@ -82,6 +91,7 @@ def cli():  # noqa: C901
     )
 
     args = parser.parse_args()  # noqa: F841
+    base_dir = create_dqpu_dirs()
 
     nb = NearBlockchain(args.account, args.network)
     ipfs = IPFSGateway()  # noqa: F841
@@ -107,8 +117,31 @@ def cli():  # noqa: C901
         print(nb.submit_job(qubits, depth, args.shots, job_file, args.reward))
         print(nb.get_latest_jobs()[0]["id"])
 
-    elif args.action == "submit-random":
-        pass
+    elif args.action == "submit-random":        
+        nq = random.randint(1, 21)
+        dpt = random.randint(1, 200)
+        
+        qc = Circuit.random(nq, dpt)
+        qasm_data = qc.toQasmCircuit()
+        
+        # qc = random_circuit(nq, dpt, max_operands=2, measure=True)
+        # qasm_data = qasm2.dumps(qc)
+        
+        dig = sha256(qasm_data.encode('ascii')).hexdigest()[0:8]
+        
+        circuit_file = base_dir + f'/cache/random_circuit_{nq}_{dpt}_{dig}.qasm'
+        with open(circuit_file, 'w') as f:
+            f.write(qasm_data)
+        
+        # Upload job_file
+        job_file = ipfs.upload(circuit_file)
+        
+        reward = random.randint(1, 100) / 10000.
+        shots = random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384])
+
+        print(nb.submit_job(nq, dpt, shots, job_file, reward))
+        print(nb.get_latest_jobs()[0]["id"])
+        
 
     elif args.action == "remove":
         print(nb.remove_job(args.id))
@@ -144,4 +177,14 @@ def cli():  # noqa: C901
 
         print(nb.submit_job_result(args.id, result_file=res_file, deposit=args.deposit))
 
+
+    elif args.action == "clear-jobs":
+        print(nb.clear_jobs())
+        
+    elif args.action == "add-verifier":
+        print(nb.add_verifier(args.verifier))
+        
+    elif args.action == "remove-verifier":
+        print(nb.add_verifier(args.verifier))
+        
     # stop_ipfs_daemon(ipfs_process)
