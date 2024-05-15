@@ -94,18 +94,33 @@ Generic params:
 
 Commands:
 
+#### Submit a circuit job 
+
 ```bash
 $ dqpu-cli -a dqpu_alice.testnet submit --file ~/test.qasm --shots 1024 --reward 0.0001
 JOBID
 ```
 
+#### Submit a random circuit: job
+
+```bash
+$ dqpu-cli -a dqpu_alice.testnet submit-random
+JOBID
+```
+
+#### Submit a job result
+
 ```bash
 $ dpqu-cli -a dqpu_bob.testnet submit-result -i 8 -rf ~/test.qasm
 ```
 
+#### Remove a job
+
 ```bash
 $ dpqu-cli remove -i JOBID
 ```
+
+#### Get job information
 
 ```bash
 $ dpqu-cli info -i JOBID
@@ -116,20 +131,27 @@ Depth: 9
 Circuit uri: ipfs://.../test.qasm
 ```
 
+#### Get job status
+
 ```bash
 $ dpqu-cli status -i JOBID
 EXECUTED
 ```
+
+#### Get job result
 
 ```bash
 $ dpqu-cli get-result -i JOBID
 { "0010": 1024 }
 ```
 
+#### Set job validity
+
 ```bash
 $ dpqu-cli -a dqpu_owner.testnet set-validity -i 9 -v false
 ```
 
+#### Set job result validity
 ```bash
 $ dpqu-cli -a dqpu_owner.testnet set-result-validity -i 8 -v true
 ```
@@ -149,7 +171,7 @@ to real quantum hardware. DQPU package offer 3 implementation:
 After every sampled job, the node receives the reward.
 
 ```bash
-dqpu-sampler --min-reward 0.0009 --sampler aersimulator
+dqpu-sampler -a verifier_account --min-reward 0.0009 --sampler aersimulator
 ```
 
 
@@ -164,7 +186,7 @@ After every validation, the verifier receives a percentage of the job reward.
 Verifier are special users initially selected by the smart contract creator; this will change in the future.
 
 ```bash
-dqpu-verifier
+dqpu-verifier -a verifier_account
 ```
 
 

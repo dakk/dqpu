@@ -60,10 +60,7 @@ class BasicTrapper(Trapper):
 
             def remap_gate(gq):
                 a, p = gq
-                if a.nq == 1:
-                    p = remap_qbit(p)
-                else:
-                    p = list(map(remap_qbit, p))
+                p = list(map(remap_qbit, p))
                 return (a, p)
 
             def remap_trap(t):

@@ -27,7 +27,27 @@ def sampler_node():
 
     # Start contract polling for new jobs
     running = True
+    current_limit = 256
 
     while running:
-        print(nb.get_latest_jobs())
-        time.sleep(4)
+        latest_jobs = nb.get_latest_jobs(limit=current_limit)
+
+        # If there is a new job that needs execution, process it
+        for j in latest_jobs:
+            if j["status"] == "waiting":
+                # Check if reward/10 is < of max_deposit
+
+                # Get the qasm file
+
+                # Load into a Sampler object (selected by params)
+
+                # Do the simulation
+
+                # Upload the result
+
+                # Submit the result with the deposit
+
+                pass
+
+        current_limit = 48
+        time.sleep(32)

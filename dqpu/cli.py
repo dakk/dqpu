@@ -14,10 +14,7 @@
 
 import argparse
 import json
-import random 
-from qiskit import qasm2
-from qiskit.circuit.random import random_circuit
-
+import random
 from hashlib import sha256
 
 from .blockchain import (
@@ -26,6 +23,10 @@ from .blockchain import (
 )  # , start_ipfs_daemon, stop_ipfs_daemon
 from .q import Circuit
 from .utils import create_dqpu_dirs
+
+# from qiskit import qasm2
+# from qiskit.circuit.random import random_circuit
+
 
 ACTIONS = [
     "list",
@@ -40,8 +41,9 @@ ACTIONS = [
     "submit-random",
     "clear-jobs",
     "add-verifier",
-    "remove-verifier"
+    "remove-verifier",
 ]
+
 
 def default_parser():
     parser = argparse.ArgumentParser()
@@ -117,31 +119,30 @@ def cli():  # noqa: C901
         print(nb.submit_job(qubits, depth, args.shots, job_file, args.reward))
         print(nb.get_latest_jobs()[0]["id"])
 
-    elif args.action == "submit-random":        
+    elif args.action == "submit-random":
         nq = random.randint(1, 21)
         dpt = random.randint(1, 200)
-        
+
         qc = Circuit.random(nq, dpt)
         qasm_data = qc.toQasmCircuit()
-        
+
         # qc = random_circuit(nq, dpt, max_operands=2, measure=True)
         # qasm_data = qasm2.dumps(qc)
-        
-        dig = sha256(qasm_data.encode('ascii')).hexdigest()[0:8]
-        
-        circuit_file = base_dir + f'/cache/random_circuit_{nq}_{dpt}_{dig}.qasm'
-        with open(circuit_file, 'w') as f:
+
+        dig = sha256(qasm_data.encode("ascii")).hexdigest()[0:8]
+
+        circuit_file = base_dir + f"/cache/random_circuit_{nq}_{dpt}_{dig}.qasm"
+        with open(circuit_file, "w") as f:
             f.write(qasm_data)
-        
+
         # Upload job_file
         job_file = ipfs.upload(circuit_file)
-        
-        reward = random.randint(1, 100) / 10000.
+
+        reward = random.randint(1, 100) / 10000.0
         shots = random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384])
 
         print(nb.submit_job(nq, dpt, shots, job_file, reward))
         print(nb.get_latest_jobs()[0]["id"])
-        
 
     elif args.action == "remove":
         print(nb.remove_job(args.id))
@@ -177,14 +178,13 @@ def cli():  # noqa: C901
 
         print(nb.submit_job_result(args.id, result_file=res_file, deposit=args.deposit))
 
-
     elif args.action == "clear-jobs":
         print(nb.clear_jobs())
-        
+
     elif args.action == "add-verifier":
         print(nb.add_verifier(args.verifier))
-        
+
     elif args.action == "remove-verifier":
         print(nb.add_verifier(args.verifier))
-        
+
     # stop_ipfs_daemon(ipfs_process)

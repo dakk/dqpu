@@ -12,15 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+import pickle
 import time
 
 from .blockchain import IPFSGateway, NearBlockchain
 from .cli import default_parser
+from .q import Circuit
+from .utils import create_dqpu_dirs
+from .verifier import BasicTrapper  # BasicTrapInfo,
 
 
 def verifier_node():
     parser = default_parser()
     args = parser.parse_args()  # noqa: F841
+
+    base_dir = create_dqpu_dirs()
 
     nb = NearBlockchain(args.account, args.network)
     ipfs = IPFSGateway()  # noqa: F841
@@ -28,6 +35,8 @@ def verifier_node():
     # Start contract polling for new jobs
     running = True
     current_limit = 256
+
+    print("Verifier node started.")
 
     while running:
         latest_jobs = nb.get_latest_jobs(limit=current_limit)
@@ -39,7 +48,35 @@ def verifier_node():
                     f"Processing pending-validation job {j['id']} from {j['owner_id']}"
                 )
                 jf = ipfs.get(j["job_file"])
-                print(jf)
+
+                # Parse the file using q.Circuit.fromQasm
+                try:
+                    qc = Circuit.fromQasmCircuit(jf.decode("ascii"))
+                except Exception as e:
+                    print("Failed to parse", j["id"], e)
+                    nb.set_job_validity(j["id"], False)
+                    continue
+
+                # Add a trap
+                trapper = BasicTrapper()
+                (qc2, t) = trapper.trap(qc)
+
+                # Save trap info to a file
+                with open(f"{base_dir}/{j['id']}_qc_trap.qasm", "wb") as outp:
+                    pickle.dump(t, outp, pickle.HIGHEST_PROTOCOL)
+
+                # Save qasm to file
+                trapped_qasm_file = f"{base_dir}/{j['id']}_qc_trapped.qasm"
+
+                with open(trapped_qasm_file, "w") as f:
+                    f.write(qc2.toQasmCircuit())
+
+                # Upload the file
+                jf_trapped = ipfs.upload(trapped_qasm_file)
+
+                # Send the set_validity
+                print(nb.set_job_validity(j["id"], True, jf_trapped))
+
             elif (
                 j["status"] == "validating-result"
                 and j["verifier_id"] == nb.account.account_id
@@ -48,6 +85,26 @@ def verifier_node():
                     f"Processing validating-result job {j['id']} from {j['owner_id']} "
                     + f"sampled by {j['sampler_id']}"
                 )
+
+                # Get the result data
+                rf = ipfs.get(j["result_file"])
+
+                try:
+                    counts = json.loads(rf)
+                except:
+                    print("Invalid result data")
+                    continue
+
+                # Load the trap from file
+                with open(f"{base_dir}/{j['id']}_qc_trap.qasm", "rb") as inp:
+                    t = pickle.load(inp)
+
+                # Check trap validity
+                trapper = BasicTrapper()
+                validity = trapper.verify(t, counts)
+
+                # Send the set_result_validity
+                print(nb.set_result_validity(j["id"], validity))
 
         current_limit = 48
         time.sleep(32)

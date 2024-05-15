@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import random
+
 import openqasm3
 from openqasm3 import ast as oast
 
@@ -22,7 +24,7 @@ from .gates import Gates
 # Abstract class representing a circuit; it doesn't hold a quantum state
 class Measure:
     def __init__(self):
-        pass
+        self.iden = "measure"
 
 
 class Barrier:
@@ -39,10 +41,39 @@ class Circuit:
     def __iter__(self):
         yield from self.gates
 
+    @staticmethod
+    def random(n, dp, measure=False):
+        qc = Circuit(n, n)
+
+        for y in range(dp - 1):
+            for x in range(n):
+                if random.choice([True, False]):
+                    qc.apply(
+                        random.choice([Gates.X, Gates.H, Gates.Y, Gates.Z, Gates.T]),
+                        [x],
+                    )
+                else:
+                    r1 = random.randint(0, n - 1)
+                    r2 = random.randint(0, n - 1)
+
+                    while r1 == r2:
+                        r1 = random.randint(0, n - 1)
+                        r2 = random.randint(0, n - 1)
+
+                    qc.apply(random.choice([Gates.SW, Gates.CX, Gates.CZ]), (r1, r2))
+
+        if measure:
+            for x in range(n):
+                qc.measure(x)
+
+        return qc
+
     def apply(self, g, qb):
         self.gates.append((g, qb))
 
     def measure(self, qb, cb=None):
+        if cb is None:
+            cb = qb
         self.gates.append((Measure(), (qb, cb)))
 
     def draw(self):
