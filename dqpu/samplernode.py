@@ -87,15 +87,18 @@ def sampler_node():
                 print("\t", "Result file uploaded", jf_result)
 
                 # Submit the result with the deposit
-                print(
-                    "\t",
-                    nb.submit_job_result(
-                        j["id"],
-                        jf_result,
-                        deposit=from_near(j["reward_amount"]) / 10 + 0.00001,
-                    ),
-                )
-                n_sampled += 1
+                try:
+                    print(
+                        "\t",
+                        nb.submit_job_result(
+                            j["id"],
+                            jf_result,
+                            deposit=from_near(j["reward_amount"]) / 10 + 0.00001,
+                        ),
+                    )
+                    n_sampled += 1
+                except Exception as e:
+                    print('Failed to submit:', e)
 
         current_limit = 48
         print(f"Account balance is {nb.balance():0.5f} N, sampled jobs {n_sampled}")

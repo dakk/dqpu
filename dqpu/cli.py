@@ -42,6 +42,7 @@ ACTIONS = [
     "clear-jobs",
     "add-verifier",
     "remove-verifier",
+    "is-a-verifier"
 ]
 
 
@@ -143,7 +144,7 @@ def cli():  # noqa: C901
         job_file = ipfs.upload(circuit_file)
         print(f"Circuit file is {job_file}")
 
-        shots = random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384])
+        shots = random.choice([256, 512, 1024, 2048, 4096, 8192, 16384])
         sh_fact = int(round((shots + 1024) / 1024))
         reward = random.randint(1 * nq * sh_fact, 10 * nq * sh_fact) / 30000.0
 
@@ -195,5 +196,8 @@ def cli():  # noqa: C901
 
     elif args.action == "remove-verifier":
         print(nb.add_verifier(args.verifier))
+        
+    elif args.action == "is-a-verifier":
+        print(nb.is_a_verifier(args.verifier))
 
     # stop_ipfs_daemon(ipfs_process)
