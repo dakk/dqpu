@@ -78,7 +78,7 @@ class DQPU {
         // Send the reward back to the client
         const promise = near.promiseBatchCreate(j.owner_id);
         near.promiseBatchActionTransfer(promise, j.reward_amount);
-        
+
         this.jobs.remove(id);
     }
 
@@ -149,7 +149,7 @@ class DQPU {
 
             // Send the reward to the sampler
             const promise2 = near.promiseBatchCreate(j.sampler_id);
-            near.promiseBatchActionTransfer(promise2, j.reward_amount);            
+            near.promiseBatchActionTransfer(promise2, j.reward_amount);
         } else {
             j.status = 'waiting';
             j.sampler_id = '';
@@ -215,7 +215,7 @@ class DQPU {
 
     @view({})
     get_jobs_stats({ limit = 1000 }: { limit: number }) {
-        const st = { 
+        const st = {
             'pending-validation': 0,
             'waiting': 0,
             'validating-result': 0,
@@ -226,13 +226,13 @@ class DQPU {
 
         for (const id of this.jobs.keys({ start: start, limit: this.jobs.length })) {
             const j: Job = this.jobs.get(id);
-            
+
             if (!j)
                 continue;
 
-            if (! (j.status in st))
+            if (!(j.status in st))
                 st[j.status] = 0;
-            
+
             st[j.status] += 1;
         }
 
@@ -249,30 +249,40 @@ class DQPU {
         return this.money_handled;
     }
 
+    @view({})
+    get_verifiers({ from_index = 0, limit = 50 }: { from_index: number, limit: number }): string[] {
+        const ret: string[] = [];
+
+        for (const id of this.verifiers.keys({ start: from_index, limit })) {
+            ret.push(id);
+        }
+
+        return ret;
+    }
 
     // Add a verifier
     @call({})
-    add_verifier(account: AccountId) {
+    add_verifier({ account }: { account: AccountId }) {
         assert(near.predecessorAccountId() == this.owner, 'Only callable by owner');
         this.verifiers.set(account, account);
     }
 
     // Remove a verifier
     @call({})
-    remove_verifier(account: AccountId) {
+    remove_verifier({ account }: { account: AccountId }) {
         assert(near.predecessorAccountId() == this.owner, 'Only callable by owner');
         this.verifiers.remove(account);
     }
 
     // Return true if the caller is a verifier
     @view({})
-    is_a_verifier(account: AccountId): boolean {
+    is_a_verifier({ account }: { account: AccountId }): boolean {
         return this.verifiers.get(account) != null;
     }
 
     // Change contract owner
     @call({})
-    set_owner(new_owner: AccountId) {
+    set_owner({ new_owner }: { new_owner: AccountId }) {
         assert(near.predecessorAccountId() == this.owner, 'Only callable by owner');
         this.owner = new_owner;
     }

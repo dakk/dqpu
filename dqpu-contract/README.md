@@ -71,7 +71,7 @@ near delete dqpu_VERSION.testnet dqpu_owner.testnet
 ## Fake data creator
 
 ```bash
-px near deploy dqpu_4.testnet build/dqpu.wasm --initFunction init --initArgs '{"owner":"dqpu_owner.testnet"}'
+npx near deploy dqpu_4.testnet build/dqpu.wasm --initFunction init --initArgs '{"owner":"dqpu_owner.testnet"}'
 npx near create-account dqpu_alice.testnet --useFaucet
 npx near create-account dqpu_bob.testnet --useFaucet
 ```

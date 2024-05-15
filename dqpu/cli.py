@@ -42,7 +42,8 @@ ACTIONS = [
     "clear-jobs",
     "add-verifier",
     "remove-verifier",
-    "is-a-verifier"
+    "is-a-verifier",
+    "verifiers"
 ]
 
 
@@ -196,9 +197,12 @@ def cli():  # noqa: C901
         print(nb.add_verifier(args.verifier))
 
     elif args.action == "remove-verifier":
-        print(nb.add_verifier(args.verifier))
+        print(nb.remove_verifier(args.verifier))
         
     elif args.action == "is-a-verifier":
         print(nb.is_a_verifier(args.verifier))
+        
+    elif args.action == "verifiers":
+        print(nb.get_verifiers())
 
     # stop_ipfs_daemon(ipfs_process)
