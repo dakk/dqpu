@@ -1,7 +1,7 @@
 # Sampler Node
 
 Prerequisites:
-- nodejs >= 0.20
+- nodejs >= 20
 - python >= 3.9
 
 

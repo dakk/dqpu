@@ -16,6 +16,8 @@ import json
 import random
 import time
 
+from requests.exceptions import ReadTimeout
+
 from .blockchain import IPFSGateway, NearBlockchain, from_near, to_near
 from .cli import default_parser
 from .sampler import SAMPLERS
@@ -47,7 +49,7 @@ def sampler_node():
     print("Sampler node started.")
 
     while running:
-        latest_jobs = nb.get_latest_jobs(limit=current_limit)
+        latest_jobs = nb.get_latest_jobs(limit=current_limit) #[::-1]
 
         # If there is a new job that needs execution, process it
         for j in latest_jobs:
@@ -70,32 +72,39 @@ def sampler_node():
                 )
 
                 # Get the qasm file
-                jf = ipfs.get(j["job_file"])
+                try:
+                    jf = ipfs.get(j["job_file"], timeout=120)
+                except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
+                    print(f"\tTimeout getting file {j['job_file']}, skipping for now")
+                    continue
+
+                print(f"\tGot file {j['job_file']}")
 
                 # Load into a Sampler object (selected by params)
                 # qc = Circuit.fromQasmCircuit(jf)
                 sampler = SAMPLERS[args.sampler](jf)
 
                 # Do the simulation
+                print(f"\tStarting sampler {args.sampler}")
                 counts = sampler.sample(j["shots"])
 
                 # Upload the result
                 result_f = f"{base_dir}/sampler/cache/{j['id']}_result.json"
                 with open(result_f, "w") as cf:
                     cf.write(json.dumps(counts))
+
+                print(f"\tSampling done, uploading {result_f}")
                 jf_result = ipfs.upload(result_f)
-                print("\t", "Result file uploaded", jf_result)
+                print(f"\tResult file uploaded {jf_result}")
 
                 # Submit the result with the deposit
                 try:
-                    print(
-                        "\t",
-                        nb.submit_job_result(
-                            j["id"],
-                            jf_result,
-                            deposit=from_near(j["reward_amount"]) / 10 + 0.00001,
-                        ),
+                    sub_res = nb.submit_job_result(
+                        j["id"],
+                        jf_result,
+                        deposit=from_near(j["reward_amount"]) / 10 + 0.00001,
                     )
+                    print(f"\t{sub_res}")
                     n_sampled += 1
                 except Exception as e:
                     print("Failed to submit:", e)

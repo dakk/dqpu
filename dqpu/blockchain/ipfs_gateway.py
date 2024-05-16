@@ -55,12 +55,12 @@ class IPFSGateway:
         else:
             print(f"Error adding file to IPFS: {response.text}")
 
-    def get(self, ipfs_hash, destination_file=None):
+    def get(self, ipfs_hash, destination_file=None, timeout=60):
         # Set the URL for the IPFS daemon
         url = self.gateway + "/ipfs/"
 
         # Send a GET request to the IPFS daemon with the IPFS hash
-        response = requests.get(f"{url}/{ipfs_hash}")
+        response = requests.get(f"{url}/{ipfs_hash}", timeout=timeout)
 
         # Check if the request was successful
         if response.status_code == 200:

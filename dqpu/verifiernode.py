@@ -17,6 +17,8 @@ import pickle
 import random
 import time
 
+from requests.exceptions import ReadTimeout
+
 from .blockchain import IPFSGateway, NearBlockchain
 from .cli import default_parser
 from .q import Circuit
@@ -24,7 +26,7 @@ from .utils import create_dqpu_dirs
 from .verifier import BasicTrapper  # BasicTrapInfo,
 
 
-def verifier_node(): # noqa: C901
+def verifier_node():  # noqa: C901
     parser = default_parser()
     args = parser.parse_args()  # noqa: F841
 
@@ -50,7 +52,12 @@ def verifier_node(): # noqa: C901
                 print(
                     f"Processing pending-validation job {j['id']} from {j['owner_id']}"
                 )
-                jf = ipfs.get(j["job_file"])
+
+                try:
+                    jf = ipfs.get(j["job_file"], timeout=120)
+                except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
+                    print(f"\tTimeout getting file {j['job_file']}, skipping for now")
+                    continue
 
                 # Parse the file using q.Circuit.fromQasm
                 try:
@@ -95,7 +102,13 @@ def verifier_node(): # noqa: C901
                 )
 
                 # Get the result data
-                rf = ipfs.get(j["result_file"])
+                try:
+                    rf = ipfs.get(j["result_file"], timeout=120)
+                except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
+                    print(
+                        f"\tTimeout getting file {j['result_file']}, skipping for now"
+                    )
+                    continue
 
                 try:
                     counts = json.loads(rf)
