@@ -84,10 +84,14 @@ class NearBlockchain(Blockchain):
                 await acc.startup()
 
             try:
+                import nest_asyncio
+                get_ipython()
+                nest_asyncio.apply()
                 loop = asyncio.get_event_loop()
-                asyncio.run_coroutine_threadsafe(v(), loop)
+                loop.run_until_complete(v())
             except:
                 asyncio.run(v())
+            
             return acc
 
         raise Exception("No wallet")
