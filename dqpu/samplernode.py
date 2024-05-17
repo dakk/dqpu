@@ -39,7 +39,7 @@ def sampler_node():
     base_dir = create_dqpu_dirs()
 
     nb = NearBlockchain(args.account, args.network)
-    ipfs = IPFSGateway()  # noqa: F841
+    ipfs = IPFSGateway(uri='http://'+args.ipfs_gateway)  # noqa: F841
 
     # Start contract polling for new jobs
     running = True

@@ -52,6 +52,9 @@ def default_parser():
     parser.add_argument(
         "-n", "--network", help="network to use (mainnet | testnet)", default="testnet"
     )
+    parser.add_argument(
+        "--ipfs-gateway", help="ipfs gateway (default localhost:8080)", default="localhost:8080"
+    )
     parser.add_argument("-a", "--account", help="account path or name", required=True)
     return parser
 
@@ -112,7 +115,7 @@ def cli():  # noqa: C901
     base_dir = create_dqpu_dirs()
 
     nb = NearBlockchain(args.account, args.network)
-    ipfs = IPFSGateway()  # noqa: F841
+    ipfs = IPFSGateway(uri='http://'+args.ipfs_gateway)  # noqa: F841
 
     # ipfs_process = start_ipfs_daemon()
 
