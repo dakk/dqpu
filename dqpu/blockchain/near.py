@@ -60,7 +60,7 @@ class NearBlockchain(Blockchain):
         else:
             self.rpc_addr = "https://rpc.mainnet.near.org"
 
-        self.account = self.loadAccount(account)
+        self.account = self.load_account(account)
 
     def balance(self):
         async def v():
@@ -68,7 +68,7 @@ class NearBlockchain(Blockchain):
 
         return from_near(asyncio.run(v()))
 
-    def loadAccount(self, account: str):
+    def load_account(self, account: str):
         fn = account
         if "/" not in account:
             fn = os.path.expanduser(
@@ -83,7 +83,11 @@ class NearBlockchain(Blockchain):
             async def v():
                 await acc.startup()
 
-            asyncio.run(v())
+            try:
+                loop = asyncio.get_event_loop()
+                asyncio.run_coroutine_threadsafe(v(), loop)
+            except:
+                asyncio.run(v())
             return acc
 
         raise Exception("No wallet")
