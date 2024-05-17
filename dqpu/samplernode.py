@@ -49,7 +49,7 @@ def sampler_node():
     print("Sampler node started.")
 
     while running:
-        latest_jobs = nb.get_latest_jobs(limit=current_limit) #[::-1]
+        latest_jobs = nb.get_latest_jobs(limit=current_limit)  # [::-1]
 
         # If there is a new job that needs execution, process it
         for j in latest_jobs:

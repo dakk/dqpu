@@ -73,7 +73,7 @@ def cli():  # noqa: C901
     )
     parser.add_argument(
         "-nq",
-       "--min-qubits",
+        "--min-qubits",
         help="min qubits for the random submit",
         type=int,
         default=5,

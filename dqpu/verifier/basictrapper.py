@@ -79,7 +79,7 @@ class BasicTrapper(Trapper):
 
         qc.gates = gates
         return (qc, traps)
-    
+
     def untrap(self, trapped_qc, traps: Sequence[TrapInfo]) -> Circuit:
         """Remove traps from the quantum circuits `trapped_qc`"""
         raise Exception("TODO")
