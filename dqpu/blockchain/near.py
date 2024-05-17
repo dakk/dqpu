@@ -55,7 +55,7 @@ class NearBlockchain(Blockchain):
         self.network = network
 
         if self.network == "testnet":
-            self.contract = "dqpu_4.testnet"
+            self.contract = "dqpu_7.testnet"
             self.rpc_addr = "https://rpc.testnet.near.org"
         else:
             self.rpc_addr = "https://rpc.mainnet.near.org"

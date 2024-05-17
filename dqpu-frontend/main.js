@@ -4,7 +4,7 @@ const { createApp } = Vue;
 const { createVuetify } = Vuetify;
 
 const NODE_URL = 'https://rpc.testnet.near.org';
-const CONTRACT_ID = 'dqpu_4.testnet';
+const CONTRACT_ID = 'dqpu_7.testnet';
 
 function max(a, b) {
     return a > b ? a : b;
@@ -45,7 +45,7 @@ const app = Vue.createApp({
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
         this.amount_handled = await viewMethod('get_handled_amount');
         this.job_stats = await viewMethod('get_jobs_stats');
-        this.jobs = await viewMethod('get_latest_jobs', { limit: 1000 });
+        this.jobs = (await viewMethod('get_latest_jobs', { limit: 1000 })).reverse();
 
         const samplers = {};
         const verifiers = {};

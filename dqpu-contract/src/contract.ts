@@ -28,6 +28,13 @@ class DQPU {
     verifiers = new UnorderedMap<AccountId>('vid-1');
     latest_jid: bigint = BigInt(0);
     money_handled: bigint = BigInt(0);
+    jobs_stats = {
+        'pending-validation': 0,
+        'waiting': 0,
+        'validating-result': 0,
+        'executed': 0,
+        'invalid': 0
+    };
 
     @initialize({ privateFunction: true })
     init({ owner }: { owner: AccountId }) {
@@ -60,6 +67,7 @@ class DQPU {
             verifier_id: '',
             sampler_id: '',
         };
+        this.jobs_stats[j.status] += 1;
 
         this.jobs.set(j.id, j);
         this.money_handled += j.reward_amount;
@@ -71,14 +79,16 @@ class DQPU {
     @call({})
     remove_job({ id }: { id: string }) {
         const j = this.jobs.get(id);
+        const isOwner = near.predecessorAccountId() == this.owner;
 
-        assert(j.owner_id == near.predecessorAccountId(), 'Only the job creator can remove it');
-        assert(j.status == 'pending-validation' || j.status == 'waiting', 'Only waiting or pending-validation job can be removed');
+        assert((j.owner_id == near.predecessorAccountId()) || isOwner, 'Only the job creator or the owner can remove it');
+        assert(j.status == 'pending-validation' || j.status == 'waiting' || isOwner, 'Only waiting or pending-validation job can be removed');
 
         // Send the reward back to the client
         const promise = near.promiseBatchCreate(j.owner_id);
         near.promiseBatchActionTransfer(promise, j.reward_amount);
 
+        this.jobs_stats[j.status] -= 1;
         this.jobs.remove(id);
     }
 
@@ -95,6 +105,7 @@ class DQPU {
 
         j.verifier_id = near.predecessorAccountId();
 
+        this.jobs_stats[j.status] -= 1;
         if (valid) {
             j.job_file = trapped_file;
             j.status = 'waiting';
@@ -105,6 +116,7 @@ class DQPU {
             const promise = near.promiseBatchCreate(j.owner_id);
             near.promiseBatchActionTransfer(promise, j.reward_amount);
         }
+        this.jobs_stats[j.status] += 1;
 
         this.jobs.set(j.id, j);
     }
@@ -121,11 +133,13 @@ class DQPU {
         assert(j.owner_id != near.predecessorAccountId(), `Job owner and Verifier can't be the same account`);
         assert(j.verifier_id != near.predecessorAccountId(), `Sampler and Verifier can't be the same account`);
 
+        this.jobs_stats[j.status] -= 1;
         j.result_file = result_file;
         j.status = 'validating-result';
         j.sampler_id = near.predecessorAccountId();
         j.sampler_deposit = deposit;
         this.money_handled += deposit;
+        this.jobs_stats[j.status] += 1;
 
         this.jobs.set(j.id, j);
     }
@@ -139,6 +153,7 @@ class DQPU {
         const j: Job = this.jobs.get(id);
 
         assert(j.status == 'validating-result', `Job ${id} is not in 'validating-result' state`);
+        this.jobs_stats[j.status] -= 1;
 
         if (valid) {
             j.status = 'executed';
@@ -160,6 +175,7 @@ class DQPU {
 
             j.sampler_deposit = BigInt(0);
         }
+        this.jobs_stats[j.status] += 1;
 
         this.jobs.set(j.id, j);
     }
@@ -177,7 +193,8 @@ class DQPU {
                 ret.push(j);
         }
 
-        return ret.reverse();
+        // .reverse(); we don't reverse here in order to preserve gas
+        return ret; 
     }
 
 
@@ -214,29 +231,8 @@ class DQPU {
     }
 
     @view({})
-    get_jobs_stats({ limit = 1000 }: { limit: number }) {
-        const st = {
-            'pending-validation': 0,
-            'waiting': 0,
-            'validating-result': 0,
-            'executed': 0,
-            'invalid': 0
-        };
-        const start = this.jobs.length - limit ? this.jobs.length > limit : 0;
-
-        for (const id of this.jobs.keys({ start: start, limit: this.jobs.length })) {
-            const j: Job = this.jobs.get(id);
-
-            if (!j)
-                continue;
-
-            if (!(j.status in st))
-                st[j.status] = 0;
-
-            st[j.status] += 1;
-        }
-
-        return st;
+    get_jobs_stats() {
+        return this.jobs_stats;
     }
 
     @view({})
