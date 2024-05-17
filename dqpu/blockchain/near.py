@@ -50,6 +50,16 @@ def from_near(v):
     return int(v) / 1000000000000000000000000.0
 
 
+def asyncio_run_nested(v):
+    try:
+        import nest_asyncio
+        get_ipython()
+        nest_asyncio.apply()
+        loop = asyncio.get_event_loop()
+        return loop.run_until_complete(v())
+    except:
+        return asyncio.run(v())
+
 class NearBlockchain(Blockchain):
     def __init__(self, account: str, network="testnet"):
         self.network = network
@@ -83,14 +93,7 @@ class NearBlockchain(Blockchain):
             async def v():
                 await acc.startup()
 
-            try:
-                import nest_asyncio
-                get_ipython()
-                nest_asyncio.apply()
-                loop = asyncio.get_event_loop()
-                loop.run_until_complete(v())
-            except:
-                asyncio.run(v())
+            asyncio_run_nested(v)
             
             return acc
 
@@ -100,7 +103,7 @@ class NearBlockchain(Blockchain):
         async def v():
             return await self.account.view_function(self.contract, view_name, params)
 
-        return asyncio.run(v()).result
+        return asyncio_run_nested(v).result
 
     def call(self, function_name: str, params, amount=0):
         async def v():
@@ -111,7 +114,7 @@ class NearBlockchain(Blockchain):
                 amount=to_near(amount),
             )
 
-        r = asyncio.run(v())
+        r = asyncio_run_nested(v)
 
         if "Failure" in r.status:
             raise Exception(r.status["Failure"])
