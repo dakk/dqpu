@@ -16,9 +16,9 @@ import { NearBindgen, near, call, view, UnorderedMap, assert, initialize } from 
 import { AccountId } from 'near-sdk-js/lib/types';
 import { Job, JobStatus } from './model';
 
-const CONTRACT_VERSION = 4;
-const MAX_JOBS_STORED = 128;
+const CONTRACT_VERSION = 6;
 
+// const MAX_JOBS_STORED = 128;
 // TODO: add max_job handling
 
 @NearBindgen({ requireInit: true })
@@ -63,6 +63,7 @@ class DQPU {
 
             job_file: job_file,
             result_file: '',
+            trap_file: '',
 
             verifier_id: '',
             sampler_id: '',
@@ -146,7 +147,7 @@ class DQPU {
 
     // Called by validators, set the validity of a job result for a 'validating-result' job
     @call({})
-    set_result_validity({ id, valid }: { id: string, valid: boolean }) {
+    set_result_validity({ id, valid, trap_file = "" }: { id: string, valid: boolean, trap_file: string }) {
         assert(this.verifiers.get(near.predecessorAccountId()) != null, 'Only a verifier can set job validity');
 
         // Set job validity
@@ -156,7 +157,9 @@ class DQPU {
         this.jobs_stats[j.status] -= 1;
 
         if (valid) {
+            assert(trap_file.length > 0, "Empty trap file not allowed");
             j.status = 'executed';
+            j.trap_file = trap_file;
 
             // Send the sampler deposit to verifier
             const promise = near.promiseBatchCreate(j.verifier_id);

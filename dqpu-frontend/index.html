@@ -153,6 +153,7 @@
                                 <template v-slot:header.sampler_deposit>Deposit</template>
                                 <template v-slot:header.job_file>Job</template>
                                 <template v-slot:header.result_file>Result</template>
+                                <template v-slot:header.trap_file>Trap</template>
 
                                 <template v-slot:item.reward_amount="{ item }">
                                     {{(item.reward_amount/1000000000000000000000000).toFixed(4)}}
@@ -213,6 +214,12 @@
                                 <template v-slot:item.job_file="{ item }">
                                     <a :href="ipfs_gateway + item.job_file" target="_blank"
                                         v-if="item.job_file">
+                                        <v-icon icon="fa fa-file"></v-icon>
+                                    </a>
+                                </template>
+                                <template v-slot:item.trap_file="{ item }">
+                                    <a :href="ipfs_gateway + item.trap_file" target="_blank"
+                                        v-if="item.trap_file">
                                         <v-icon icon="fa fa-file"></v-icon>
                                     </a>
                                 </template>

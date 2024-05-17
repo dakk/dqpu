@@ -136,8 +136,10 @@ class NearBlockchain(Blockchain):
         )
 
     # Called by validators, set the validity of a job result for a 'validating-result' job
-    def set_result_validity(self, id: int, valid: bool):
-        return self.call("set_result_validity", {"id": id, "valid": valid})
+    def set_result_validity(self, id: int, valid: bool, trap_file: str = ""):
+        return self.call(
+            "set_result_validity", {"id": id, "valid": valid, "trap_file": trap_file}
+        )
 
     # Get latest quantum job list
     def get_latest_jobs(self, limit=50):

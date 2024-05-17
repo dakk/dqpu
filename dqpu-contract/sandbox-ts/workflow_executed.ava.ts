@@ -63,7 +63,7 @@ test('add a job and do a complete correct workflow', async (t) => {
     t.is(await contract.view('get_job_status', { id: jid }), 'validating-result');
 
     await owner.call(contract, 'set_result_validity', {
-        id: jid, valid: true
+        id: jid, valid: true, trap_file: 'asdasd'
     });
 
     t.is(await contract.view('get_job_status', { id: jid }), 'executed');

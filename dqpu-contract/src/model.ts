@@ -28,6 +28,7 @@ export class Job {
 
     job_file: string;
     result_file: string;
+    trap_file: string;
 
     verifier_id: AccountId;
     sampler_id: AccountId;

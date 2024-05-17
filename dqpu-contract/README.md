@@ -101,7 +101,7 @@ npx near call dqpu_7.testnet submit_job_result '{"id": 4, "result_file": "ttr"}'
 
 
 ```bash
-npx near call dqpu_7.testnet set_result_validity '{"id": 1, "valid": true}' --accountId dqpu_owner.testnet 
+npx near call dqpu_7.testnet set_result_validity '{"id": 1, "valid": true, "trap_file": ""}' --accountId dqpu_owner.testnet 
 npx near call dqpu_7.testnet set_result_validity '{"id": 3, "valid": true}' --accountId dqpu_owner.testnet
 ```
 

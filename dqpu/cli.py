@@ -87,6 +87,7 @@ def cli():  # noqa: C901
 
     group_submit = parser.add_argument_group("submit")
     group_submit.add_argument("-f", "--file", help="openqasm2 file to submit")
+    group_submit.add_argument("-t", "--trap", help="the trap file", default="")
     group_submit.add_argument(
         "-s", "--shots", help="number of shots to request", type=int, default=1024
     )
@@ -199,7 +200,11 @@ def cli():  # noqa: C901
         )
 
     elif args.action == "set-result-validity":
-        print(nb.set_result_validity(args.id, valid=args.validity == "true"))
+        if args.validity == "true":
+            trap_file = ipfs.upload(args.trap)
+            print(nb.set_result_validity(args.id, valid=True, trap_file=trap_file))
+        else:
+            print(nb.set_result_validity(args.id, valid=False))
 
     elif args.action == "submit-result":
         res_file = ipfs.upload(args.result_file)

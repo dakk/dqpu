@@ -69,11 +69,11 @@ def verifier_node():  # noqa: C901
 
                 # Add a trap
                 trapper = BasicTrapper()
-                (qc2, t) = trapper.trap(qc)
+                (qc2, trap_list) = trapper.trap(qc)
 
                 # Save trap info to a file
-                with open(f"{base_dir}/{j['id']}_qc_trap.qasm", "wb") as outp:
-                    pickle.dump(t, outp, pickle.HIGHEST_PROTOCOL)
+                with open(f"{base_dir}/{j['id']}_qc_traps.pickle", "wb") as outp:
+                    pickle.dump(trap_list, outp, pickle.HIGHEST_PROTOCOL)
 
                 # Save qasm to file
                 trapped_qasm_file = f"{base_dir}/{j['id']}_qc_trapped.qasm"
@@ -124,16 +124,27 @@ def verifier_node():  # noqa: C901
                     continue
 
                 # Load the trap from file
-                with open(f"{base_dir}/{j['id']}_qc_trap.qasm", "rb") as inp:
-                    t = pickle.load(inp)
+                with open(f"{base_dir}/{j['id']}_qc_traps.pickle", "rb") as inp:
+                    trap_list = pickle.load(inp)
 
                 # Check trap validity
                 trapper = BasicTrapper()
-                validity = trapper.verify(t, counts)
+                validity = trapper.verify(trap_list, counts)
 
                 # Send the set_result_validity
                 try:
-                    print("\t", nb.set_result_validity(j["id"], validity))
+                    if validity:
+                        trap_j = list(map(lambda t: t.dump(), trap_list))
+                        trap_file = f"{base_dir}/{j['id']}_trap.json"
+
+                        with open(trap_file, "r") as inp:
+                            inp.write(json.dumps(trap_j))
+
+                        trap_file_i = ipfs.upload(trap_file)
+
+                        print("\t", nb.set_result_validity(j["id"], True, trap_file_i))
+                    else:
+                        print("\t", nb.set_result_validity(j["id"], False))
                     n_vresult += 1
                 except Exception as e:
                     print("\tFailed to set", e)

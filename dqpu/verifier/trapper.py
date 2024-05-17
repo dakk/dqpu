@@ -22,6 +22,15 @@ class TrapInfo:
         self.trap_method = trap_method
         self.qubit = q_idx
 
+    def dump(self, format="json"):
+        if format != "json":
+            raise Exception("Format not supported")
+
+        return {"method": self.trap_method, "qubit": self.qubit}
+
+    def load(data, format="json"):
+        raise Exception("Abstract")
+
 
 class Trapper:
     """Trapper class"""

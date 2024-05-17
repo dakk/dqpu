@@ -33,6 +33,22 @@ class BasicTrapInfo(TrapInfo):
             f"with probability {self.probability} trapped with {self.trap_method}"
         )
 
+    def dump(self, format="json"):
+        if format != "json":
+            raise Exception("Format not supported")
+
+        data = super().dump(format)
+        data["value_expected"] = self.value_expected
+        data["probability"] = self.probability
+        return data
+
+    @staticmethod
+    def load(data, format="json"):
+        if format != "json":
+            raise Exception("Format not supported")
+
+        return BasicTrapInfo(data["qubit"], data["value_expected"], data["probability"])
+
 
 class BasicTrapper(Trapper):
     """A basic trapper, just adds `n` qubits initialized in a random choice of |0> and |1>"""
