@@ -291,5 +291,13 @@ class DQPU {
     clear_jobs() {
         assert(near.predecessorAccountId() == this.owner, 'Only callable by owner');
         this.jobs.clear();
+
+        this.jobs_stats = {
+            'pending-validation': 0,
+            'waiting': 0,
+            'validating-result': 0,
+            'executed': 0,
+            'invalid': 0
+        };
     }
 }
