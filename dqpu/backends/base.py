@@ -12,18 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-def submit_job():
-    pass
-
-
-def job_status():
-    pass
+import tempfile
+import json
 
 
-def job_remove():
-    pass
+def submit_job(nb, ipfs, qasm_data, num_qubits, depth, options):
+    fp = tempfile.NamedTemporaryFile(mode='w', delete=False)
+    fp.write(qasm_data)
+    fp.close()
+
+    job_file = ipfs.upload(fp.name)
+
+    nb.submit_job(
+        num_qubits, depth, options['shots'], job_file, options['reward']
+    )
+    return nb.get_latest_jobs()[-1]["id"]
 
 
-def job_result():
-    pass
+def job_status(nb, jid):
+    return nb.get_job_status(jid)
+
+
+def job_remove(nb, jid):
+    return nb.remove_job(jid)
+
+
+def job_result(nb, ipfs, jid):
+    j = nb.get_job(jid)
+    data = json.loads(ipfs.get(j["result_file"]))
+    trap_list = json.loads(ipfs.get(j["trap_file"]))
+    return data, trap_list

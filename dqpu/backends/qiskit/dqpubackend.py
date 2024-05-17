@@ -12,48 +12,88 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any
+import warnings
 
-from qiskit.circuit import Measure, Parameter
-from qiskit.circuit.library import CXGate, IGate, PhaseGate, SXGate, UGate
+from qiskit import qasm2
 from qiskit.providers import BackendV2 as Backend
-from qiskit.providers import Options
+from qiskit.providers import Options, convert_to_target
+from qiskit.providers.models import BackendConfiguration
 from qiskit.transpiler import Target
 
+
+from ..base import submit_job
+from ...blockchain import IPFSGateway, NearBlockchain
 from .dqpujob import DQPUJob
+
+BASIS_GATES = sorted(
+    [
+        "x",
+        "y",
+        "z",
+        "h",
+        "cx",
+        # "swap",
+        # "cswap",
+        # "rx",
+        # "ry",
+        # "rz",
+        # "id",
+        # "ccx",
+        # "u1",
+        # "u2",
+        # "u3",
+        # "rxx",
+        # "ryy",
+        # "rzz",
+        "s",
+        "sdg",
+        "t",
+        "tdg",
+        # "sx",
+        # "sxdg",
+        # "unitary",
+        # "ecr",
+    ]
+)
 
 
 class DQPUBackend(Backend):
-    def __init__(self, provider, network: str = "testnet"):
+    def __init__(self, network: str = "testnet", provider=None):
         super().__init__()
 
         self.network = network
-        self.provider = provider
-
+        # self.provider = provider
+        self.near_blockchain = None
+        self.ipfs_gateway = IPFSGateway()  
+        
         # Create Target
-        self._target = Target("Target for My Backend")
-        # Instead of None for this and below instructions you can define
-        # a qiskit.transpiler.InstructionProperties object to define properties
-        # for an instruction.
-        lam = Parameter("λ")
-        p_props = {(qubit,): None for qubit in range(5)}
-        self._target.add_instruction(PhaseGate(lam), p_props)
-        sx_props = {(qubit,): None for qubit in range(5)}
-        self._target.add_instruction(SXGate(), sx_props)
-        phi = Parameter("φ")
-        theta = Parameter("ϴ")
-        u_props = {(qubit,): None for qubit in range(5)}
-        self._target.add_instruction(UGate(theta, phi, lam), u_props)
-        cx_props = {edge: None for edge in [(0, 1), (1, 2), (2, 3), (3, 4)]}
-        self._target.add_instruction(CXGate(), cx_props)
-        meas_props = {(qubit,): None for qubit in range(5)}
-        self._target.add_instruction(Measure(), meas_props)
-        id_props = {(qubit,): None for qubit in range(5)}
-        self._target.add_instruction(IGate(), id_props)
-
+        self._target = convert_to_target(self.configuration()) 
+        
         # Set option validators
         self.options.set_validator("shots", (1, 8192))
+        self.options.set_validator("reward", (0.00001, 10.0))
 
+    def load_account(self, account: str):
+        """Load near account given its id or file path"""
+        self.near_blockchain = NearBlockchain(account, self.network)
+
+    def configuration(self):
+        return BackendConfiguration(
+            backend_name='dqpu', 
+            backend_version='0.1', 
+            n_qubits=1000, 
+            basis_gates=BASIS_GATES,
+            gates=[],
+            local=False, 
+            simulator = True, 
+            conditional = True, 
+            open_pulse = False, 
+            memory = True, 
+            max_shots = 8192, 
+            coupling_map = None
+            # , supported_instructions=None, dynamic_reprate_enabled=False, rep_delay_range=None, default_rep_delay=None, max_experiments=None, sample_name=None, n_registers=None, register_map=None, configurable=None, credits_required=None, online_date=None, display_name=None, description=None, tags=None, dt=None, dtm=None, processor_type=None, parametric_pulses=None
+        ) 
+          
     @property
     def target(self):
         return self._target
@@ -64,22 +104,24 @@ class DQPUBackend(Backend):
 
     @classmethod
     def _default_options(cls):
-        return Options(shots=1024)
+        return Options(shots=1024, reward=0.0001)
 
-    def run(self, circuits, **kwargs):
+    def run(self, circuit, **kwargs):
         # serialize circuits submit to backend and create a job
         for kwarg in kwargs:
-            if not hasattr(kwarg, self.options):
-                print(  # warnings.warn(
+            if not hasattr(self.options, kwarg):
+                warnings.warn(
                     "Option %s is not used by this backend" % kwarg,
-                    # UserWarning,
-                    # stacklevel=2,
+                    # warnings.UserWarning,
+                    stacklevel=2,
                 )
-        # options = {
-        #     "shots": kwargs.get("shots", self.options.shots),
-        # }
-        # job_json = convert_to_wire_format(circuit, options)
-        # job_handle = submit_to_backend(job_jsonb)
-        job_handle = ""
-        job_json: Any = {}
-        return DQPUJob(self, job_handle, job_json, circuits)
+        options = {
+            "shots": kwargs.get("shots", self.options.shots),
+            "reward": kwargs.get("reward", self.options.reward),
+        }
+        
+        qasm_data = qasm2.dumps(circuit)
+        job_id = submit_job(
+            self.near_blockchain, self.ipfs_gateway, qasm_data, circuit.num_qubits, circuit.depth(), options
+        )
+        return DQPUJob(self, job_id, options, circuit)

@@ -19,53 +19,76 @@ from qiskit.providers import JobV1 as Job
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.result import Result
 
+from ..base import job_remove, job_result, job_status
+
 
 class DQPUJob(Job):
-    def __init__(self, backend, job_id, job_json, circuits):
+    def __init__(self, backend, job_id, options, circuit):
         super().__init__(backend, job_id)
         self._backend = backend
-        self.job_json = job_json
-        self.circuits = circuits
+        self.job_id = job_id
+        self.options = options
+        self.circuit = circuit
+        self._results = None
+
+    def submit(self):
+        pass
 
     def _wait_for_result(self, timeout=None, wait=5):
         start_time = time.time()
-        result = None
+
         while True:
             elapsed = time.time() - start_time
             if timeout and elapsed >= timeout:
                 raise JobTimeoutError("Timed out waiting for result")
-            result = {"status": "waiting"}  # get_job_status(self._job_id)
-            if result["status"] == "complete":
+            status = job_status(self._backend.near_blockchain, self.job_id)
+            if status == "executed":
                 break
-            if result["status"] == "error":
-                raise JobError("Job error")
+            if status == "invalid":
+                raise JobError("Job has been marked as invalid")
             time.sleep(wait)
-        return result
+
+        if self._results is None:
+            self._results = job_result(
+                self._backend.near_blockchain, self._backend.ipfs_gateway, self.job_id
+            )
+        return self._results
 
     def result(self, timeout=None, wait=5):
-        result = self._wait_for_result(timeout, wait)
+        counts, trap_list = self._wait_for_result(timeout, wait)
+
+        # TODO: UNTRAP HERE!
+
         results = [
-            {"success": True, "shots": len(result["counts"]), "data": result["counts"]}
+            {
+                "success": True,
+                "header": {"name": self.circuit.name},
+                "shots": len(counts),
+                "data": { "counts": counts },
+            }
         ]
         return Result.from_dict(
             {
                 "results": results,
                 "backend_name": self._backend.configuration().backend_name,
                 "backend_version": self._backend.configuration().backend_version,
-                "job_id": self._job_id,
-                "qobj_id": ", ".join(x.name for x in self.circuits),
+                "job_id": self.job_id,
+                "qobj_id": self.circuit.name,
                 "success": True,
             }
         )
 
+    def remove(self):
+        return job_remove(self._backend.near_blockchain, self.job_id)
+
     def status(self):
-        result = {"status": "waiting"}  # get_job_status(self._job_id)
-        if result["status"] == "running":
-            status = JobStatus.RUNNING
-        elif result["status"] == "complete":
+        status = job_status(self._backend.near_blockchain, self.job_id)
+        if status == "executed":
             status = JobStatus.DONE
-        else:
+        elif status == "invalid":
             status = JobStatus.ERROR
+        else:
+            status = JobStatus.RUNNING
         return status
 
 

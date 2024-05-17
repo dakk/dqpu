@@ -20,15 +20,15 @@ from .dqpubackend import DQPUBackend
 
 
 class DQPUProvider(Provider):
-    def __init__(self, token=None):
+    def __init__(self):
         super().__init__()
-        self.token = token
         self.backend_list = [DQPUBackend(network="testnet", provider=self)]
 
     def backends(self, name=None, **kwargs):
+        backends = self.backend_list
         if name:
             backends = [
-                backend for backend in self.backend_list if backend.name() == name
+                backend for backend in backends if backend.name() == name
             ]
         return backends  # filter_backends(backends, filters=filters, **kwargs)
 

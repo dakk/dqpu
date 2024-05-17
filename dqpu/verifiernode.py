@@ -129,7 +129,7 @@ def verifier_node():  # noqa: C901
                     with open(trap_fp, "rb") as inp:
                         trap_list = pickle.load(inp)
                 except:
-                    print (f'Unable to load {trap_fp}, skipping job {j["id"]}')
+                    print(f'Unable to load {trap_fp}, skipping job {j["id"]}')
                     continue
 
                 # Check trap validity
