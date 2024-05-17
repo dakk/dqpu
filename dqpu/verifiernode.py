@@ -135,9 +135,9 @@ def verifier_node():  # noqa: C901
                 try:
                     if validity:
                         trap_j = list(map(lambda t: t.dump(), trap_list))
-                        trap_file = f"{base_dir}/{j['id']}_trap.json"
+                        trap_file = f"{base_dir}/{j['id']}_traps.json"
 
-                        with open(trap_file, "r") as inp:
+                        with open(trap_file, "w") as inp:
                             inp.write(json.dumps(trap_j))
 
                         trap_file_i = ipfs.upload(trap_file)
