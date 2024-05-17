@@ -8,9 +8,10 @@ Install IPFS:
 
 - https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
 
-Run the IPFS daemon:
+Initialize and run the IPFS daemon:
 
 ```bash
+ipfs init
 ipfs daemon
 ```
 
