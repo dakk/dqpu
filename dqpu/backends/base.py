@@ -12,4 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .dqpujob import DQPUJob  # noqa: F401
+
+def submit_job():
+    pass
+
+
+def job_status():
+    pass
+
+
+def job_remove():
+    pass
+
+
+def job_result():
+    pass
