@@ -35,6 +35,11 @@ If the trap verification fails, the job returns in 'waiting' state (and the *Ver
 [^3]: In the next version of the protocol, the client will also add its trap in order to check *verifier*'s loyalty.
 
 
+## Smart Contract Web UI
+
+A web interface showing the smart contract status is available here: [https://dakk.github.io/dqpu/app/](https://dakk.github.io/dqpu/app/)
+
+
 ## Installation
 
 ```python setup.py install```

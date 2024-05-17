@@ -26,6 +26,7 @@ async function viewMethod(method, args = {}) {
 const app = Vue.createApp({
     data() {
         return {
+            ipfs_gateway: 'http://51.77.230.39:8080/ipfs/',
             tab: 'joblist',
             jobs: [],
             job_stats: {},
