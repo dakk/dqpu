@@ -124,8 +124,13 @@ def verifier_node():  # noqa: C901
                     continue
 
                 # Load the trap from file
-                with open(f"{base_dir}/{j['id']}_qc_traps.pickle", "rb") as inp:
-                    trap_list = pickle.load(inp)
+                trap_fp = f"{base_dir}/{j['id']}_qc_traps.pickle"
+                try:
+                    with open(trap_fp, "rb") as inp:
+                        trap_list = pickle.load(inp)
+                except:
+                    print (f'Unable to load {trap_fp}, skipping job {j["id"]}')
+                    continue
 
                 # Check trap validity
                 trapper = BasicTrapper()

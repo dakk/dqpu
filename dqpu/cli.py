@@ -55,8 +55,8 @@ def default_parser():
     parser.add_argument(
         "-ig",
         "--ipfs-gateway",
-        help="ipfs gateway (default localhost:8080)",
-        default="localhost:8080",
+        help="ipfs gateway (default 127.0.0.1:8080)",
+        default="127.0.0.1:8080",
     )
     parser.add_argument("-a", "--account", help="account path or name", required=True)
     return parser
