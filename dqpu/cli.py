@@ -174,7 +174,7 @@ def cli():  # noqa: C901
 
         print(nb.submit_job(nq, dpt, shots, job_file, reward))
         print(f"Account balance is {nb.balance():0.5f} N")
-        print(nb.get_latest_jobs()[0]["id"])
+        print(nb.get_latest_jobs()[-1]["id"])
 
     elif args.action == "remove":
         print(nb.remove_job(args.id))
