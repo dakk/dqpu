@@ -79,6 +79,10 @@ class BasicTrapper(Trapper):
 
         qc.gates = gates
         return (qc, traps)
+    
+    def untrap(self, trapped_qc, traps: Sequence[TrapInfo]) -> Circuit:
+        """Remove traps from the quantum circuits `trapped_qc`"""
+        raise Exception("TODO")
 
     def verify(self, traps: Sequence[TrapInfo], results: ExperimentResult) -> bool:
         """Get bitstring result for trap qubits, and check for the result"""

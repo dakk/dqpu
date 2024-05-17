@@ -34,6 +34,10 @@ class Trapper:
     ) -> Tuple[Circuit, Sequence[TrapInfo]]:
         """Add traps to the quantum circuits `qc`"""
         raise Exception("Abstract")
+    
+    def untrap(self, trapped_qc, traps: Sequence[TrapInfo]) -> Circuit:
+        """Remove traps from the quantum circuits `trapped_qc`"""
+        raise Exception("Abstract")    
 
     def untrap_results(
         self, traps: Sequence[TrapInfo], results: ExperimentResult
