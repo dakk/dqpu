@@ -21,6 +21,11 @@ from py_near.account import Account
 
 from .blockchain import Blockchain
 
+
+def in_ipynb():
+    import sys
+    return "ipykernel" in sys.modules
+
 # export type JobStatus = 'pending-validation' | 'waiting' | 'validating-result'
 # | 'executed' | 'invalid';
 
@@ -51,13 +56,13 @@ def from_near(v):
 
 
 def asyncio_run_nested(v):
-    try:
+    if in_ipynb():
         import nest_asyncio
         get_ipython()
         nest_asyncio.apply()
         loop = asyncio.get_event_loop()
         return loop.run_until_complete(v())
-    except NameError:
+    else:
         return asyncio.run(v())
 
 class NearBlockchain(Blockchain):
