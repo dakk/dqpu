@@ -56,14 +56,14 @@ def from_near(v):
 
 
 def asyncio_run_nested(v):
-    if in_ipynb():
-        import nest_asyncio
-        get_ipython()
-        nest_asyncio.apply()
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(v())
-    else:
-        return asyncio.run(v())
+    # if in_ipynb():
+    #     import nest_asyncio
+    #     get_ipython()
+    #     nest_asyncio.apply()
+    #     loop = asyncio.get_event_loop()
+    #     return loop.run_until_complete(v())
+    # else:
+    return asyncio.run(v())
 
 class NearBlockchain(Blockchain):
     def __init__(self, account: str, network="testnet"):
