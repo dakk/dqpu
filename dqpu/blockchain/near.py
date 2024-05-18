@@ -59,8 +59,6 @@ def asyncio_run_nested(v):
         return loop.run_until_complete(v())
     except NameError:
         return asyncio.run(v())
-    except:
-        return asyncio.run(v())
 
 class NearBlockchain(Blockchain):
     def __init__(self, account: str, network="testnet"):
