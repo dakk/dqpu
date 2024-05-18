@@ -57,6 +57,8 @@ def asyncio_run_nested(v):
         nest_asyncio.apply()
         loop = asyncio.get_event_loop()
         return loop.run_until_complete(v())
+    except NameError:
+        return asyncio.run(v())
     except:
         return asyncio.run(v())
 

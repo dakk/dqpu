@@ -11,3 +11,4 @@ scikit-build
 base58
 loguru
 pydantic
+nest_asyncio
