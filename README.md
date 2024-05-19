@@ -2,7 +2,9 @@
 
 ![CI Status](https://github.com/dakk/dqpu/actions/workflows/ci.yaml/badge.svg)
 ![Contract CI Status](https://github.com/dakk/dqpu/actions/workflows/ci-contract.yaml/badge.svg)
+![PyPI - Version](https://img.shields.io/pypi/v/dqpu)
 ![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue)
+[![Downloads](https://static.pepy.tech/badge/dqpu)](https://pepy.tech/project/dqpu)
 
 A Web3-Powered (Near), Decentralized Quantum Simulator with Verifiable Computation. 
 
