@@ -6,6 +6,7 @@
 
 A Web3-Powered (Near), Decentralized Quantum Simulator with Verifiable Computation. 
 
+DQPU (Decentralized Quantum Processing Unit) introduces a novel, decentralized approach to quantum computing that leverages the power of blockchain and smart contracts. It addresses the challenges of securely and reliably executing quantum computations in a trustless and transparent manner, while fostering a competitive ecosystem for quantum resource providers.
 
 
 ## Workflow
@@ -57,20 +58,20 @@ The workflow described before is hidden to the final user: DQPU can be used seam
 import time
 import qiskit
 from qiskit.providers.jobstatus import JobStatus 
-from dqpu.qiskit import DQPUProvider, DQPUService
+from dqpu.backends.qiskit import DQPUBackend
 
 # Create a quantum circuit
 qc = qiskit.QuantumCircuit(2)
 qc.h(0)
 qc.cx(0, 1)
 
-# Inizialize the service by providing the Near account
-service = DQPUService()
-service.setAccount("...")
+# Inizialize the DQPU backend and load the account
+backend = DQPUBackend()
+backend.load_account("dqpu_alice.testnet")
 
 # Run the sampling
-backend = DQPUProvider().get_backend('dqpu_simulator')
-job = backend.run(qc, reward="0.001")
+circ = transpile(qc, backend)
+job = backend.run(circ, shots=1024)
 
 # Wait for the job
 while job.status() is JobStatus.RUNNING:
@@ -78,16 +79,30 @@ while job.status() is JobStatus.RUNNING:
     time.sleep(1)
 
 # Get the result
-counts = job.result.get_counts()
+counts = job.result().get_counts(circ)
 print(counts)
 ```
 
 ### Low-level example
 
 ```python
-from dqpu import *
+from dqpu.blockchain import NearBlockchain, IPFSGateway
+from dqpu.backends.base import submit_job, job_status, job_result
 
-# TODO
+# Load account and initialize ipfs
+nb = NearBlockchain('dqpu_alice.testnet')
+ipfs = IPFSGateway()  # noqa: F841
+
+f = open('test.qasm', 'r')
+qasm_data = f.read()
+jid = submit_job(nb, ipfs, qasm_data)
+  
+while job_status(nb, jid) != 'executed':
+  print(f'Job {job.job_id()} is still running, please wait')
+  time.sleep(1)
+
+counts = job_result(nb, ipfs, jid)
+print(counts)
 ```
 
 
