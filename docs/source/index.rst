@@ -1,12 +1,13 @@
 DQPU
 ====================================
 
-
+Welcome to the DQPU documentation!
 
 .. toctree::
    :maxdepth: 2
    :caption: DQPU
 
+   api
    qiskit_example.ipynb
 
 
