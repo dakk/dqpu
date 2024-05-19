@@ -188,9 +188,9 @@ class DQPU {
     @view({})
     get_latest_jobs({ limit = 50 }: { limit: number }): Job[] {
         const ret: Job[] = [];
-        const start = this.jobs.length - limit ? this.jobs.length > limit : 0;
+        const start = this.jobs.length > limit ? this.jobs.length - limit : 0;
 
-        for (const id of this.jobs.keys({ start: start, limit: this.jobs.length })) {
+        for (const id of this.jobs.keys({ start: start, limit: start+limit })) {
             const j: Job = this.jobs.get(id);
             if (j)
                 ret.push(j);

@@ -46,7 +46,7 @@ const app = Vue.createApp({
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
         this.amount_handled = await viewMethod('get_handled_amount');
         this.job_stats = await viewMethod('get_jobs_stats');
-        this.jobs = (await viewMethod('get_latest_jobs', { limit: 1000 })).reverse();
+        this.jobs = (await viewMethod('get_latest_jobs', { limit: 100 })).reverse();
 
         const samplers = {};
         const verifiers = {};
