@@ -7,6 +7,7 @@ DQPU
    :maxdepth: 2
    :caption: DQPU
 
+   qiskit_example.ipynb
 
 
 Indices and tables
