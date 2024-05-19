@@ -43,7 +43,15 @@ A web interface showing the smart contract status is available here: [https://da
 
 ## Installation
 
-```python setup.py install```
+```pip install dqpu```
+
+Or install the latest development version:
+
+```bash
+git clone https://github.com/dakk/dqpu
+cd dqpu
+python setup.py install
+```
 
 Install IPFS:
 - https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
@@ -86,6 +94,7 @@ print(counts)
 ### Low-level example
 
 ```python
+import time
 from dqpu.blockchain import NearBlockchain, IPFSGateway
 from dqpu.backends.base import submit_job, job_status, job_result
 
