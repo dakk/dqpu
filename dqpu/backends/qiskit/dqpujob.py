@@ -19,6 +19,7 @@ from qiskit.providers import JobV1 as Job
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.result import Result
 
+from ...verifier import BasicTrapInfo, BasicTrapper
 from ..base import job_remove, job_result, job_status
 
 
@@ -57,14 +58,16 @@ class DQPUJob(Job):
     def result(self, timeout=None, wait=5):
         counts, trap_list = self._wait_for_result(timeout, wait)
 
-        # TODO: UNTRAP HERE!
+        # TODO: handle different trap classes
+        traps = list(map(BasicTrapInfo.loads, trap_list))
+        counts = BasicTrapper().untrap_results(traps, counts)
 
         results = [
             {
                 "success": True,
                 "header": {"name": self.circuit.name},
                 "shots": len(counts),
-                "data": { "counts": counts },
+                "data": {"counts": counts},
             }
         ]
         return Result.from_dict(

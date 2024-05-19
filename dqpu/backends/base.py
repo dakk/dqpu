@@ -12,20 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import tempfile
 import json
+import tempfile
 
 
 def submit_job(nb, ipfs, qasm_data, num_qubits, depth, options):
-    fp = tempfile.NamedTemporaryFile(mode='w', delete=False)
+    fp = tempfile.NamedTemporaryFile(mode="w", delete=False)
     fp.write(qasm_data)
     fp.close()
 
     job_file = ipfs.upload(fp.name)
 
-    nb.submit_job(
-        num_qubits, depth, options['shots'], job_file, options['reward']
-    )
+    nb.submit_job(num_qubits, depth, options["shots"], job_file, options["reward"])
     return nb.get_latest_jobs()[-1]["id"]
 
 

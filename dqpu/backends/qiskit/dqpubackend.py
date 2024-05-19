@@ -13,16 +13,15 @@
 # limitations under the License.
 
 import warnings
+from typing import Optional
 
 from qiskit import qasm2
 from qiskit.providers import BackendV2 as Backend
 from qiskit.providers import Options, convert_to_target
 from qiskit.providers.models import BackendConfiguration
-from qiskit.transpiler import Target
 
-
-from ..base import submit_job
 from ...blockchain import IPFSGateway, NearBlockchain
+from ..base import submit_job
 from .dqpujob import DQPUJob
 
 BASIS_GATES = sorted(
@@ -63,12 +62,12 @@ class DQPUBackend(Backend):
 
         self.network = network
         # self.provider = provider
-        self.near_blockchain = None
-        self.ipfs_gateway = IPFSGateway()  
-        
+        self.near_blockchain: Optional[NearBlockchain] = None
+        self.ipfs_gateway = IPFSGateway()
+
         # Create Target
-        self._target = convert_to_target(self.configuration()) 
-        
+        self._target = convert_to_target(self.configuration())
+
         # Set option validators
         self.options.set_validator("shots", (1, 8192))
         self.options.set_validator("reward", (0.00001, 10.0))
@@ -79,21 +78,25 @@ class DQPUBackend(Backend):
 
     def configuration(self):
         return BackendConfiguration(
-            backend_name='dqpu', 
-            backend_version='0.1', 
-            n_qubits=1000, 
+            backend_name="dqpu",
+            backend_version="0.1",
+            n_qubits=1000,
             basis_gates=BASIS_GATES,
             gates=[],
-            local=False, 
-            simulator = True, 
-            conditional = True, 
-            open_pulse = False, 
-            memory = True, 
-            max_shots = 8192, 
-            coupling_map = None
-            # , supported_instructions=None, dynamic_reprate_enabled=False, rep_delay_range=None, default_rep_delay=None, max_experiments=None, sample_name=None, n_registers=None, register_map=None, configurable=None, credits_required=None, online_date=None, display_name=None, description=None, tags=None, dt=None, dtm=None, processor_type=None, parametric_pulses=None
-        ) 
-          
+            local=False,
+            simulator=True,
+            conditional=True,
+            open_pulse=False,
+            memory=True,
+            max_shots=8192,
+            coupling_map=None,
+            # , supported_instructions=None, dynamic_reprate_enabled=False,
+            # rep_delay_range=None, default_rep_delay=None, max_experiments=None,
+            # sample_name=None, n_registers=None, register_map=None, configurable=None,
+            # credits_required=None, online_date=None, display_name=None, description=None,
+            # tags=None, dt=None, dtm=None, processor_type=None, parametric_pulses=None
+        )
+
     @property
     def target(self):
         return self._target
@@ -119,9 +122,14 @@ class DQPUBackend(Backend):
             "shots": kwargs.get("shots", self.options.shots),
             "reward": kwargs.get("reward", self.options.reward),
         }
-        
+
         qasm_data = qasm2.dumps(circuit)
         job_id = submit_job(
-            self.near_blockchain, self.ipfs_gateway, qasm_data, circuit.num_qubits, circuit.depth(), options
+            self.near_blockchain,
+            self.ipfs_gateway,
+            qasm_data,
+            circuit.num_qubits,
+            circuit.depth(),
+            options,
         )
         return DQPUJob(self, job_id, options, circuit)

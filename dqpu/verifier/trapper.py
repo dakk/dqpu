@@ -28,7 +28,7 @@ class TrapInfo:
 
         return {"method": self.trap_method, "qubit": self.qubit}
 
-    def load(data, format="json"):
+    def loads(data, format="json"):
         raise Exception("Abstract")
 
 

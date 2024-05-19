@@ -43,7 +43,7 @@ class BasicTrapInfo(TrapInfo):
         return data
 
     @staticmethod
-    def load(data, format="json"):
+    def loads(data, format="json"):
         if format != "json":
             raise Exception("Format not supported")
 

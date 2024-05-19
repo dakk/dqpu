@@ -27,9 +27,7 @@ class DQPUProvider(Provider):
     def backends(self, name=None, **kwargs):
         backends = self.backend_list
         if name:
-            backends = [
-                backend for backend in backends if backend.name() == name
-            ]
+            backends = [backend for backend in backends if backend.name() == name]
         return backends  # filter_backends(backends, filters=filters, **kwargs)
 
     def __str__(self):
