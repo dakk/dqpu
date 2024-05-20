@@ -168,7 +168,7 @@ def cli():  # noqa: C901
 
         shots = random.choice([256, 512, 1024, 2048, 4096, 8192, 16384])
         sh_fact = int(round((shots + 1024) / 1024))
-        reward = random.randint(1 * nq * sh_fact, 10 * nq * sh_fact) / 30000.0
+        reward = random.randint(5 * nq * sh_fact, 10 * nq * sh_fact) / 25000.0
 
         print(f"Submitting with a reward of {reward:.6f} for {shots} shots")
 
