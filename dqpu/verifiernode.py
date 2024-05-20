@@ -133,8 +133,13 @@ def verifier_node():  # noqa: C901
                     continue
 
                 # Check trap validity
-                trapper = BasicTrapper()
-                validity = trapper.verify(trap_list, counts)
+                try:
+                    trapper = BasicTrapper()
+                    validity = trapper.verify(trap_list, counts)
+                except Exception as e:
+                    print ('Got exception while verifying, contact dakk')
+                    print (e)
+                    continue
 
                 # Send the set_result_validity
                 try:
