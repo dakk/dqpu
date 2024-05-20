@@ -13,10 +13,12 @@
 # limitations under the License.
 
 from .aersimulatorsampler import AerSimulatorSampler  # noqa: F401
+from .qracksimulatorsampler import QrackSimulatorSampler  # noqa: F401
 
 # from .dasksimulatorsampler import DaskSimulatorSampler  # noqa: F401
 from .sampler import Sampler  # noqa: F401
 
 SAMPLERS = {
-    "aersimulator": AerSimulatorSampler
+    "aersimulator": AerSimulatorSampler,
+    "qracksimulator": QrackSimulatorSampler,
 }  # , "dasksimulator": DaskSimulatorSampler}

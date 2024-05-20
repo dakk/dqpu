@@ -12,3 +12,5 @@ base58
 loguru
 pydantic
 nest_asyncio
+# pyqrack
+# qiskit-qrack-provider

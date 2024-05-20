@@ -86,7 +86,7 @@ class DQPUJob(Job):
 
     def raw_status(self):
         return job_status(self._backend.near_blockchain, self.job_id)
-        
+
     def status(self):
         status = self.raw_status()
         if status == "executed":
