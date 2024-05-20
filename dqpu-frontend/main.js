@@ -39,6 +39,17 @@ const app = Vue.createApp({
         };
     },
     async mounted() {
+        async function get_all_jobs(slice, total) {
+            let jobs = [];
+            for (let i = 0; i < total; i+= slice) {
+                console.log('getting',i,total,slice)
+                const nj = (await viewMethod('get_jobs', { from_index: i, limit: slice }));
+                jobs = jobs.concat(nj);
+            }
+            console.log(jobs)
+            return jobs.reverse();
+        }
+
         console.log('APP mounted');
 
         console.log('Updating data...');
@@ -46,7 +57,7 @@ const app = Vue.createApp({
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
         this.amount_handled = await viewMethod('get_handled_amount');
         this.job_stats = await viewMethod('get_jobs_stats');
-        this.jobs = (await viewMethod('get_latest_jobs', { limit: 300 })).reverse();
+        this.jobs = await get_all_jobs(50, this.n_jobs); //(await viewMethod('get_latest_jobs', { limit: 300 })).reverse();
 
         const samplers = {};
         const verifiers = {};
