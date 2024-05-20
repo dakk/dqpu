@@ -42,7 +42,7 @@ class DQPUJob(Job):
             elapsed = time.time() - start_time
             if timeout and elapsed >= timeout:
                 raise JobTimeoutError("Timed out waiting for result")
-            status = job_status(self._backend.near_blockchain, self.job_id)
+            status = self.raw_status()
             if status == "executed":
                 break
             if status == "invalid":
@@ -84,8 +84,11 @@ class DQPUJob(Job):
     def remove(self):
         return job_remove(self._backend.near_blockchain, self.job_id)
 
+    def raw_status(self):
+        return job_status(self._backend.near_blockchain, self.job_id)
+        
     def status(self):
-        status = job_status(self._backend.near_blockchain, self.job_id)
+        status = self.raw_status()
         if status == "executed":
             status = JobStatus.DONE
         elif status == "invalid":
