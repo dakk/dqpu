@@ -32,6 +32,9 @@ def sampler_node():
         "-q", "--max-qubits", help="maximum number of simulable qubits", default=21
     )
     parser.add_argument(
+        "--min-qubits", help="minimum number of qubits", default=1
+    )
+    parser.add_argument(
         "-s", "--sampler", help="sampler to use", default="aersimulator", choices=SAMPLERS.keys()
     )
 
@@ -71,6 +74,13 @@ def sampler_node():
                         + ", skipping"
                     )
                     continue
+                
+                if int(j["qubits"]) < int(args.min_qubits):
+                    print(
+                        f"qubits {j['qubits']} is lower than min_qubits {args.min_qubits}"
+                        + ", skipping"
+                    )
+                    continue
 
                 print(
                     f"Processing job {j['id']} with {j['qubits']} qubits for {j['shots']} shots"
@@ -91,14 +101,16 @@ def sampler_node():
 
                 # Do the simulation
                 print(f"\tStarting sampler {args.sampler}")
+                t_start = time.time()
                 counts = sampler.sample(j["shots"])
+                t_duration = time.time() - t_start
 
                 # Upload the result
                 result_f = f"{base_dir}/sampler/cache/{j['id']}_result.json"
                 with open(result_f, "w") as cf:
                     cf.write(json.dumps(counts))
 
-                print(f"\tSampling done, uploading {result_f}")
+                print(f"\tSampling done in {t_duration} seconds, uploading {result_f}")
                 jf_result = ipfs.upload(result_f)
                 print(f"\tResult file uploaded {jf_result}")
 
