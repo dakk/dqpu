@@ -24,7 +24,7 @@ from .sampler import SAMPLERS
 from .utils import create_dqpu_dirs
 
 
-def sampler_node(): # noqa: C901
+def sampler_node():  # noqa: C901
     parser = default_parser()
 
     parser.add_argument("-d", "--max-deposit", help="maximum deposit", default=0.1)
@@ -104,14 +104,18 @@ def sampler_node(): # noqa: C901
                 print(f"\tStarting sampler {args.sampler}")
                 t_start = time.time()
                 counts = sampler.sample(j["shots"])
-                t_duration = time.time() - t_start
+                t_duration = int(time.time() - t_start)
+                if t_duration > 120:
+                    t_duration_s = f"{t_duration / 60.} minutes"
+                else:
+                    t_duration_s = f"{t_duration} seconds"
 
                 # Upload the result
                 result_f = f"{base_dir}/sampler/cache/{j['id']}_result.json"
                 with open(result_f, "w") as cf:
                     cf.write(json.dumps(counts))
 
-                print(f"\tSampling done in {t_duration} seconds, uploading {result_f}")
+                print(f"\tSampling done in {t_duration_s}, uploading {result_f}")
                 jf_result = ipfs.upload(result_f)
                 print(f"\tResult file uploaded {jf_result}")
 
