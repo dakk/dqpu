@@ -37,14 +37,18 @@ def verifier_node():  # noqa: C901
 
     # Start contract polling for new jobs
     running = True
-    current_limit = 256
+    first_run = True
     n_vresult = 0
     n_verified = 0
 
     print("Verifier node started.")
 
     while running:
-        latest_jobs = nb.get_latest_jobs(limit=current_limit)
+        if first_run:
+            first_run = False
+            latest_jobs = nb.get_all_jobs()
+        else:        
+            latest_jobs = nb.get_latest_jobs()
 
         # If there is a new job that needs validation, process it
         for j in latest_jobs:
@@ -159,7 +163,6 @@ def verifier_node():  # noqa: C901
                 except Exception as e:
                     print("\tFailed to set", e)
 
-        current_limit = 48
         print(
             f"Account balance is {nb.balance():0.5f} N, job verified {n_verified}, "
             + f"result verified {n_vresult}"

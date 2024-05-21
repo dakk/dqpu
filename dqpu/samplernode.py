@@ -44,12 +44,17 @@ def sampler_node():
     # Start contract polling for new jobs
     running = True
     n_sampled = 0
-    current_limit = 256
+    first_run = True
     
     print("Sampler node started.")
 
     while running:
-        latest_jobs = nb.get_latest_jobs(limit=current_limit)  # [::-1]
+        if first_run:
+            first_run = False
+            latest_jobs = nb.get_all_jobs(True)
+        else:        
+            latest_jobs = nb.get_latest_jobs()
+
 
         # If there is a new job that needs execution, process it
         for j in latest_jobs:

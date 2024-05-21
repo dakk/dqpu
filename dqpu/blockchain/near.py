@@ -158,8 +158,8 @@ class NearBlockchain(Blockchain):
     def get_latest_jobs(self, limit=50):
         return self.view("get_latest_jobs", {"limit": limit})
 
-    def get_jobs(self, index=0, limit=50):
-        return self.view("get_jobs", {"from_index": index, "limit": limit})
+    def get_jobs(self, from_index=0, limit=50):
+        return self.view("get_jobs", {"from_index": from_index, "limit": limit})
 
     # Get a single quantum job by its id
     def get_job(self, id: str):
