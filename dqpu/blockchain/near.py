@@ -86,6 +86,9 @@ class NearBlockchain(Blockchain):
             fn = os.path.expanduser(
                 os.path.join("~", ".near-credentials", self.network, account + ".json")
             )
+            
+        if not os.path.exists(fn):
+            raise Exception(f"Unable to load wallet file: {fn}")
 
         with open(fn, "r") as wf:
             w = json.loads(wf.read())
@@ -98,8 +101,6 @@ class NearBlockchain(Blockchain):
             asyncio_run_nested(v)
 
             return acc
-
-        raise Exception("No wallet")
 
     def view(self, view_name: str, params):
         async def v():
