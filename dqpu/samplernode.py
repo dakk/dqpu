@@ -32,7 +32,7 @@ def sampler_node():
         "-q", "--max-qubits", help="maximum number of simulable qubits", default=21
     )
     parser.add_argument(
-        "-s", "--sampler", help="sampler to use", default="aersimulator"
+        "-s", "--sampler", help="sampler to use", default="aersimulator", choices=SAMPLERS.keys()
     )
 
     args = parser.parse_args()  # noqa: F841
@@ -45,7 +45,7 @@ def sampler_node():
     running = True
     n_sampled = 0
     current_limit = 256
-
+    
     print("Sampler node started.")
 
     while running:
