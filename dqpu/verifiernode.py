@@ -47,7 +47,7 @@ def verifier_node():  # noqa: C901
         if first_run:
             first_run = False
             latest_jobs = nb.get_all_jobs()
-        else:        
+        else:
             latest_jobs = nb.get_latest_jobs()
 
         # If there is a new job that needs validation, process it
@@ -141,8 +141,8 @@ def verifier_node():  # noqa: C901
                     trapper = BasicTrapper()
                     validity = trapper.verify(trap_list, counts)
                 except Exception as e:
-                    print ('Got exception while verifying, contact dakk')
-                    print (e)
+                    print("Got exception while verifying, contact dakk")
+                    print(e)
                     continue
 
                 # Send the set_result_validity

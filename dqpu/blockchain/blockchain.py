@@ -29,12 +29,12 @@ class Blockchain:
         n = self.get_number_of_jobs() if to_index is None else to_index
         i = from_index
         js = []
-        
+
         while i < n:
             js += self.get_jobs(from_index=i, limit=50)
             i += limit
-            
+
         return js if not reverse else js[::-1]
-    
+
     def get_all_jobs(self, reverse=False):
         return self.get_jobs_paginated(reverse=reverse)

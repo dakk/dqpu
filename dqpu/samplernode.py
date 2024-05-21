@@ -24,18 +24,20 @@ from .sampler import SAMPLERS
 from .utils import create_dqpu_dirs
 
 
-def sampler_node():
+def sampler_node(): # noqa: C901
     parser = default_parser()
 
     parser.add_argument("-d", "--max-deposit", help="maximum deposit", default=0.1)
     parser.add_argument(
         "-q", "--max-qubits", help="maximum number of simulable qubits", default=21
     )
+    parser.add_argument("--min-qubits", help="minimum number of qubits", default=1)
     parser.add_argument(
-        "--min-qubits", help="minimum number of qubits", default=1
-    )
-    parser.add_argument(
-        "-s", "--sampler", help="sampler to use", default="aersimulator", choices=SAMPLERS.keys()
+        "-s",
+        "--sampler",
+        help="sampler to use",
+        default="aersimulator",
+        choices=SAMPLERS.keys(),
     )
 
     args = parser.parse_args()  # noqa: F841
@@ -48,16 +50,15 @@ def sampler_node():
     running = True
     n_sampled = 0
     first_run = True
-    
+
     print("Sampler node started.")
 
     while running:
         if first_run:
             first_run = False
             latest_jobs = nb.get_all_jobs(True)
-        else:        
+        else:
             latest_jobs = nb.get_latest_jobs()
-
 
         # If there is a new job that needs execution, process it
         for j in latest_jobs:
@@ -74,7 +75,7 @@ def sampler_node():
                         + ", skipping"
                     )
                     continue
-                
+
                 if int(j["qubits"]) < int(args.min_qubits):
                     print(
                         f"qubits {j['qubits']} is lower than min_qubits {args.min_qubits}"
@@ -126,6 +127,5 @@ def sampler_node():
                 except Exception as e:
                     print("Failed to submit:", e)
 
-        current_limit = 48
         print(f"Account balance is {nb.balance():0.5f} N, sampled jobs {n_sampled}")
         time.sleep(random.randint(0, 60))

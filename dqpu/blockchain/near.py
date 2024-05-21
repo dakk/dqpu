@@ -86,7 +86,7 @@ class NearBlockchain(Blockchain):
             fn = os.path.expanduser(
                 os.path.join("~", ".near-credentials", self.network, account + ".json")
             )
-            
+
         if not os.path.exists(fn):
             raise Exception(f"Unable to load wallet file: {fn}")
 
