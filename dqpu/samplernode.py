@@ -24,7 +24,39 @@ from .sampler import SAMPLERS
 from .utils import create_dqpu_dirs
 
 
-def sampler_node():  # noqa: C901
+def filter_jobs(jobs, args):
+    filtered = []
+    for j in jobs:
+        if j["status"] != "waiting":
+            continue
+        
+        # Check if reward/10 is < of max_deposit
+        if int(j["reward_amount"]) / 10 > to_near(float(args.max_deposit)):
+            print("reward / 10 is greater than max_deposit, skipping")
+            continue
+
+        # Check for max qubits
+        if int(j["qubits"]) > int(args.max_qubits):
+            print(
+                f"qubits {j['qubits']} is greater than max_qubits {args.max_qubits}"
+                + ", skipping"
+            )
+            continue
+
+        # Check for min qubits
+        if int(j["qubits"]) < int(args.min_qubits):
+            print(
+                f"qubits {j['qubits']} is lower than min_qubits {args.min_qubits}"
+                + ", skipping"
+            )
+            continue
+
+        filtered.append(j)
+
+    return filtered
+
+
+def sampler_node():
     parser = default_parser()
 
     parser.add_argument("-d", "--max-deposit", help="maximum deposit", default=0.1)
@@ -60,76 +92,62 @@ def sampler_node():  # noqa: C901
         else:
             latest_jobs = nb.get_latest_jobs()
 
+        filtered_jobs = filter_jobs(latest_jobs, args)
+        fj_s = ", ".join(map(lambda j: j["id"], filtered_jobs))
+        print(f"Found {len(filtered_jobs)} jobs matching sampler criteria: {fj_s}")
+        i = 0
+
         # If there is a new job that needs execution, process it
-        for j in latest_jobs:
-            if j["status"] == "waiting":
-                # Check if reward/10 is < of max_deposit
-                if int(j["reward_amount"]) / 10 > to_near(float(args.max_deposit)):
-                    print("reward / 10 is greater than max_deposit, skipping")
-                    continue
+        for j in filtered_jobs:
+            i += 1
+            print(
+                f"[{i}/{len(filtered_jobs)}] Processing job {j['id']} with {j['qubits']} "
+                + f"qubits for {j['shots']} shots"
+            )
 
-                # Check for max qubits
-                if int(j["qubits"]) > int(args.max_qubits):
-                    print(
-                        f"qubits {j['qubits']} is greater than max_qubits {args.max_qubits}"
-                        + ", skipping"
-                    )
-                    continue
+            # Get the qasm file
+            try:
+                jf = ipfs.get(j["job_file"], timeout=120)
+            except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
+                print(f"\tTimeout getting file {j['job_file']}, skipping for now")
+                continue
 
-                if int(j["qubits"]) < int(args.min_qubits):
-                    print(
-                        f"qubits {j['qubits']} is lower than min_qubits {args.min_qubits}"
-                        + ", skipping"
-                    )
-                    continue
+            print(f"\tGot file {j['job_file']}")
 
-                print(
-                    f"Processing job {j['id']} with {j['qubits']} qubits for {j['shots']} shots"
+            # Load into a Sampler object (selected by params)
+            # qc = Circuit.fromQasmCircuit(jf)
+            sampler = SAMPLERS[args.sampler](jf)
+
+            # Do the simulation
+            print(f"\tStarting sampler {args.sampler}")
+            t_start = time.time()
+            counts = sampler.sample(j["shots"])
+            t_duration = int(time.time() - t_start)
+            if t_duration > 120:
+                t_duration_s = f"{int(t_duration / 60.)} minutes and {int(t_duration % 60)} seconds"
+            else:
+                t_duration_s = f"{t_duration} seconds"
+
+            # Upload the result
+            result_f = f"{base_dir}/sampler/cache/{j['id']}_result.json"
+            with open(result_f, "w") as cf:
+                cf.write(json.dumps(counts))
+
+            print(f"\tSampling done in {t_duration_s}, uploading {result_f}")
+            jf_result = ipfs.upload(result_f)
+            print(f"\tResult file uploaded {jf_result}")
+
+            # Submit the result with the deposit
+            try:
+                sub_res = nb.submit_job_result(
+                    j["id"],
+                    jf_result,
+                    deposit=from_near(j["reward_amount"]) / 10 + 0.00001,
                 )
-
-                # Get the qasm file
-                try:
-                    jf = ipfs.get(j["job_file"], timeout=120)
-                except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
-                    print(f"\tTimeout getting file {j['job_file']}, skipping for now")
-                    continue
-
-                print(f"\tGot file {j['job_file']}")
-
-                # Load into a Sampler object (selected by params)
-                # qc = Circuit.fromQasmCircuit(jf)
-                sampler = SAMPLERS[args.sampler](jf)
-
-                # Do the simulation
-                print(f"\tStarting sampler {args.sampler}")
-                t_start = time.time()
-                counts = sampler.sample(j["shots"])
-                t_duration = int(time.time() - t_start)
-                if t_duration > 120:
-                    t_duration_s = f"{t_duration / 60.} minutes"
-                else:
-                    t_duration_s = f"{t_duration} seconds"
-
-                # Upload the result
-                result_f = f"{base_dir}/sampler/cache/{j['id']}_result.json"
-                with open(result_f, "w") as cf:
-                    cf.write(json.dumps(counts))
-
-                print(f"\tSampling done in {t_duration_s}, uploading {result_f}")
-                jf_result = ipfs.upload(result_f)
-                print(f"\tResult file uploaded {jf_result}")
-
-                # Submit the result with the deposit
-                try:
-                    sub_res = nb.submit_job_result(
-                        j["id"],
-                        jf_result,
-                        deposit=from_near(j["reward_amount"]) / 10 + 0.00001,
-                    )
-                    print(f"\t{sub_res}")
-                    n_sampled += 1
-                except Exception as e:
-                    print("Failed to submit:", e)
+                print(f"\t{sub_res}")
+                n_sampled += 1
+            except Exception as e:
+                print("Failed to submit:", e)
 
         print(f"Account balance is {nb.balance():0.5f} N, sampled jobs {n_sampled}")
         time.sleep(random.randint(0, 60))
