@@ -167,7 +167,7 @@ def cli():  # noqa: C901
         print(f"Circuit file is {job_file}")
 
         shots = random.choice([256, 512, 1024, 2048, 4096, 8192, 16384])
-        sh_fact = (shots / 16384) * nq * dpt / 600000
+        sh_fact = (shots / 16384) * nq * dpt / 1000000
         reward = random.randint(0.5 * sh_fact, 1.1 * sh_fact)
 
         print(f"Submitting with a reward of {reward:.6f} for {shots} shots")
