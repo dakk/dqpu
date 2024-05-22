@@ -55,70 +55,79 @@ const app = Vue.createApp({
     async mounted() {
         console.log('APP mounted');
 
-        console.log('Updating data...');
-        this.n_jobs = await viewMethod('get_number_of_jobs');
-        this.n_verifiers = await viewMethod('get_number_of_verifiers');
-        this.amount_handled = await viewMethod('get_handled_amount');
-        this.job_stats = await viewMethod('get_jobs_stats');
+        await this.updateData();
 
-        console.log('Updated.');
-        this.timer = setInterval(async () => { await this.loadJobs(0, this.items_per_page, '') }, 10000);
+        this.timer_table = setInterval(async () => { await this.loadJobs(0, this.items_per_page, '') }, 10000);
+        this.timer_stats = setInterval(async () => { await this.updateData() }, 9000);
+
+        await this.updateLeaderboards();
+        this.timer_leaderboard = setInterval(async () => { await this.updateLeaderboards() }, 60000);
 
 
-        all_jobs = await get_all_jobs(50, this.n_jobs);
-
-        const samplers = {};
-        const verifiers = {};
-        const max_qubits = {};
-
-        all_jobs.forEach(element => {
-            if (element.sampler_id != '') {
-                if (!(element.sampler_id in samplers))
-                    samplers[element.sampler_id] = {
-                        sampler_id: element.sampler_id,
-                        max_qubits: 0,
-                        jobs: 0,
-                        reward: 0
-                    }
-
-                samplers[element.sampler_id].jobs += 1;
-                samplers[element.sampler_id].reward += parseInt(element.reward_amount);
-                samplers[element.sampler_id].max_qubits = max(element.qubits, samplers[element.sampler_id].max_qubits);
-            }
-
-            if (element.sampler_id != '') {
-                if (!(element.sampler_id in max_qubits))
-                    max_qubits[element.sampler_id] = element.qubits;
-                max_qubits[element.sampler_id] = max(element.qubits, max_qubits[element.sampler_id]);
-            }
-
-            if (element.verifier_id != '') {
-                if (!(element.verifier_id in verifiers))
-                    verifiers[element.verifier_id] = {
-                        verifier_id: element.verifier_id,
-                        jobs: 0,
-                        reward: 0
-                    }
-
-                verifiers[element.verifier_id].jobs += 1
-                verifiers[element.verifier_id].reward += parseInt(element.reward_amount) / 10;
-            }
-        });
-
-        this.verifiers = Object.entries(verifiers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
-        this.samplers = Object.entries(samplers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
-        this.max_qubits = Object.entries(max_qubits).sort((a, b) => { return b[1] - a[1]; });
     },
     methods: {
-        async loadJobs({ page, items_per_page, sortBy }) {
-            console.log(`loadJobs(${page}, ${items_per_page}, ${sortBy})`);
+        async updateLeaderboards() {
+            all_jobs = await get_all_jobs(50, this.n_jobs);
+    
+            const samplers = {};
+            const verifiers = {};
+            const max_qubits = {};
+    
+            all_jobs.forEach(element => {
+                if (element.sampler_id != '') {
+                    if (!(element.sampler_id in samplers))
+                        samplers[element.sampler_id] = {
+                            sampler_id: element.sampler_id,
+                            max_qubits: 0,
+                            jobs: 0,
+                            reward: 0
+                        }
+    
+                    samplers[element.sampler_id].jobs += 1;
+                    samplers[element.sampler_id].reward += parseInt(element.reward_amount);
+                    samplers[element.sampler_id].max_qubits = max(element.qubits, samplers[element.sampler_id].max_qubits);
+                }
+    
+                if (element.sampler_id != '') {
+                    if (!(element.sampler_id in max_qubits))
+                        max_qubits[element.sampler_id] = element.qubits;
+                    max_qubits[element.sampler_id] = max(element.qubits, max_qubits[element.sampler_id]);
+                }
+    
+                if (element.verifier_id != '') {
+                    if (!(element.verifier_id in verifiers))
+                        verifiers[element.verifier_id] = {
+                            verifier_id: element.verifier_id,
+                            jobs: 0,
+                            reward: 0
+                        }
+    
+                    verifiers[element.verifier_id].jobs += 1
+                    verifiers[element.verifier_id].reward += parseInt(element.reward_amount) / 10;
+                }
+            });
+    
+            this.verifiers = Object.entries(verifiers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
+            this.samplers = Object.entries(samplers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
+            this.max_qubits = Object.entries(max_qubits).sort((a, b) => { return b[1] - a[1]; });
+        },
+        async updateData() {
+            console.log('Updating data...');
+            this.n_jobs = await viewMethod('get_number_of_jobs');
+            this.n_verifiers = await viewMethod('get_number_of_verifiers');
+            this.amount_handled = await viewMethod('get_handled_amount');
+            this.job_stats = await viewMethod('get_jobs_stats');
+            console.log('Updated.');
+        },
+        async loadJobs({ page, itemsPerPage, sortBy }) {
+            console.log(`loadJobs(${page}, ${itemsPerPage}, ${sortBy})`);
 
             this.loading = true;
             let nj = [];
-            if (items_per_page == -1) {
+            if (itemsPerPage == -1) {
                 nj = (await get_all_jobs(50, this.n_jobs));
             } else {
-                nj = (await viewMethod('get_latest_jobs', { limit: items_per_page })).reverse();
+                nj = (await viewMethod('get_latest_jobs', { limit: itemsPerPage })).reverse();
             }
             this.jobs = nj;
 
