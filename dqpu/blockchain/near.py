@@ -57,9 +57,9 @@ def asyncio_run_nested(v, n_repeat=5):
         return asyncio.run(v())
     except RpcEmptyResponse as e:
         print(e)
-        if n_repeat > 0:
-            time.sleep(3)
-            return asyncio_run_nested(v, n_repeat-1)
+        # if n_repeat > 0:
+        #     time.sleep(3)
+        #     return asyncio_run_nested(v, n_repeat-1)
     except Exception as e:
         print(e)
         import nest_asyncio
