@@ -49,7 +49,7 @@ const app = Vue.createApp({
             max_qubits: [[0, 0]],
 
             loading: false,
-            items_per_page: 25,
+            itemsPerPage: 25,
         };
     },
     async mounted() {
@@ -57,7 +57,7 @@ const app = Vue.createApp({
 
         await this.updateData();
 
-        this.timer_table = setInterval(async () => { await this.loadJobs(0, this.items_per_page, '') }, 10000);
+        this.timer_table = setInterval(async () => { await this.loadJobs({ page: 0, itemsPerPage: this.itemsPerPage, sortBy: ''}) }, 10000);
         this.timer_stats = setInterval(async () => { await this.updateData() }, 9000);
 
         await this.updateLeaderboards();
@@ -120,6 +120,7 @@ const app = Vue.createApp({
             console.log('Updated.');
         },
         async loadJobs({ page, itemsPerPage, sortBy }) {
+            this.itemsPerPage = itemsPerPage;
             console.log(`loadJobs(${page}, ${itemsPerPage}, ${sortBy})`);
 
             this.loading = true;

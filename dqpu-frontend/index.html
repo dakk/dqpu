@@ -146,7 +146,7 @@
                                 </v-card>
                             </div>
                             <v-data-table-server v-model:items="jobs"
-                                :items-per-page="items_per_page"
+                                :items-per-page="itemsPerPage"
                                 :items-length="n_jobs"
                                 :loading="loading" @update:options="loadJobs">
                                 <template v-slot:header.owner_id>Owner</template>
