@@ -53,7 +53,7 @@ def from_near(v):
 def asyncio_run_nested(v):
     try:
         return asyncio.run(v())
-    except Exception as e: 
+    except Exception as e:
         print(e)
         import nest_asyncio
 

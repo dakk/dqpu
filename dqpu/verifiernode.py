@@ -42,6 +42,7 @@ def verifier_node():  # noqa: C901
     n_verified = 0
 
     print("Verifier node started.")
+    stats = nb.get_jobs_stats()
 
     while running:
         if first_run:
@@ -50,10 +51,10 @@ def verifier_node():  # noqa: C901
         else:
             i = 0
             while (
-                (nb.get_jobs_stats()["validating-result"] == stats["validating-result"]
+                nb.get_jobs_stats()["validating-result"] == stats["validating-result"]
                 and nb.get_jobs_stats()["pending-validation"]
-                == stats["pending-validation"]) and i < 5
-            ):
+                == stats["pending-validation"]
+            ) and i < 5:
                 time.sleep(random.randint(0, 5))
                 i += 1
 
@@ -105,7 +106,7 @@ def verifier_node():  # noqa: C901
                 try:
                     print("\t", nb.set_job_validity(j["id"], True, jf_trapped))
                     n_verified += 1
-                    stats['pending-validation'] -= 1
+                    stats["pending-validation"] -= 1
                 except Exception as e:
                     print("\tFailed to set", e)
 
@@ -173,7 +174,7 @@ def verifier_node():  # noqa: C901
                     else:
                         print("\t", nb.set_result_validity(j["id"], False))
                     n_vresult += 1
-                    stats['validating-result'] -= 1
+                    stats["validating-result"] -= 1
                 except Exception as e:
                     print("\tFailed to set", e)
 

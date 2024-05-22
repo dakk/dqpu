@@ -57,7 +57,7 @@ def filter_jobs(jobs, args):
     return filtered
 
 
-def sampler_node():
+def sampler_node():  # noqa: C901
     parser = default_parser()
 
     parser.add_argument("-d", "--max-deposit", help="maximum deposit", default=0.1)
@@ -93,6 +93,7 @@ def sampler_node():
         sys.exit()
 
     print("Sampler node started.")
+    waiting_jobs = 0
 
     while running:
         if first_run:
@@ -100,12 +101,12 @@ def sampler_node():
             latest_jobs = nb.get_all_jobs(True)
         else:
             i = 0
-            while (nb.get_jobs_stats()['waiting'] == waiting_jobs) and i < 5:
+            while (nb.get_jobs_stats()["waiting"] == waiting_jobs) and i < 5:
                 time.sleep(random.randint(0, 5))
                 i += 1
             latest_jobs = nb.get_latest_jobs()
-        
-        waiting_jobs = nb.get_jobs_stats()['waiting']
+
+        waiting_jobs = nb.get_jobs_stats()["waiting"]
 
         filtered_jobs = filter_jobs(latest_jobs, args)
         random.shuffle(filtered_jobs)
