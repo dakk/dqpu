@@ -52,7 +52,7 @@ def verifier_node():  # noqa: C901
             while (
                 (nb.get_jobs_stats()["validating-result"] == stats["validating-result"]
                 and nb.get_jobs_stats()["pending-validation"]
-                == stats["pending-validation"]) or i >= 5
+                == stats["pending-validation"]) and i < 5
             ):
                 time.sleep(random.randint(0, 5))
                 i += 1

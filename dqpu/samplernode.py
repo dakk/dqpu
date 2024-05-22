@@ -100,7 +100,7 @@ def sampler_node():
             latest_jobs = nb.get_all_jobs(True)
         else:
             i = 0
-            while (nb.get_jobs_stats()['waiting'] == waiting_jobs) or i >= 5:
+            while (nb.get_jobs_stats()['waiting'] == waiting_jobs) and i < 5:
                 time.sleep(random.randint(0, 5))
                 i += 1
             latest_jobs = nb.get_latest_jobs()
