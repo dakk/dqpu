@@ -14,10 +14,12 @@
 
 import asyncio
 import json
+import time
 import os
 from typing import Optional
 
 from py_near.account import Account
+from py_near.exceptions.exceptions import RpcEmptyResponse
 
 from .blockchain import Blockchain
 
@@ -50,9 +52,14 @@ def from_near(v):
     return int(v) / 1000000000000000000000000.0
 
 
-def asyncio_run_nested(v):
+def asyncio_run_nested(v, n_repeat=5):
     try:
         return asyncio.run(v())
+    except RpcEmptyResponse as e:
+        print(e)
+        if n_repeat > 0:
+            time.sleep(3)
+            return asyncio_run_nested(v, n_repeat-1)
     except Exception as e:
         print(e)
         import nest_asyncio
