@@ -99,11 +99,11 @@ def sampler_node():
             first_run = False
             latest_jobs = nb.get_all_jobs(True)
         else:
-            while nb.get_number_of_jobs() == num_jobs:
+            while nb.get_jobs_stats()['waiting'] == waiting_jobs:
                 time.sleep(random.randint(0, 5))
             latest_jobs = nb.get_latest_jobs()
         
-        num_jobs = nb.get_number_of_jobs()
+        waiting_jobs = nb.get_jobs_stats()['waiting']
 
         filtered_jobs = filter_jobs(latest_jobs, args)
         random.shuffle(filtered_jobs)

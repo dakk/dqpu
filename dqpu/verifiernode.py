@@ -48,12 +48,16 @@ def verifier_node():  # noqa: C901
             first_run = False
             latest_jobs = nb.get_all_jobs()
         else:
-            while nb.get_number_of_jobs() == num_jobs:
+            while (
+                nb.get_jobs_stats()["validating-result"] == stats["validating-result"]
+                and nb.get_jobs_stats()["pending-validation"]
+                == stats["pending-validation"]
+            ):
                 time.sleep(random.randint(0, 5))
-                
+
             latest_jobs = nb.get_latest_jobs()
 
-        num_jobs = nb.get_number_of_jobs()
+        stats = nb.get_jobs_stats()
         random.shuffle(latest_jobs)
 
         # If there is a new job that needs validation, process it
