@@ -1,6 +1,25 @@
 DQPU
 ====================================
 
+.. image:: https://img.shields.io/badge/GitHub-Repository-blue?logo=github
+   :alt: GitHub Repository
+   :target: https://github.com/dakk/dqpu
+.. image:: https://github.com/dakk/dqpu/actions/workflows/ci.yaml/badge.svg
+   :alt: CI Status
+   :target: https://github.com/dakk/dqpu/actions/workflows/ci.yaml
+.. image:: https://github.com/dakk/dqpu/actions/workflows/ci-contract.yaml/badge.svg
+   :alt: Contract CI Status
+   :target: https://github.com/dakk/dqpu/actions/workflows/ci-contract.yaml
+.. image:: https://img.shields.io/pypi/v/dqpu
+   :alt: PyPI - Version
+   :target: https://pypi.org/project/dqpu/
+.. image:: https://img.shields.io/badge/license-Apache_2.0-blue
+   :alt: License: Apache 2.0
+   :target: https://opensource.org/licenses/Apache-2.0
+.. image:: https://static.pepy.tech/badge/dqpu
+   :alt: Downloads
+   :target: https://pepy.tech/project/dqpu
+
 DQPU is a Web3-Powered (Near), Decentralized Quantum Simulator with Verifiable Computation. 
 
 DQPU (Decentralized Quantum Processing Unit) introduces a novel, decentralized approach to quantum computing that leverages the power of blockchain and smart contracts. It addresses the challenges of securely and reliably executing quantum computations in a trustless and transparent manner, while fostering a competitive ecosystem for quantum resource providers.
