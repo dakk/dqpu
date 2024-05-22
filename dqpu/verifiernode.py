@@ -46,8 +46,13 @@ def verifier_node():  # noqa: C901
     while running:
         if first_run:
             first_run = False
+            num_jobs = nb.get_number_of_jobs()
             latest_jobs = nb.get_all_jobs()
         else:
+            while nb.get_number_of_jobs() == num_jobs:
+                time.sleep(random.randint(0, 5))
+                
+            num_jobs = nb.get_number_of_jobs()
             latest_jobs = nb.get_latest_jobs()
 
         random.shuffle(latest_jobs)
@@ -169,4 +174,3 @@ def verifier_node():  # noqa: C901
             f"Account balance is {nb.balance():0.5f} N, job verified {n_verified}, "
             + f"result verified {n_vresult}"
         )
-        time.sleep(random.randint(0, 60))

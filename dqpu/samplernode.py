@@ -97,8 +97,11 @@ def sampler_node():
     while running:
         if first_run:
             first_run = False
+            num_jobs = nb.get_number_of_jobs()
             latest_jobs = nb.get_all_jobs(True)
         else:
+            while nb.get_number_of_jobs() == num_jobs:
+                time.sleep(random.randint(0, 5))
             latest_jobs = nb.get_latest_jobs()
 
         filtered_jobs = filter_jobs(latest_jobs, args)
@@ -160,4 +163,3 @@ def sampler_node():
                 print("Failed to submit:", e)
 
         print(f"Account balance is {nb.balance():0.5f} N, sampled jobs {n_sampled}")
-        time.sleep(random.randint(0, 60))
