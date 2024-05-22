@@ -58,7 +58,7 @@ python setup.py install
 Install IPFS:
 - https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
 
-## Usage: running a sampling job
+## Usage: simulating a quantum circuit
 
 The workflow described before is hidden to the final user: DQPU can be used seamleassy as any other quantum backend as any other quantum sampler. Currently DQPU implements a **qiskit** wrapper, a low level library for accessing the system primitives and a cli tool.
 

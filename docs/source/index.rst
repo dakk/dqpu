@@ -83,8 +83,8 @@ https://docs.ipfs.tech/install/command-line/#install-official-binary-distributio
    :maxdepth: 2
    :caption: DQPU
 
-   api
    qiskit_example.ipynb
+   api
 
 
 Indices and tables
