@@ -145,7 +145,10 @@
                                     </v-card-text>
                                 </v-card>
                             </div>
-                            <v-data-table :items="jobs">
+                            <v-data-table-server v-model:items="jobs"
+                                :items-per-page="items_per_page"
+                                :items-length="n_jobs"
+                                :loading="loading" @update:options="loadJobs">
                                 <template v-slot:header.owner_id>Owner</template>
                                 <template v-slot:header.verifier_id>Verifier</template>
                                 <template v-slot:header.sampler_id>Sampler</template>
@@ -223,7 +226,7 @@
                                         <v-icon icon="fa fa-file"></v-icon>
                                     </a>
                                 </template>
-                            </v-data-table>
+                            </v-data-table-server>
                         </v-tabs-window-item>
 
                         <v-tabs-window-item value="samplers">

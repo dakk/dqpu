@@ -23,6 +23,17 @@ async function viewMethod(method, args = {}) {
     return JSON.parse(Buffer.from(res.result).toString());
 };
 
+async function get_all_jobs(slice, total) {
+    let jobs = [];
+    for (let i = 0; i < total; i+= slice) {
+        console.log('getting',i,total,slice)
+        const nj = (await viewMethod('get_jobs', { from_index: i, limit: slice }));
+        jobs = jobs.concat(nj);
+    }
+    return jobs.reverse();
+}
+
+
 const app = Vue.createApp({
     data() {
         return {
@@ -35,21 +46,13 @@ const app = Vue.createApp({
             amount_handled: 0,
             verifiers: [],
             samplers: [],
-            max_qubits: [[0, 0]]
+            max_qubits: [[0, 0]],
+
+            loading: false,
+            items_per_page: 25,
         };
     },
     async mounted() {
-        async function get_all_jobs(slice, total) {
-            let jobs = [];
-            for (let i = 0; i < total; i+= slice) {
-                console.log('getting',i,total,slice)
-                const nj = (await viewMethod('get_jobs', { from_index: i, limit: slice }));
-                jobs = jobs.concat(nj);
-            }
-            console.log(jobs)
-            return jobs.reverse();
-        }
-
         console.log('APP mounted');
 
         console.log('Updating data...');
@@ -57,13 +60,18 @@ const app = Vue.createApp({
         this.n_verifiers = await viewMethod('get_number_of_verifiers');
         this.amount_handled = await viewMethod('get_handled_amount');
         this.job_stats = await viewMethod('get_jobs_stats');
-        this.jobs = await get_all_jobs(50, this.n_jobs); //(await viewMethod('get_latest_jobs', { limit: 300 })).reverse();
+
+        console.log('Updated.');
+        this.timer = setInterval(async () => { await this.loadJobs(0, this.items_per_page, '') }, 10000);
+
+
+        all_jobs = await get_all_jobs(50, this.n_jobs);
 
         const samplers = {};
         const verifiers = {};
         const max_qubits = {};
 
-        this.jobs.forEach(element => {
+        all_jobs.forEach(element => {
             if (element.sampler_id != '') {
                 if (!(element.sampler_id in samplers))
                     samplers[element.sampler_id] = {
@@ -100,17 +108,22 @@ const app = Vue.createApp({
         this.verifiers = Object.entries(verifiers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
         this.samplers = Object.entries(samplers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
         this.max_qubits = Object.entries(max_qubits).sort((a, b) => { return b[1] - a[1]; });
-
-        // this.samplers = this.samplers.map(function(a) {
-        //     return { sampler_id: a[0], jobs: a[1], max_qubits: max_qubits[a[0]] }
-        // });
-
-        // console.log(this.verifiers, this.samplers, this.max_qubits)
-
-
-        console.log('Updated.');
     },
     methods: {
+        async loadJobs({ page, items_per_page, sortBy }) {
+            console.log(`loadJobs(${page}, ${items_per_page}, ${sortBy})`);
+
+            this.loading = true;
+            let nj = [];
+            if (items_per_page == -1) {
+                nj = (await get_all_jobs(50, this.n_jobs));
+            } else {
+                nj = (await viewMethod('get_latest_jobs', { limit: items_per_page })).reverse();
+            }
+            this.jobs = nj;
+
+            this.loading = false;
+        },
         statusIcon(status) {
             switch (status) {
                 case 'pending-validation':
