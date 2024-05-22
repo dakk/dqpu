@@ -99,8 +99,10 @@ def sampler_node():
             first_run = False
             latest_jobs = nb.get_all_jobs(True)
         else:
-            while nb.get_jobs_stats()['waiting'] == waiting_jobs:
+            i = 0
+            while (nb.get_jobs_stats()['waiting'] == waiting_jobs) or i >= 5:
                 time.sleep(random.randint(0, 5))
+                i += 1
             latest_jobs = nb.get_latest_jobs()
         
         waiting_jobs = nb.get_jobs_stats()['waiting']
@@ -160,6 +162,7 @@ def sampler_node():
                 )
                 print(f"\t{sub_res}")
                 n_sampled += 1
+                waiting_jobs -= 1
             except Exception as e:
                 print("Failed to submit:", e)
 
