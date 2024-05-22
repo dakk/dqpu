@@ -22,11 +22,9 @@ class QrackSimulatorSampler(Sampler):
         from pyqrack import qrack_simulator  # noqa: F401
         from qiskit.providers.qrack import Qrack
 
-        # from .qrack import Qrack
+        simulator = Qrack.backends()[0]  # get_backend("qasm_simulator")
 
-        simulator = Qrack.get_backend("qasm_simulator")
-
-        qc = qasm2.loads(self.circuit.decode("ascii"))  # .toQasmCircuit())
+        qc = qasm2.loads(self.circuit)  # .toQasmCircuit())
         circ = transpile(qc, simulator)
         result = simulator.run(circ, shots=shots).result()
         counts = result.get_counts(circ)

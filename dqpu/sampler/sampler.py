@@ -17,11 +17,36 @@ class Sampler:
     """Abstract class that should be implemented by any sampler"""
 
     def __init__(self, circuit):
-        self.circuit = circuit
+        if type(circuit) is not str:
+            self.circuit = circuit.decode("ascii")
+        else:
+            self.circuit = circuit
+
+    @classmethod
+    def test(cls) -> bool:
+        qc = (
+            "OPENQASM 2.0;\n"
+            'include "qelib1.inc";\n'
+            "qreg q[2];\n"
+            "creg c[2];\n"
+            "h q[0];\n"
+            "cx q[0], q[1];\n"
+            "measure q -> c;"
+        )
+        c = cls(qc)
+        r = c.sample(1024)
+
+        if sorted(r.keys()) != ["00", "11"]:
+            return False
+
+        if (r["00"] + r["11"]) != 1024:
+            return False
+
+        return True
 
     def sample(self, shots):
-        pass
+        raise Exception("Not implemented")
 
     def compute(self):
         """Compute the statevector"""
-        pass
+        raise Exception("Not implemented")

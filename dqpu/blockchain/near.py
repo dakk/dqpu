@@ -80,6 +80,9 @@ class NearBlockchain(Blockchain):
 
         return from_near(asyncio.run(v()))
 
+    def create_account(self, name: str, useFaucet: bool = True):
+        pass
+
     def load_account(self, account: str):
         fn = account
         if "/" not in account:

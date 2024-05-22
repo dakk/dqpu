@@ -50,6 +50,8 @@ def verifier_node():  # noqa: C901
         else:
             latest_jobs = nb.get_latest_jobs()
 
+        random.shuffle(latest_jobs)
+
         # If there is a new job that needs validation, process it
         for j in latest_jobs:
             if j["status"] == "pending-validation":

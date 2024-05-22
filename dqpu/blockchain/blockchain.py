@@ -25,6 +25,12 @@ class Blockchain:
     def contract_call(self, call_name, params):
         raise Exception("Abstract: blockchain.contract_call")
 
+    def get_number_of_jobs(self) -> int:
+        raise Exception("Abstract: blockchain.get_number_of_jobs")
+
+    def get_jobs(self, from_index, limit):
+        raise Exception("Abstract: blockchain.get_number_of_jobs")
+
     def get_jobs_paginated(self, from_index=0, to_index=None, limit=50, reverse=False):
         n = self.get_number_of_jobs() if to_index is None else to_index
         i = from_index

@@ -14,6 +14,7 @@
 
 import json
 import random
+import sys
 import time
 
 from requests.exceptions import ReadTimeout
@@ -29,7 +30,7 @@ def filter_jobs(jobs, args):
     for j in jobs:
         if j["status"] != "waiting":
             continue
-        
+
         # Check if reward/10 is < of max_deposit
         if int(j["reward_amount"]) / 10 > to_near(float(args.max_deposit)):
             print("reward / 10 is greater than max_deposit, skipping")
@@ -83,6 +84,14 @@ def sampler_node():
     n_sampled = 0
     first_run = True
 
+    print(f"Testing selected sampler: {args.sampler}")
+    sampler_ok = SAMPLERS[args.sampler].test()
+    if sampler_ok:
+        print(f"Sampler {args.sampler} is working correctly.")
+    else:
+        print(f"Sampler {args.sampler} is not working correctly, exiting.")
+        sys.exit()
+
     print("Sampler node started.")
 
     while running:
@@ -93,6 +102,7 @@ def sampler_node():
             latest_jobs = nb.get_latest_jobs()
 
         filtered_jobs = filter_jobs(latest_jobs, args)
+        random.shuffle(filtered_jobs)
         fj_s = ", ".join(map(lambda j: j["id"], filtered_jobs))
         print(f"Found {len(filtered_jobs)} jobs matching sampler criteria: {fj_s}")
         i = 0
