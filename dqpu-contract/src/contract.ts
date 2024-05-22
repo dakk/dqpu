@@ -131,7 +131,7 @@ class DQPU {
 
         assert(j.status == 'waiting', `Job ${id} is not in 'waiting' state`);
         assert(deposit >= (j.reward_amount / BigInt(10)), `Deposit should be greater than ${j.reward_amount / BigInt(10)}`);
-        assert(j.owner_id != near.predecessorAccountId(), `Job owner and Verifier can't be the same account`);
+        assert(j.owner_id != near.predecessorAccountId(), `Job owner and Sampler can't be the same account`);
         assert(j.verifier_id != near.predecessorAccountId(), `Sampler and Verifier can't be the same account`);
 
         this.jobs_stats[j.status] -= 1;
