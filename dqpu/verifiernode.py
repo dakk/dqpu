@@ -71,7 +71,7 @@ def verifier_node():  # noqa: C901
                 )
 
                 try:
-                    jf = ipfs.get(j["job_file"], timeout=120)
+                    jf = ipfs.get(j["job_file"], timeout=10)
                 except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
                     print(f"\tTimeout getting file {j['job_file']}, skipping for now")
                     continue
@@ -121,7 +121,7 @@ def verifier_node():  # noqa: C901
 
                 # Get the result data
                 try:
-                    rf = ipfs.get(j["result_file"], timeout=120)
+                    rf = ipfs.get(j["result_file"], timeout=10)
                 except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
                     print(
                         f"\tTimeout getting file {j['result_file']}, skipping for now"

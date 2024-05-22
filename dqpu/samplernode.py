@@ -124,7 +124,7 @@ def sampler_node():  # noqa: C901
 
             # Get the qasm file
             try:
-                jf = ipfs.get(j["job_file"], timeout=120)
+                jf = ipfs.get(j["job_file"], timeout=10)
             except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
                 print(f"\tTimeout getting file {j['job_file']}, skipping for now")
                 continue

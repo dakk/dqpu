@@ -55,7 +55,7 @@ class IPFSGateway:
         else:
             print(f"Error adding file to IPFS: {response.text}")
 
-    def get(self, ipfs_hash, destination_file=None, timeout=60):
+    def get(self, ipfs_hash, destination_file=None, timeout=10):
         # Set the URL for the IPFS daemon
         url = self.gateway + "/ipfs/"
 
