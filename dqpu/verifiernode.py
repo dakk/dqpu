@@ -22,11 +22,113 @@ from requests.exceptions import ReadTimeout
 from .blockchain import IPFSGateway, NearBlockchain
 from .cli import default_parser
 from .q import Circuit
-from .utils import create_dqpu_dirs
+from .utils import create_dqpu_dirs, repeat_until_done
 from .verifier import BasicTrapper  # BasicTrapInfo,
 
 
-def verifier_node():  # noqa: C901
+def handle_pending_validation_job(j, ipfs, nb, base_dir):
+    print(f"Processing pending-validation job {j['id']} from {j['owner_id']}")
+
+    try:
+        jf = ipfs.get(j["job_file"], timeout=10)
+    except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
+        print(f"\tTimeout getting file {j['job_file']}, skipping for now")
+        return False
+
+    # Parse the file using q.Circuit.fromQasm
+    try:
+        qc = Circuit.fromQasmCircuit(jf.decode("ascii"))
+    except Exception as e:
+        print("\t", "Failed to parse", j["id"], e)
+        nb.set_job_validity(j["id"], False)
+        return True
+
+    # Add a trap
+    trapper = BasicTrapper()
+    (qc2, trap_list) = trapper.trap(qc)
+
+    # Save trap info to a file
+    with open(f"{base_dir}/{j['id']}_qc_traps.pickle", "wb") as outp:
+        pickle.dump(trap_list, outp, pickle.HIGHEST_PROTOCOL)
+
+    # Save qasm to file
+    trapped_qasm_file = f"{base_dir}/{j['id']}_qc_trapped.qasm"
+
+    with open(trapped_qasm_file, "w") as f:
+        f.write(qc2.toQasmCircuit())
+
+    # Upload the file
+    jf_trapped = ipfs.upload(trapped_qasm_file)
+    print("\tTrapped file uploaded", jf_trapped)
+
+    # Send the set_validity
+    print("\t", nb.set_job_validity(j["id"], True, jf_trapped))
+    return True
+
+
+def handle_validating_result_job(j, ipfs, nb, base_dir):
+    print(
+        f"Processing validating-result job {j['id']} from {j['owner_id']} "
+        + f"sampled by {j['sampler_id']}"
+    )
+
+    # Get the result data
+    try:
+        rf = ipfs.get(j["result_file"], timeout=10)
+    except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
+        print(f"\tTimeout getting file {j['result_file']}, skipping for now")
+        return False
+
+    try:
+        counts = json.loads(rf)
+    except:
+        print("\tInvalid result data")
+        print(nb.set_result_validity(j["id"], False))
+        return True
+
+    # Check if shots match
+    ctot = sum(counts.values())
+    if j["shots"] > ctot:
+        print("\t", "Invalid number of shots")
+        print(nb.set_result_validity(j["id"], False))
+        return True
+
+    # Load the trap from file
+    trap_fp = f"{base_dir}/{j['id']}_qc_traps.pickle"
+    try:
+        with open(trap_fp, "rb") as inp:
+            trap_list = pickle.load(inp)
+    except:
+        print(f'Unable to load {trap_fp}, skipping job {j["id"]}')
+        return False
+
+    # Check trap validity
+    try:
+        trapper = BasicTrapper()
+        validity = trapper.verify(trap_list, counts)
+    except Exception as e:
+        print("Got exception while verifying, contact dakk")
+        print(e)
+        return False
+
+    # Send the set_result_validity
+    if validity:
+        trap_j = list(map(lambda t: t.dump(), trap_list))
+        trap_file = f"{base_dir}/{j['id']}_traps.json"
+
+        with open(trap_file, "w") as inp:
+            inp.write(json.dumps(trap_j))
+
+        trap_file_i = ipfs.upload(trap_file)
+
+        print("\t", nb.set_result_validity(j["id"], True, trap_file_i))
+    else:
+        print("\t", nb.set_result_validity(j["id"], False))
+
+    return True
+
+
+def verifier_node():
     parser = default_parser()
     args = parser.parse_args()  # noqa: F841
 
@@ -42,141 +144,47 @@ def verifier_node():  # noqa: C901
     n_verified = 0
 
     print("Verifier node started.")
-    stats = nb.get_jobs_stats()
+    stats = repeat_until_done(lambda: nb.get_jobs_stats())
 
     while running:
         if first_run:
             first_run = False
-            latest_jobs = nb.get_all_jobs()
+            latest_jobs = repeat_until_done(lambda: nb.get_all_jobs())
         else:
             i = 0
             while (
-                nb.get_jobs_stats()["validating-result"] == stats["validating-result"]
-                and nb.get_jobs_stats()["pending-validation"]
+                repeat_until_done(lambda: nb.get_jobs_stats())["validating-result"] == stats["validating-result"]
+                and repeat_until_done(lambda: nb.get_jobs_stats())["pending-validation"]
                 == stats["pending-validation"]
             ) and i < 5:
                 time.sleep(random.randint(0, 5))
                 i += 1
 
-            latest_jobs = nb.get_latest_jobs()
+            latest_jobs = repeat_until_done(lambda: nb.get_latest_jobs())
 
-        stats = nb.get_jobs_stats()
+        stats = repeat_until_done(lambda: nb.get_jobs_stats())
         random.shuffle(latest_jobs)
 
         # If there is a new job that needs validation, process it
         for j in latest_jobs:
             if j["status"] == "pending-validation":
-                print(
-                    f"Processing pending-validation job {j['id']} from {j['owner_id']}"
-                )
-
                 try:
-                    jf = ipfs.get(j["job_file"], timeout=10)
-                except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
-                    print(f"\tTimeout getting file {j['job_file']}, skipping for now")
-                    continue
-
-                # Parse the file using q.Circuit.fromQasm
-                try:
-                    qc = Circuit.fromQasmCircuit(jf.decode("ascii"))
+                    if handle_pending_validation_job(j, ipfs, nb, base_dir):
+                        n_verified += 1
+                        stats["pending-validation"] -= 1
                 except Exception as e:
-                    print("\t", "Failed to parse", j["id"], e)
-                    nb.set_job_validity(j["id"], False)
-                    continue
-
-                # Add a trap
-                trapper = BasicTrapper()
-                (qc2, trap_list) = trapper.trap(qc)
-
-                # Save trap info to a file
-                with open(f"{base_dir}/{j['id']}_qc_traps.pickle", "wb") as outp:
-                    pickle.dump(trap_list, outp, pickle.HIGHEST_PROTOCOL)
-
-                # Save qasm to file
-                trapped_qasm_file = f"{base_dir}/{j['id']}_qc_trapped.qasm"
-
-                with open(trapped_qasm_file, "w") as f:
-                    f.write(qc2.toQasmCircuit())
-
-                # Upload the file
-                jf_trapped = ipfs.upload(trapped_qasm_file)
-                print("\t", "Trapped file uploaded", jf_trapped)
-
-                # Send the set_validity
-                try:
-                    print("\t", nb.set_job_validity(j["id"], True, jf_trapped))
-                    n_verified += 1
-                    stats["pending-validation"] -= 1
-                except Exception as e:
-                    print("\tFailed to set", e)
+                    print("\tFailed to handle pending-validation job:", e)
 
             elif (
                 j["status"] == "validating-result"
                 and j["verifier_id"] == nb.account.account_id
             ):
-                print(
-                    f"Processing validating-result job {j['id']} from {j['owner_id']} "
-                    + f"sampled by {j['sampler_id']}"
-                )
-
-                # Get the result data
                 try:
-                    rf = ipfs.get(j["result_file"], timeout=10)
-                except ReadTimeout:  # TODO: move on ipfs.get raising a new exception
-                    print(
-                        f"\tTimeout getting file {j['result_file']}, skipping for now"
-                    )
-                    continue
-
-                try:
-                    counts = json.loads(rf)
-                except:
-                    print("\t", "Invalid result data")
-                    continue
-
-                # Check if shots match
-                ctot = sum(counts.values())
-                if j["shots"] > ctot:
-                    print("\t", "Invalid number of shots")
-                    print(nb.set_result_validity(j["id"], False))
-                    continue
-
-                # Load the trap from file
-                trap_fp = f"{base_dir}/{j['id']}_qc_traps.pickle"
-                try:
-                    with open(trap_fp, "rb") as inp:
-                        trap_list = pickle.load(inp)
-                except:
-                    print(f'Unable to load {trap_fp}, skipping job {j["id"]}')
-                    continue
-
-                # Check trap validity
-                try:
-                    trapper = BasicTrapper()
-                    validity = trapper.verify(trap_list, counts)
+                    if handle_validating_result_job(j, ipfs, nb, base_dir):
+                        n_vresult += 1
+                        stats["validating-result"] -= 1
                 except Exception as e:
-                    print("Got exception while verifying, contact dakk")
-                    print(e)
-                    continue
-
-                # Send the set_result_validity
-                try:
-                    if validity:
-                        trap_j = list(map(lambda t: t.dump(), trap_list))
-                        trap_file = f"{base_dir}/{j['id']}_traps.json"
-
-                        with open(trap_file, "w") as inp:
-                            inp.write(json.dumps(trap_j))
-
-                        trap_file_i = ipfs.upload(trap_file)
-
-                        print("\t", nb.set_result_validity(j["id"], True, trap_file_i))
-                    else:
-                        print("\t", nb.set_result_validity(j["id"], False))
-                    n_vresult += 1
-                    stats["validating-result"] -= 1
-                except Exception as e:
-                    print("\tFailed to set", e)
+                    print("\tFailed to handle validating-result job:", e)
 
         print(
             f"Account balance is {nb.balance():0.5f} N, job verified {n_verified}, "
