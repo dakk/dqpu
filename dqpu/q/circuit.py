@@ -16,6 +16,7 @@ import random
 
 import openqasm3
 from openqasm3 import ast as oast
+from openqasm3 import printer
 
 from .gate import Gate
 from .gates import Gates
@@ -144,13 +145,15 @@ class Circuit:
                     raise Exception("Only one classical register is allowed")
                 n_c = s.type.size.value
             elif isinstance(s, oast.QuantumGate):
+                args = list(map(printer.dumps, s.arguments))
+
                 p = list(map(qubit_to_i, s.qubits))
                 gn = s.name.name.upper()
                 if not hasattr(Gates, gn):
                     raise Exception(f"Unknown gate {gn}")
 
                 g = getattr(Gates, gn)
-                gates.append((g, p))
+                gates.append((g, p, args))
             elif isinstance(s, oast.QuantumMeasurementStatement):
                 end = True
             elif isinstance(s, oast.Include):
@@ -169,11 +172,17 @@ class Circuit:
         qasm += "creg c[" + str(self.n_qbits) + "];\n"
 
         for x in self.gates:
-            # TODO: handle parameters
-            a, p = x
+            args = ""
+
+            if len(x) == 2:
+                x = (x[0], x[1], [])
+
+            a, p, ar = x
+            if len(ar) > 0:
+                args = ("(" + (",".join(ar)) + ")").replace(" ", "")
 
             qbs = ", ".join(map(lambda g: "q[" + str(g) + "]", p))
-            qasm += f"{a.iden.lower()} {qbs};\n"
+            qasm += f"{a.iden.lower()}{args} {qbs};\n"
 
         qasm += "measure q -> c;"
 
@@ -192,6 +201,8 @@ class Circuit:
                     qc.cx(p[0], p[1])
                 elif a.iden == "CZ":
                     qc.cz(p[0], p[1])
+                elif a.iden == "CY":
+                    qc.cy(p[0], p[1])
                 elif a.iden == "SWAP":
                     qc.swap(p[0], p[1])
                 elif a.iden == "X":

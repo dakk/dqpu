@@ -30,6 +30,10 @@ ket_one = np.array([c_zero, c_one])
 
 
 class Gates:
+    P = Gate(
+        "P",
+        lambda k: np.array([[1, 0], [1, math.e ** (complex(0, 1) * k)]]),
+    )
     R = Gate(
         "R",
         lambda k: np.array(
@@ -43,6 +47,7 @@ class Gates:
     S = Gate("S", np.array([[1, 0], [0, +1.0j]]))
     T = Gate("T", np.array([[1, 0], [0, math.e ** (+1.0j * math.pi / 4)]]))
     H = Gate("H", 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]]))
+    SDG = Gate("SDG", np.array([[1, 0], [0, complex(0, -1)]]))
 
     CR = Gate(
         "CR", lambda k: np.kron(Gates.I.matrix, Gates.R.parametrized(k).matrix), 2
@@ -50,6 +55,10 @@ class Gates:
 
     CX = Gate(
         "CX", np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]]), 2
+    )
+
+    CY = Gate(
+        "CY", np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, -1], [0, 0, +1.0j, 0]]), 2
     )
 
     CZ = Gate(
@@ -71,5 +80,7 @@ class Gates:
         # S,
         # T,
         H,
+        P,
+        SDG,
     ]
-    Gates2 = [CX, CZ, SWAP]
+    Gates2 = [CX, CY, CZ, SWAP]

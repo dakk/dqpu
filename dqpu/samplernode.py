@@ -16,6 +16,7 @@ import json
 import random
 import sys
 import time
+import traceback
 
 from requests.exceptions import ReadTimeout
 
@@ -150,7 +151,10 @@ def sampler_node():  # noqa: C901
             latest_jobs = repeat_until_done(lambda: nb.get_all_jobs(True))
         else:
             i = 0
-            while (repeat_until_done(lambda: nb.get_jobs_stats())["waiting"] == waiting_jobs) and i < 5:
+            while (
+                repeat_until_done(lambda: nb.get_jobs_stats())["waiting"]
+                == waiting_jobs
+            ) and i < 5:
                 time.sleep(random.randint(0, 5))
                 i += 1
             latest_jobs = repeat_until_done(lambda: nb.get_latest_jobs())
@@ -176,6 +180,7 @@ def sampler_node():  # noqa: C901
                     waiting_jobs -= 1
             except Exception as e:
                 print("Failed to handle job:", e)
+                traceback.print_exc()
 
         repeat_until_done(
             lambda: print(

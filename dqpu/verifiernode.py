@@ -16,6 +16,7 @@ import json
 import pickle
 import random
 import time
+import traceback
 
 from requests.exceptions import ReadTimeout
 
@@ -66,7 +67,7 @@ def handle_pending_validation_job(j, ipfs, nb, base_dir):
     return True
 
 
-def handle_validating_result_job(j, ipfs, nb, base_dir):
+def handle_validating_result_job(j, ipfs, nb, base_dir):  # noqa: C901
     print(
         f"Processing validating-result job {j['id']} from {j['owner_id']} "
         + f"sampled by {j['sampler_id']}"
@@ -128,7 +129,7 @@ def handle_validating_result_job(j, ipfs, nb, base_dir):
     return True
 
 
-def verifier_node():
+def verifier_node():  # noqa: C901
     parser = default_parser()
     args = parser.parse_args()  # noqa: F841
 
@@ -153,7 +154,8 @@ def verifier_node():
         else:
             i = 0
             while (
-                repeat_until_done(lambda: nb.get_jobs_stats())["validating-result"] == stats["validating-result"]
+                repeat_until_done(lambda: nb.get_jobs_stats())["validating-result"]
+                == stats["validating-result"]
                 and repeat_until_done(lambda: nb.get_jobs_stats())["pending-validation"]
                 == stats["pending-validation"]
             ) and i < 5:
@@ -174,6 +176,7 @@ def verifier_node():
                         stats["pending-validation"] -= 1
                 except Exception as e:
                     print("\tFailed to handle pending-validation job:", e)
+                    traceback.print_exc()
 
             elif (
                 j["status"] == "validating-result"
@@ -185,6 +188,7 @@ def verifier_node():
                         stats["validating-result"] -= 1
                 except Exception as e:
                     print("\tFailed to handle validating-result job:", e)
+                    traceback.print_exc()
 
         print(
             f"Account balance is {nb.balance():0.5f} N, job verified {n_verified}, "

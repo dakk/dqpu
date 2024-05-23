@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install sphinx sphinx_rtd_theme sphinx_rtd_dark_mode myst_nb
-          pip install qiskit[visualization] qiskit-aer
+          pip install qiskit[visualization] qiskit-aer qlasskit
           python setup.py install
       - name: Sphinx build
         run: |

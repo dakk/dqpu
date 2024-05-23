@@ -20,7 +20,9 @@ from .sampler import Sampler
 
 class AerSimulatorSampler(Sampler):
     def sample(self, shots):
-        qc = qasm2.loads(self.circuit)  # .toQasmCircuit())
+        qc = qasm2.loads(
+            self.circuit, custom_instructions=qasm2.LEGACY_CUSTOM_INSTRUCTIONS
+        )  # .toQasmCircuit())
         simulator = AerSimulator()
         circ = transpile(qc, simulator)
         result = simulator.run(circ, shots=shots).result()

@@ -24,7 +24,9 @@ class QrackSimulatorSampler(Sampler):
 
         simulator = Qrack.backends()[0]  # get_backend("qasm_simulator")
 
-        qc = qasm2.loads(self.circuit)  # .toQasmCircuit())
+        qc = qasm2.loads(
+            self.circuit, custom_instructions=qasm2.LEGACY_CUSTOM_INSTRUCTIONS
+        )  # .toQasmCircuit())
         circ = transpile(qc, simulator)
         result = simulator.run(circ, shots=shots).result()
         counts = result.get_counts(circ)

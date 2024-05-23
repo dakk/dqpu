@@ -31,6 +31,9 @@ BASIS_GATES = sorted(
         "z",
         "h",
         "cx",
+        "cy",
+        "cz",
+        "p",
         # "swap",
         # "cswap",
         # "rx",
@@ -124,6 +127,7 @@ class DQPUBackend(Backend):
         }
 
         qasm_data = qasm2.dumps(circuit)
+
         job_id = submit_job(
             self.near_blockchain,
             self.ipfs_gateway,

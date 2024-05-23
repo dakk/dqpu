@@ -75,9 +75,9 @@ class BasicTrapper(Trapper):
                 return q_idx + 1 if q_idx >= i_r else q_idx
 
             def remap_gate(gq):
-                a, p = gq
+                a, p, args = gq
                 p = list(map(remap_qbit, p))
-                return (a, p)
+                return (a, p, args)
 
             def remap_trap(t):
                 t.qubit = remap_qbit(t.qubit)

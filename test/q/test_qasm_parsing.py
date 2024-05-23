@@ -32,3 +32,18 @@ class TestQ_Qasm_parsing(unittest.TestCase):
         qc = Circuit.fromQasmCircuit(original)
         qc_a = qc.toQasmCircuit()
         self.assertEqual(original, qc_a)
+
+    def test_2(self):
+        original = (
+            "OPENQASM 2.0;\n"
+            'include "qelib1.inc";\n'
+            "qreg q[2];\n"
+            "creg c[2];\n"
+            "p(pi/32) q[0];\n"
+            "cx q[0], q[1];\n"
+            "measure q -> c;"
+        )
+
+        qc = Circuit.fromQasmCircuit(original)
+        qc_a = qc.toQasmCircuit()
+        self.assertEqual(original, qc_a)
