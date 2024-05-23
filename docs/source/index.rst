@@ -103,6 +103,7 @@ https://docs.ipfs.tech/install/command-line/#install-official-binary-distributio
    :caption: DQPU
 
    qiskit_example.ipynb
+   qlasskit_example.ipynb
    api
 
 
