@@ -37,7 +37,7 @@ autodoc_source_dir = [
     "../dqpu",
 ]
 pygments_style = "github-dark"
-default_dark_mode = False
+default_dark_mode = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

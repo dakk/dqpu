@@ -22,6 +22,7 @@ jobs:
         run: |
           sphinx-build docs/source _build
           cp -r dqpu-frontend _build/app
+          cp docs/CNAME _build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
