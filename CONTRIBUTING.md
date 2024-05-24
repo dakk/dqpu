@@ -71,6 +71,7 @@ make html
 
 
 ```bash
+rm -r build dist *.egg-info
 python setup.py sdist bdist
 python -m twine upload dist/*
 ```

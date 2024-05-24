@@ -1,4 +1,4 @@
-DQPU
+DQPU Documentation
 ====================================
 
 .. image:: https://img.shields.io/badge/GitHub-Repository-blue?logo=github
@@ -98,23 +98,6 @@ Install IPFS: -
 https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
 
 
-.. toctree::
-   :maxdepth: 2
-   :caption: DQPU
-
-   qiskit_example.ipynb
-   qlasskit_example.ipynb
-   api
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
 Cite
 ======
 
@@ -126,3 +109,20 @@ Cite
       url = {https://github.com/dakk/dqpu},
       year = {2024},
    }
+
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: DQPU
+
+   qiskit_example.ipynb
+   qlasskit_example.ipynb
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

@@ -21,10 +21,14 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
-    "sphinx_rtd_dark_mode",
-    "sphinx_rtd_theme",
+    "pydata_sphinx_theme",
+    "sphinx_design",
     "myst_nb",
 ]
+
+#"sphinx_rtd_dark_mode",
+#"sphinx_rtd_theme",
+myst_enable_extensions = ["colon_fence"]
 
 templates_path = ["_templates"]
 exclude_patterns = []
@@ -37,9 +41,50 @@ default_dark_mode = False
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"
+html_title = "DQPU.io"
+html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 
+html_theme_options = {
+    "logo": {
+        "image_light": "_static/logo.png",
+        "image_dark": "_static/logo-dark.png",
+    },
+    # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/header-links.html#fontawesome-icons
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/dakk/dqpu",
+            "icon": "fa-brands fa-github",
+        },
+        {
+            "name": "Twitter",
+            "url": "https://twitter.com/dagide",
+            "icon": "fa-brands fa-twitter",
+        },
+    ],
+    "navbar_start": ["navbar-logo", "navbar-version"],
+    "navbar_align": "content",
+    "header_links_before_dropdown": 5,
+    "secondary_sidebar_items": ["page-toc", "searchbox", "edit-this-page", "sourcelink"],
+    "use_edit_page_button": True,
+    # "analytics": {"google_analytics_id": ""},
+    "external_links": [
+        # {"name": "", "url": ""},
+    ],
+}
+html_context = {
+    "github_user": "dakk",
+    "github_repo": "dqpu",
+    "github_version": "master",
+    "doc_path": "docs/source/",
+    "default_mode": "dark",
+}
+html_sidebars: Dict[str, Any] = {
+    "index": [],
+    "community": ["search-field.html", "sidebar-nav-bs.html", "twitter.html"],
+}
 
 # autosummary_imported_members = True
 autosummary_generate = True
