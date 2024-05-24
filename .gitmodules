@@ -1,4 +1,0 @@
-[submodule "docs/landing/themes/blowfish"]
-	path = docs/landing/themes/blowfish
-	url = https://github.com/nunocoracao/blowfish.git
-	branch = main
