@@ -119,78 +119,12 @@ print(counts)
 
 ### Cli tool usage
 
-Generic params:
-- ```-n/--network`: Default: near-testnet
-- ```-a/--account`: Account name / uri
-
-Commands:
-
-#### Submit a circuit job 
-
-```bash
-$ dqpu-cli -a dqpu_alice.testnet submit --file ~/test.qasm --shots 1024 --reward 0.0001
-JOBID
-```
-
-#### Submit a random circuit: job
-
-```bash
-$ dqpu-cli -a dqpu_alice.testnet submit-random
-JOBID
-```
-
-#### Submit a job result
-
-```bash
-$ dpqu-cli -a dqpu_bob.testnet submit-result -i 8 -rf ~/test.qasm
-```
-
-#### Remove a job
-
-```bash
-$ dpqu-cli remove -i JOBID
-```
-
-#### Get job information
-
-```bash
-$ dpqu-cli info -i JOBID
-Job: JOBID
-Status: WAITING
-Qubits: 4
-Depth: 9
-Circuit uri: ipfs://.../test.qasm
-```
-
-#### Get job status
-
-```bash
-$ dpqu-cli status -i JOBID
-EXECUTED
-```
-
-#### Get job result
-
-```bash
-$ dpqu-cli get-result -i JOBID
-{ "0010": 1024 }
-```
-
-#### Set job validity
-
-```bash
-$ dpqu-cli -a dqpu_owner.testnet set-validity -i 9 -v false
-```
-
-#### Set job result validity
-```bash
-$ dpqu-cli -a dqpu_owner.testnet set-result-validity -i 8 -v true -t trap.json
-```
+Read [dqpu.io/nodes](https://dqpu.io/docs/cli.html) for details.
 
 
 ## Usage: running a sampler / verifier node node
 
-Please read [dqpu.io/nodes](https://dqpu.io/nodes)
+Read [dqpu.io/nodes](https://dqpu.io/nodes) for details.
 
 
 ## Contributing

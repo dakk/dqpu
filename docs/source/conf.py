@@ -28,6 +28,7 @@ extensions = [
 
 #"sphinx_rtd_dark_mode",
 #"sphinx_rtd_theme",
+jupyter_execute_notebooks = "off"
 myst_enable_extensions = ["colon_fence"]
 
 templates_path = ["_templates"]

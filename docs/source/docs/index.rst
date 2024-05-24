@@ -84,7 +84,7 @@ https://dakk.github.io/dqpu/app/
 Installation
 ------------
 
-``pip install dqpu``
+`pip install dqpu`
 
 Or install the latest development version:
 
@@ -98,24 +98,13 @@ Install IPFS: -
 https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
 
 
-Cite
-======
-
-.. code-block:: latex
-
-   @software{dqpu2024,
-      author = {Davide Gessa},
-      title = {dqpu: A Web3-Powered, Decentralized Quantum Simulator with Verifiable Computation },
-      url = {https://github.com/dakk/dqpu},
-      year = {2024},
-   }
-
 
 
 .. toctree::
    :maxdepth: 2
    :caption: DQPU
 
+   cli
    qiskit_example.ipynb
    qlasskit_example.ipynb
 
