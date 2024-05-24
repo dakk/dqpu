@@ -69,7 +69,7 @@ html_theme_options = {
     "header_links_before_dropdown": 5,
     "secondary_sidebar_items": ["page-toc", "searchbox", "edit-this-page", "sourcelink"],
     "use_edit_page_button": True,
-    # "analytics": {"google_analytics_id": ""},
+    "analytics": {"google_analytics_id": "G-JJNSHE8EFK"},
     "external_links": [
         # {"name": "", "url": ""},
     ],
