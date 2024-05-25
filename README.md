@@ -8,7 +8,7 @@
 
 A Web3-Powered (Near), Decentralized Quantum Simulator with Verifiable Computation. 
 
-DQPU (Decentralized Quantum Processing Unit) introduces a novel, decentralized approach to quantum computing that leverages the power of blockchain and smart contracts. It addresses the challenges of securely and reliably executing quantum computations in a trustless and transparent manner, while fostering a competitive ecosystem for quantum resource providers.
+DQPU (Decentralized Quantum Processing Unit) introduces a novel, decentralized approach to quantum computing that leverages the power of blockchain and smart contracts. It addresses the challenge of securely and reliably delegating the execution of quantum computations in a trustless and transparent manner, encouraging competition between independent quantum resource providers.
 
 
 ## Workflow
@@ -40,7 +40,7 @@ If the trap verification fails, the job returns in 'waiting' state (and the *Ver
 
 ## Smart Contract Web UI
 
-A web interface showing the smart contract status is available here: [https://dakk.github.io/dqpu/app/](https://dakk.github.io/dqpu/app/)
+A web interface showing the smart contract status is available here: [https://dqpu.io/app](https://dqpu.io/app)
 
 
 ## Installation
@@ -119,7 +119,7 @@ print(counts)
 
 ### Cli tool usage
 
-Read [dqpu.io/nodes](https://dqpu.io/docs/cli.html) for details.
+Read [dqpu.io/docs/cli](https://dqpu.io/docs/cli.html) for details.
 
 
 ## Usage: running a sampler / verifier node node

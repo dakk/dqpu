@@ -2,8 +2,7 @@
 html_theme.sidebar_secondary.remove:
 sd_hide_title: true
 ---
-
-<!-- CSS overrides on the homepage only -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/fontawesome.min.css" integrity="sha512-TPigxKHbPcJHJ7ZGgdi2mjdW9XHsQsnptwE+nOUWkoviYBn0rAAt0A5y3B1WGqIHrKFItdhZRteONANT07IipA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 .bd-main .bd-content .bd-article-container {
   max-width: 70rem; /* Make homepage a little wider instead of 60em */
@@ -68,7 +67,54 @@ counts = job.result().get_counts(circ)
 
 
 
-<!-- Keep in markdown to generate headerlink -->
+# Workflow
+
+<p>The DQPU system is composed of 3 actors:</p>
+<br>
+
+::::{grid} 1 1 3 3
+
+:::{grid-item}
+
+<div align="center">
+<i class="fa fa-user fa-5x"></i><br><br>
+
+<b>Clients</b>: users who need to perform a quantum sampling
+</div>
+
+:::
+
+:::{grid-item}
+<div align="center">
+<i class="fa fa-user-shield fa-5x"></i><br><br>
+<b>Verifiers</b>: delegates who check for data validity and detect cheating users
+</div>
+:::
+
+:::{grid-item}
+<div align="center">
+<i class="fa fa-cogs fa-5x"></i><br><br>
+<b>Samplers</b>: users who run quantum samplers
+</div>
+:::
+
+::::
+
+
+The following process outlines how clients can submit quantum circuits for sampling using the DQPU contract:
+
+1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract. The circuit data is uploaded to a distributed file storage system like IPFS. The smart contract adds the job to a queue in a 'pending-validation' state with the associated reward.
+
+2. **Verifier Validates Circuit**: A *Verifier* validates the submitted circuit. This might involve checks for syntax errors or ensuring the circuit is within allowed parameters. The verifier also adds special verification elements (traps) into the circuit and add the new circuit to the contract. Once validated, the job moves to a 'waiting' state, becomes 'invalid' otherwise.
+
+3. **Simulation or Hardware Execution**: A *Sampler* retrieves a job from the waiting list. It then either simulates the circuit on a software program or executes it on real quantum hardware, depending on the job requirements and available resources. The simulation or execution result is submitted back to the smart contract with a security deposit (a percentage of the reward). The job status changes to 'validating'.
+
+4. **Verifier Checks Result**: The same *Verifier* from step 2 examines the returned result. The *Verifier* specifically checks the traps inserted earlier to ensure the result hasn't been tampered with. If the trap verification succeeds, the job status is updated to 'executed' and the trap is disclosed by the *Verifier*. The *Sampler* account receives the reward, while the *Verifier* receives a percentage of this reward.
+If the trap verification fails, the job returns in 'waiting' state (and the *Verifier* receives the security deposit of the *Sampler*).
+
+5. **Client Receives Result**: Once the job is marked as 'executed', the *Client* can retrieve the final result from the smart contract.
+
+
 # Support DQPU
 
 ::::{grid} 1 1 2 2
