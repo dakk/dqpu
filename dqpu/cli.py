@@ -166,7 +166,8 @@ def cli():  # noqa: C901
         job_file = ipfs.upload(circuit_file)
         print(f"Circuit file is {job_file}")
 
-        # shots = random.choice([256, 512, 1024, 2048, 4096, 8192, 16384])
+        shots = random.choice([256, 512, 1024, 2048, 4096, 8192, 16384])
+        
         # sh_fact = (shots / 16384) * nq
         # reward = random.randint(int(0.5 * sh_fact), int(1.1 * sh_fact)) / 1000.0
         reward = nq * nq / 200000
