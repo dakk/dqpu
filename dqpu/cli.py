@@ -170,7 +170,7 @@ def cli():  # noqa: C901
         
         # sh_fact = (shots / 16384) * nq
         # reward = random.randint(int(0.5 * sh_fact), int(1.1 * sh_fact)) / 1000.0
-        reward = nq * nq / 200000
+        reward = nq * nq / 600000
         reward = max(reward, 0.0001)
 
         print(f"Submitting with a reward of {reward:.6f} for {shots} shots")
