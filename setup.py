@@ -38,7 +38,7 @@ REQUIREMENTS = [
 setup(
     name="dqpu",
     version=dqpu.__version__,
-    python_requires=">= 3.9.2",
+    python_requires=">= 3.9.2,<3.12",
     description="",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
