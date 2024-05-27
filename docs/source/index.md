@@ -42,7 +42,6 @@ h3:not(#hero h3) {
   </div>
   <div class="homepage-button-container-row">
       <a href="./docs/index.html" class="homepage-button-link">See Documentation →</a>
-      <a href="https://github.com/dakk/dqpu" class="homepage-button-link">See Source Code →</a>
   </div>
 </div>
 </div>  <!-- End Hero Left -->
@@ -152,4 +151,5 @@ Documentation<docs/index>
 Node operator<nodes/index>
 API<api/index>
 App UI<https://dqpu.io/app>
+Source Code<https://github.com/dakk/dqpu>
 :::
