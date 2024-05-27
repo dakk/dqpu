@@ -180,7 +180,17 @@ def cli():  # noqa: C901
         print(nb.get_latest_jobs()[-1]["id"])
 
     elif args.action == "remove":
-        print(nb.remove_job(args.id))
+        if args.id.find(":") != -1:
+            _range = list(map(int, args.id.split(':')))
+            i = _range[0]
+            while i < _range[1]:
+                try:
+                    print(f'Removing {i}:',nb.remove_job(str(i)))
+                except:
+                    print(f'Unable to remove {i}, skipping')
+                i += 1
+        else:
+            print(nb.remove_job(args.id))
 
     elif args.action == "info":
         print(json.dumps(nb.get_job(args.id), indent=2))
