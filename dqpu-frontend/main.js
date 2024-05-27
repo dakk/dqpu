@@ -25,11 +25,13 @@ async function viewMethod(method, args = {}) {
 
 async function get_all_jobs(slice, total) {
     let jobs = [];
-    for (let i = 0; i < total; i+= slice) {
+    for (let i = 0; i < total; i) {
         console.log('getting',i,total,slice)
         const nj = (await viewMethod('get_jobs', { from_index: i, limit: slice }));
+        i += nj.length;
         jobs = jobs.concat(nj);
     }
+    console.log('All jobs are '+(jobs.length));
     return jobs.reverse();
 }
 

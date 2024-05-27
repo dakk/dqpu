@@ -188,10 +188,9 @@ class DQPU {
     @view({})
     get_latest_jobs({ limit = 50 }: { limit: number }): Job[] {
         const ret: Job[] = [];
-        const start = this.jobs.length > limit ? this.jobs.length - limit : 0;
 
-        for (const id of this.jobs.keys({ start: start, limit: start+limit })) {
-            const j: Job = this.jobs.get(id);
+        for (let i = this.latest_jid - BigInt(limit); i <= this.latest_jid; i++) {
+            const j: Job = this.jobs.get(i.toString());
             if (j)
                 ret.push(j);
         }
@@ -199,15 +198,15 @@ class DQPU {
         // .reverse(); we don't reverse here in order to preserve gas
         return ret; 
     }
-
+    
 
     // Get job list
     @view({})
     get_jobs({ from_index = 0, limit = 50 }: { from_index: number, limit: number }): Job[] {
         const ret: Job[] = [];
 
-        for (const id of this.jobs.keys({ start: from_index, limit })) {
-            const j: Job = this.jobs.get(id);
+        for (let i = BigInt(from_index); i <= BigInt(from_index + limit); i++) {
+            const j: Job = this.jobs.get(i.toString());
             if (j)
                 ret.push(j);
         }
