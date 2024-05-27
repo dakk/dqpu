@@ -103,16 +103,17 @@ counts = job.result().get_counts(circ)
 
 The following process outlines how clients can submit quantum circuits for sampling using the DQPU contract:
 
-1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract. The circuit data is uploaded to a distributed file storage system like IPFS. The smart contract adds the job to a queue in a 'pending-validation' state with the associated reward.
+1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract
 
-2. **Verifier Validates Circuit**: A *Verifier* validates the submitted circuit. This might involve checks for syntax errors or ensuring the circuit is within allowed parameters. The verifier also adds special verification elements (traps) into the circuit and add the new circuit to the contract. Once validated, the job moves to a 'waiting' state, becomes 'invalid' otherwise.
+2. **Verifier Validates Circuit**: A *Verifier* validates the submitted circuit adding `trap qubits`
 
-3. **Simulation or Hardware Execution**: A *Sampler* retrieves a job from the waiting list. It then either simulates the circuit on a software program or executes it on real quantum hardware, depending on the job requirements and available resources. The simulation or execution result is submitted back to the smart contract with a security deposit (a percentage of the reward). The job status changes to 'validating'.
+3. **Simulation or Hardware Execution**: A *Sampler* executes the job retrieved from the waiting list and submit the result
 
-4. **Verifier Checks Result**: The same *Verifier* from step 2 examines the returned result. The *Verifier* specifically checks the traps inserted earlier to ensure the result hasn't been tampered with. If the trap verification succeeds, the job status is updated to 'executed' and the trap is disclosed by the *Verifier*. The *Sampler* account receives the reward, while the *Verifier* receives a percentage of this reward.
-If the trap verification fails, the job returns in 'waiting' state (and the *Verifier* receives the security deposit of the *Sampler*).
+4. **Verifier Checks Result**: The *Verifier* checks result validity and the rewards are distributed
 
-5. **Client Receives Result**: Once the job is marked as 'executed', the *Client* can retrieve the final result from the smart contract.
+5. **Client Receives Result**: The *Client* can retrieve the final result from the smart contract.
+
+Read the extended workflow from the [README Workflow section](https://github.com/dakk/dqpu?tab=readme-ov-file#workflow)
 
 
 # Support DQPU
