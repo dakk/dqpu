@@ -67,7 +67,7 @@ html_theme_options = {
     ],
     "navbar_start": ["navbar-logo", "navbar-version"],
     "navbar_align": "content",
-    "header_links_before_dropdown": 5,
+    "header_links_before_dropdown": 6,
     "secondary_sidebar_items": [
         "page-toc",
         "searchbox",
