@@ -51,6 +51,25 @@ from setuptools import setup
 
 import dqpu
 
+REQUIREMENTS = [
+    #"dask[distributed]==2024.4.2",
+    "scipy==1.13.0",
+    "matplotlib",
+    "qiskit==1.0.2",
+    "qiskit_aer==0.14.1",
+    "py-near",
+    "requests",
+    "numpy==1.26.4",
+    "openqasm3[parser]",
+    "scikit-build",
+    "base58",
+    "loguru",
+    "pydantic",
+    "nest_asyncio",
+    "pyqrack",
+    "qiskit-qrack-provider>=0.11.0"
+]
+
 setup(
     name="dqpu",
     version=dqpu.__version__,
@@ -72,7 +91,7 @@ setup(
         "dqpu.backends.qiskit",
     ],
     zip_safe=False,
-    install_requires=open("requirements.txt", "r").read().split("\n"),
+    install_requires=REQUIREMENTS,
     extras_require={},
     entry_points={
         "console_scripts": [
