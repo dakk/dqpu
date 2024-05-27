@@ -42,6 +42,7 @@ h3:not(#hero h3) {
   </div>
   <div class="homepage-button-container-row">
       <a href="./docs/index.html" class="homepage-button-link">See Documentation →</a>
+      <a href="https://github.com/dakk/dqpu" class="homepage-button-link">See Source Code →</a>
   </div>
 </div>
 </div>  <!-- End Hero Left -->
