@@ -15,6 +15,8 @@
 import json
 import tempfile
 
+from ..blockchain import repeat_until_done
+
 
 def submit_job(nb, ipfs, qasm_data, num_qubits, depth, options):
     fp = tempfile.NamedTemporaryFile(mode="w", delete=False)
@@ -23,20 +25,24 @@ def submit_job(nb, ipfs, qasm_data, num_qubits, depth, options):
 
     job_file = ipfs.upload(fp.name)
 
-    nb.submit_job(num_qubits, depth, options["shots"], job_file, options["reward"])
-    return nb.get_latest_jobs()[-1]["id"]
+    repeat_until_done(
+        lambda: nb.submit_job(
+            num_qubits, depth, options["shots"], job_file, options["reward"]
+        )
+    )
+    return repeat_until_done(lambda: nb.get_latest_jobs())[-1]["id"]
 
 
 def job_status(nb, jid):
-    return nb.get_job_status(jid)
+    return repeat_until_done(lambda: nb.get_job_status(jid))
 
 
 def job_remove(nb, jid):
-    return nb.remove_job(jid)
+    return repeat_until_done(lambda: nb.remove_job(jid))
 
 
 def job_result(nb, ipfs, jid):
-    j = nb.get_job(jid)
+    j = repeat_until_done(lambda: nb.get_job(jid))
     data = json.loads(ipfs.get(j["result_file"]))
     trap_list = json.loads(ipfs.get(j["trap_file"]))
     return data, trap_list

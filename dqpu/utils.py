@@ -13,17 +13,6 @@
 # limitations under the License.
 
 import os
-import time
-
-
-def repeat_until_done(f, n_iterations=10, wait_time=5):
-    try:
-        return f()
-    except Exception as e:
-        print(e)
-        print(f"Function call failed, retrying in {wait_time} seconds ({n_iterations})")
-        time.sleep(wait_time)
-        return repeat_until_done(f, n_iterations - 1, wait_time)
 
 
 def create_dqpu_dirs():  # noqa: C901

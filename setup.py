@@ -17,7 +17,7 @@ from setuptools import setup
 import dqpu
 
 REQUIREMENTS = [
-    #"dask[distributed]==2024.4.2",
+    # "dask[distributed]==2024.4.2",
     "scipy==1.13.0",
     "matplotlib",
     "qiskit==1.0.2",
@@ -32,7 +32,7 @@ REQUIREMENTS = [
     "pydantic",
     "nest_asyncio",
     "pyqrack",
-    "qiskit-qrack-provider>=0.11.0"
+    "qiskit-qrack-provider>=0.11.0",
 ]
 
 setup(

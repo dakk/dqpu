@@ -20,10 +20,16 @@ import traceback
 
 from requests.exceptions import ReadTimeout
 
-from .blockchain import IPFSGateway, NearBlockchain, from_near, to_near
+from .blockchain import (
+    IPFSGateway,
+    NearBlockchain,
+    from_near,
+    repeat_until_done,
+    to_near,
+)
 from .cli import default_parser
 from .sampler import SAMPLERS
-from .utils import create_dqpu_dirs, repeat_until_done
+from .utils import create_dqpu_dirs
 
 
 def filter_jobs(jobs, args):

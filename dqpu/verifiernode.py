@@ -20,10 +20,10 @@ import traceback
 
 from requests.exceptions import ReadTimeout
 
-from .blockchain import IPFSGateway, NearBlockchain
+from .blockchain import IPFSGateway, NearBlockchain, repeat_until_done
 from .cli import default_parser
 from .q import Circuit
-from .utils import create_dqpu_dirs, repeat_until_done
+from .utils import create_dqpu_dirs
 from .verifier import BasicTrapper  # BasicTrapInfo,
 
 

@@ -26,8 +26,8 @@ extensions = [
     "myst_nb",
 ]
 
-#"sphinx_rtd_dark_mode",
-#"sphinx_rtd_theme",
+# "sphinx_rtd_dark_mode",
+# "sphinx_rtd_theme",
 jupyter_execute_notebooks = "off"
 myst_enable_extensions = ["colon_fence"]
 
@@ -68,7 +68,12 @@ html_theme_options = {
     "navbar_start": ["navbar-logo", "navbar-version"],
     "navbar_align": "content",
     "header_links_before_dropdown": 5,
-    "secondary_sidebar_items": ["page-toc", "searchbox", "edit-this-page", "sourcelink"],
+    "secondary_sidebar_items": [
+        "page-toc",
+        "searchbox",
+        "edit-this-page",
+        "sourcelink",
+    ],
     "use_edit_page_button": True,
     "analytics": {"google_analytics_id": "G-JJNSHE8EFK"},
     "external_links": [
