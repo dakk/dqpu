@@ -28,7 +28,7 @@ async function get_all_jobs(slice, total) {
     for (let i = 0; i < total; i) {
         console.log('getting',i,total,slice)
         const nj = (await viewMethod('get_jobs', { from_index: i, limit: slice }));
-        i += nj.length;
+        i += slice;
         jobs = jobs.concat(nj);
     }
     console.log('All jobs are '+(jobs.length));
