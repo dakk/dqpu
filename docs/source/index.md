@@ -33,7 +33,7 @@ h3:not(#hero h3) {
 <div id="hero-left">  <!-- Start Hero Left -->
   <h2 style="font-size: 60px; font-weight: bold; margin: 2rem auto 0;">DQPU</h2>
   <h3 style="font-weight: bold; margin-top: 0;">The Decentralized QPU</h3>
-  <p>DQPU (Decentralized Quantum Processing Unit) lets you run your quantum programs in a trustless and decentralized network of quantum resource providers, leveraging the power of blockchain and smart contracts.</p>
+  <p>DQPU (Decentralized Quantum Processing Unit) lets you run your quantum programs in a trustless and decentralized network of quantum resource providers, leveraging the power of blockchain and smart contracts deployed on <b>NEAR</b> blockchain.</p>
 
 <div class="homepage-button-container">
   <div class="homepage-button-container-row">
@@ -101,7 +101,7 @@ counts = job.result().get_counts(circ)
 ::::
 
 
-The following process outlines how clients can submit quantum circuits for sampling using the DQPU contract:
+The following process outlines how clients can submit quantum circuits for sampling using the DQPU contract on NEAR blockchain:
 
 1. **Client Submits Job**: A *Client* sends a quantum circuit along with a reward to the DQPU smart contract
 
