@@ -74,9 +74,7 @@
 
 
 
-                    <v-tabs v-model="tab" 
-                    align-tabs="center"
-                    color="deep-purple-accent-4">
+                    <v-tabs v-model="tab" align-tabs="center" color="deep-purple-accent-4">
                         <v-tab value="joblist">Job List</v-tab>
                         <v-tab value="samplers">Sampler Leaderboard</v-tab>
                         <v-tab value="verifiers">Verifier Leaderboard</v-tab>
@@ -90,16 +88,17 @@
                                         <div class="d-flex align-center">
                                             <v-icon class="mr-3" :color="statusIcon('pending-validation').color"
                                                 :icon="statusIcon('pending-validation').icon"></v-icon>
-                                            <div class="font-weight-bold display-1">{{ job_stats['pending-validation'] }}</div>
+                                            <div class="font-weight-bold display-1">{{ job_stats['pending-validation']
+                                                }}</div>
                                             <div class="text-caption ml-3">Pending Validation</div>
                                         </div>
                                     </v-card-text>
                                 </v-card>
-        
+
                                 <v-card class="mx-1" flat>
                                     <v-card-text>
                                         <div class="d-flex align-center">
-        
+
                                             <v-icon class="mr-3" :color="statusIcon('waiting').color"
                                                 :icon="statusIcon('waiting').icon"></v-icon>
                                             <div class="font-weight-bold display-1">{{ job_stats['waiting'] }}</div>
@@ -107,21 +106,22 @@
                                         </div>
                                     </v-card-text>
                                 </v-card>
-        
+
                                 <v-card class="mx-1" flat>
                                     <v-card-text>
                                         <div class="d-flex align-center">
-        
+
                                             <v-icon class="mr-3" :color="statusIcon('validating-result').color"
                                                 :icon="statusIcon('validating-result').icon"></v-icon>
-                                            <div class="font-weight-bold display-1">{{ job_stats['validating-result'] }}</div>
+                                            <div class="font-weight-bold display-1">{{ job_stats['validating-result'] }}
+                                            </div>
                                             <div class="text-caption ml-3">Validating Result</div>
                                         </div>
                                     </v-card-text>
                                 </v-card>
-        
-        
-        
+
+
+
                                 <v-card class="mx-1" flat>
                                     <v-card-text>
                                         <div class="d-flex align-center">
@@ -132,11 +132,11 @@
                                         </div>
                                     </v-card-text>
                                 </v-card>
-        
+
                                 <v-card class="mx-1" flat>
                                     <v-card-text>
                                         <div class="d-flex align-center">
-        
+
                                             <v-icon class="mr-3" :color="statusIcon('invalid').color"
                                                 :icon="statusIcon('invalid').icon"></v-icon>
                                             <div class="font-weight-bold display-1">{{ job_stats['invalid'] }}</div>
@@ -145,18 +145,10 @@
                                     </v-card-text>
                                 </v-card>
                             </div>
-                            <v-data-table-server v-model:items="jobs"
-                                :items-per-page="itemsPerPage"
-                                :items-length="n_jobs"
-                                :loading="loading" @update:options="loadJobs">
-                                <template v-slot:header.owner_id>Owner</template>
-                                <template v-slot:header.verifier_id>Verifier</template>
-                                <template v-slot:header.sampler_id>Sampler</template>
-                                <template v-slot:header.reward_amount>Reward</template>
-                                <template v-slot:header.sampler_deposit>Deposit</template>
-                                <template v-slot:header.job_file>Job</template>
-                                <template v-slot:header.result_file>Result</template>
-                                <template v-slot:header.trap_file>Trap</template>
+
+                            <v-data-table-server v-model:items="jobs" :items-per-page="itemsPerPage" item-value="id"
+                                :items-length="n_jobs" :headers="table_headers" :loading="loading"
+                                @update:options="loadJobs">
 
                                 <template v-slot:item.reward_amount="{ item }">
                                     {{(item.reward_amount/1000000000000000000000000).toFixed(4)}}
@@ -167,15 +159,15 @@
                                 </template>
 
                                 <template v-slot:item.qubits="{ item }">
-                                    <v-chip color="green">{{item.qubits}}</v-chip>
+                                    <v-chip size="small" color="green">{{item.qubits}}</v-chip>
                                 </template>
 
                                 <template v-slot:item.shots="{ item }">
-                                    <v-chip color="primary">{{item.shots}}</v-chip>
+                                    <v-chip size="small" color="primary">{{item.shots}}</v-chip>
                                 </template>
 
                                 <template v-slot:item.depth="{ item }">
-                                    <v-chip color="yellow">{{item.depth}}</v-chip>
+                                    <v-chip size="small" color="yellow">{{item.depth}}</v-chip>
                                 </template>
 
                                 <template v-slot:item.status="{ item }">
@@ -186,7 +178,7 @@
                                 <template v-slot:item.owner_id="{ item }">
                                     <a :href="'https://testnet.nearblocks.io/address/' + item.owner_id" target="_blank">
                                         <!-- <v-icon icon="fa fa-user"></v-icon> -->
-                                        <small>{{item.owner_id}}</small>
+                                        <small>{{item.owner_id.substring(0, 8) + '...'}}</small>
                                     </a>
                                 </template>
 
@@ -195,7 +187,7 @@
                                         :href="'https://testnet.nearblocks.io/address/' + item.verifier_id"
                                         target="_blank">
                                         <!-- <v-icon icon="fa fa-user"></v-icon> -->
-                                        <small>{{item.verifier_id}}</small>
+                                        <small>{{item.verifier_id.substring(0, 8) + '...'}}</small>
                                     </a>
                                 </template>
 
@@ -204,25 +196,22 @@
                                         :href="'https://testnet.nearblocks.io/address/' + item.sampler_id"
                                         target="_blank">
                                         <!-- <v-icon icon="fa fa-user"></v-icon> -->
-                                        <small>{{item.sampler_id}}</small>
+                                        <small>{{item.sampler_id.substring(0, 8) + '...'}}</small>
                                     </a>
                                 </template>
 
                                 <template v-slot:item.result_file="{ item }">
-                                    <a :href="ipfs_gateway + item.result_file" target="_blank"
-                                        v-if="item.result_file">
+                                    <a :href="ipfs_gateway + item.result_file" target="_blank" v-if="item.result_file">
                                         <v-icon icon="fa fa-file"></v-icon>
                                     </a>
                                 </template>
                                 <template v-slot:item.job_file="{ item }">
-                                    <a :href="ipfs_gateway + item.job_file" target="_blank"
-                                        v-if="item.job_file">
+                                    <a :href="ipfs_gateway + item.job_file" target="_blank" v-if="item.job_file">
                                         <v-icon icon="fa fa-file"></v-icon>
                                     </a>
                                 </template>
                                 <template v-slot:item.trap_file="{ item }">
-                                    <a :href="ipfs_gateway + item.trap_file" target="_blank"
-                                        v-if="item.trap_file">
+                                    <a :href="ipfs_gateway + item.trap_file" target="_blank" v-if="item.trap_file">
                                         <v-icon icon="fa fa-file"></v-icon>
                                     </a>
                                 </template>
@@ -243,7 +232,7 @@
                                         :href="'https://testnet.nearblocks.io/address/' + item.sampler_id"
                                         target="_blank">
                                         <v-icon icon="fa fa-user"></v-icon>
-                                        &nbsp;  {{item.sampler_id}}
+                                        &nbsp; {{item.sampler_id}}
                                     </a>
                                 </template>
                             </v-data-table>
@@ -252,7 +241,7 @@
                         <v-tabs-window-item value="verifiers">
                             <v-data-table :items="verifiers">
                                 <template v-slot:header.verifier_id>Verifier</template>
-                                
+
                                 <template v-slot:item.reward="{ item }">
                                     {{(item.reward/1000000000000000000000000).toFixed(5)}}
                                 </template>

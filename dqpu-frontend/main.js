@@ -26,12 +26,12 @@ async function viewMethod(method, args = {}) {
 async function get_all_jobs(slice, total) {
     let jobs = [];
     for (let i = 0; i < total; i) {
-        console.log('getting',i,total,slice)
+        console.log('getting', i, total, slice)
         const nj = (await viewMethod('get_jobs', { from_index: i, limit: slice }));
         i += slice;
         jobs = jobs.concat(nj);
     }
-    console.log('All jobs are '+(jobs.length));
+    console.log('All jobs are ' + (jobs.length));
     return jobs.reverse();
 }
 
@@ -52,6 +52,22 @@ const app = Vue.createApp({
 
             loading: false,
             itemsPerPage: 25,
+
+            table_headers: [
+                { key: "id", title: "#" },
+                { key: "status", title: "Status" },
+                { key: "qubits", title: "Qubits" },
+                { key: "depth", title: "Depth" },
+                { key: "shots", title: "Shots" },
+                { key: "reward_amount", title: "Reward" },
+                // { key: "sampler_deposit", title: "Deposit" },
+                { key: "owner_id", title: "Owner" },
+                { key: "verifier_id", title: "Verifier" },
+                { key: "sampler_id", title: "Sampler" },
+                { key: "job_file", title: "Job" },
+                { key: "result_file", title: "Result" },
+                { key: "trap_file", title: "Trap" },
+            ]
         };
     },
     async mounted() {
@@ -59,7 +75,7 @@ const app = Vue.createApp({
 
         await this.updateData();
 
-        this.timer_table = setInterval(async () => { await this.loadJobs({ page: 0, itemsPerPage: this.itemsPerPage, sortBy: ''}) }, 10000);
+        this.timer_table = setInterval(async () => { await this.loadJobs({ page: 0, itemsPerPage: this.itemsPerPage, sortBy: '' }) }, 10000);
         this.timer_stats = setInterval(async () => { await this.updateData() }, 9000);
 
         await this.updateLeaderboards();
@@ -70,11 +86,11 @@ const app = Vue.createApp({
     methods: {
         async updateLeaderboards() {
             all_jobs = await get_all_jobs(50, this.n_jobs);
-    
+
             const samplers = {};
             const verifiers = {};
             const max_qubits = {};
-    
+
             all_jobs.forEach(element => {
                 if (element.sampler_id != '') {
                     if (!(element.sampler_id in samplers))
@@ -84,18 +100,18 @@ const app = Vue.createApp({
                             jobs: 0,
                             reward: 0
                         }
-    
+
                     samplers[element.sampler_id].jobs += 1;
                     samplers[element.sampler_id].reward += parseInt(element.reward_amount);
                     samplers[element.sampler_id].max_qubits = max(element.qubits, samplers[element.sampler_id].max_qubits);
                 }
-    
+
                 if (element.sampler_id != '') {
                     if (!(element.sampler_id in max_qubits))
                         max_qubits[element.sampler_id] = element.qubits;
                     max_qubits[element.sampler_id] = max(element.qubits, max_qubits[element.sampler_id]);
                 }
-    
+
                 if (element.verifier_id != '') {
                     if (!(element.verifier_id in verifiers))
                         verifiers[element.verifier_id] = {
@@ -103,12 +119,12 @@ const app = Vue.createApp({
                             jobs: 0,
                             reward: 0
                         }
-    
+
                     verifiers[element.verifier_id].jobs += 1
                     verifiers[element.verifier_id].reward += parseInt(element.reward_amount) / 10;
                 }
             });
-    
+
             this.verifiers = Object.entries(verifiers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
             this.samplers = Object.entries(samplers).map(a => { return a[1]; }).sort((a, b) => { return b.jobs - a.jobs; });
             this.max_qubits = Object.entries(max_qubits).sort((a, b) => { return b[1] - a[1]; });
