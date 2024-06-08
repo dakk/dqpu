@@ -33,7 +33,7 @@ class DQPUJob(Job):
         self._results = None
 
     def submit(self):
-        pass
+        raise NotImplementedError
 
     def _wait_for_result(self, timeout=None, wait=5):
         start_time = time.time()
