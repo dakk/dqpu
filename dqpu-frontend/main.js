@@ -64,6 +64,7 @@ const app = Vue.createApp({
                 { key: "owner_id", title: "Owner" },
                 { key: "verifier_id", title: "Verifier" },
                 { key: "sampler_id", title: "Sampler" },
+                { key: "sampler_agent", title: "Sampler Agent" },
                 { key: "job_file", title: "Job" },
                 { key: "result_file", title: "Result" },
                 { key: "trap_file", title: "Trap" },

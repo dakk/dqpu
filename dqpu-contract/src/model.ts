@@ -13,6 +13,8 @@
 // limitations under the License.
 import { AccountId } from 'near-sdk-js/lib/types';
 
+export const MAX_SAMPLER_AGENT_LEN = 24;
+
 export type JobStatus = 'pending-validation' | 'waiting' | 'validating-result' | 'executed' | 'invalid';
 
 export class Job {
@@ -32,4 +34,5 @@ export class Job {
 
     verifier_id: AccountId;
     sampler_id: AccountId;
+    sampler_agent: string;
 }

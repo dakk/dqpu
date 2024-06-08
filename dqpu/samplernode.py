@@ -21,6 +21,7 @@ import traceback
 from requests.exceptions import ReadTimeout
 
 from .blockchain import (
+    MAX_SAMPLER_AGENT_LEN,
     IPFSGateway,
     NearBlockchain,
     from_near,
@@ -75,7 +76,7 @@ def handle_job(j, ipfs, nb, sampler_name, base_dir):
     print(f"\tGot file {j['job_file']}")
 
     # Load into a Sampler object (selected by params)
-    # qc = Circuit.fromQasmCircuit(jf)
+    # qc = Circuit.from_qasm_circuit(jf)
     sampler = SAMPLERS[sampler_name](jf)
 
     # Do the simulation
@@ -105,6 +106,7 @@ def handle_job(j, ipfs, nb, sampler_name, base_dir):
             j["id"],
             jf_result,
             deposit=from_near(j["reward_amount"]) / 10 + 0.00001,
+            sampler_agent=sampler.agent[0:MAX_SAMPLER_AGENT_LEN],
         )
         print(f"\t{sub_res}")
         return True

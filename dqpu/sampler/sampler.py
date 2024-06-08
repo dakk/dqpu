@@ -22,6 +22,10 @@ class Sampler:
         else:
             self.circuit = circuit
 
+    @property
+    def agent(self) -> str:
+        raise Exception("Abstract property `agent`")
+
     @classmethod
     def test(cls) -> bool:
         qc = (

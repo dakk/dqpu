@@ -41,6 +41,9 @@ from .blockchain import Blockchain
 
 #     verifier_id: AccountId
 #     sampler_id: AccountId
+#     sampler_agent: string
+
+MAX_SAMPLER_AGENT_LEN = 24
 
 
 def to_near(v):
@@ -85,7 +88,7 @@ class NearBlockchain(Blockchain):
 
         return from_near(asyncio.run(v()))
 
-    def create_account(self, name: str, useFaucet: bool = True):
+    def create_account(self, name: str, use_faucet: bool = True):
         pass
 
     def load_account(self, account: str):
@@ -152,9 +155,13 @@ class NearBlockchain(Blockchain):
         )
 
     # Submit a result for a waiting job, with the caution
-    def submit_job_result(self, id: int, result_file: str, deposit: int):
+    def submit_job_result(
+        self, id: int, result_file: str, deposit: int, sampler_agent: str = "unknown"
+    ):
         return self.call(
-            "submit_job_result", {"id": id, "result_file": result_file}, deposit
+            "submit_job_result",
+            {"id": id, "result_file": result_file, "sampler_agent": sampler_agent},
+            deposit,
         )
 
     # Called by validators, set the validity of a job result for a 'validating-result' job
