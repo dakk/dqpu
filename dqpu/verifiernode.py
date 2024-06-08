@@ -38,7 +38,7 @@ def handle_pending_validation_job(j, ipfs, nb, base_dir):
 
     # Parse the file using q.Circuit.fromQasm
     try:
-        qc = Circuit.fromQasmCircuit(jf.decode("ascii"))
+        qc = Circuit.from_qasm_circuit(jf.decode("ascii"))
     except Exception as e:
         print("\t", "Failed to parse", j["id"], e)
         nb.set_job_validity(j["id"], False)
@@ -56,7 +56,7 @@ def handle_pending_validation_job(j, ipfs, nb, base_dir):
     trapped_qasm_file = f"{base_dir}/{j['id']}_qc_trapped.qasm"
 
     with open(trapped_qasm_file, "w") as f:
-        f.write(qc2.toQasmCircuit())
+        f.write(qc2.to_qasm_circuit())
 
     # Upload the file
     jf_trapped = ipfs.upload(trapped_qasm_file)

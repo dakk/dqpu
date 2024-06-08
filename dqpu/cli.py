@@ -130,7 +130,7 @@ def cli():  # noqa: C901
         # Parse the qasm
         qf = open(args.file, "r")
         qasm_data = qf.read()
-        circ = Circuit.fromQasmCircuit(qasm_data)
+        circ = Circuit.from_qasm_circuit(qasm_data)
 
         # Calcualte qubits, depth
         qubits = circ.n_qbits
@@ -149,7 +149,7 @@ def cli():  # noqa: C901
         print(f"Creating a random circuit of {nq} qubits (depth {dpt})...")
 
         qc = Circuit.random(nq, dpt)
-        qasm_data = qc.toQasmCircuit()
+        qasm_data = qc.to_qasm_circuit()
 
         # qc = random_circuit(nq, dpt, max_operands=2, measure=True)
         # qasm_data = qasm2.dumps(qc)
@@ -181,13 +181,13 @@ def cli():  # noqa: C901
 
     elif args.action == "remove":
         if args.id.find(":") != -1:
-            _range = list(map(int, args.id.split(':')))
+            _range = list(map(int, args.id.split(":")))
             i = _range[0]
             while i < _range[1]:
                 try:
-                    print(f'Removing {i}:',nb.remove_job(str(i)))
+                    print(f"Removing {i}:", nb.remove_job(str(i)))
                 except:
-                    print(f'Unable to remove {i}, skipping')
+                    print(f"Unable to remove {i}, skipping")
                 i += 1
         else:
             print(nb.remove_job(args.id))
