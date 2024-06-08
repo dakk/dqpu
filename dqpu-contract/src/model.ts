@@ -19,6 +19,8 @@ export type JobStatus = 'pending-validation' | 'waiting' | 'validating-result' |
 
 export class Job {
     id: string;
+    timestamp: bigint;
+    
     owner_id: AccountId;
     reward_amount: bigint;
     sampler_deposit: bigint;
