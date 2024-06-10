@@ -52,7 +52,7 @@ class DQPU {
 
         const j: Job = {
             id: this.latest_jid.toString(),
-            timestamp: near.blockTimestamp(),
+            creation_time: near.blockTimestamp(),
             
             owner_id: near.predecessorAccountId(),
             reward_amount: reward,

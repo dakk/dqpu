@@ -150,6 +150,11 @@
                                 :items-length="n_jobs" :headers="table_headers" :loading="loading"
                                 @update:options="loadJobs">
 
+                                <template v-slot:item.creation_time="{ item }">
+                                    {{new Date(item.creation_time).toLocaleDateString()}}
+                                </template>
+
+
                                 <template v-slot:item.reward_amount="{ item }">
                                     {{(item.reward_amount/1000000000000000000000000).toFixed(4)}}
                                 </template>
