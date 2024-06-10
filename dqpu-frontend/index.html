@@ -175,6 +175,10 @@
                                     <v-chip size="small" color="yellow">{{item.depth}}</v-chip>
                                 </template>
 
+                                <template v-slot:item.sampler_agent="{ item }">
+                                    <v-chip size="small" color="yellow">{{item.sampler_agent}}</v-chip>
+                                </template>
+
                                 <template v-slot:item.status="{ item }">
                                     <v-icon :color="statusIcon(item.status).color"
                                         :icon="statusIcon(item.status).icon"></v-icon>
