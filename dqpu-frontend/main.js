@@ -56,6 +56,7 @@ const app = Vue.createApp({
             table_headers: [
                 { key: "id", title: "#" },
                 { key: "status", title: "Status" },
+                { key: "creation_time", title: "Time" },
                 { key: "qubits", title: "Qubits" },
                 { key: "depth", title: "Depth" },
                 { key: "shots", title: "Shots" },
