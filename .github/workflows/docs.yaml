@@ -17,7 +17,7 @@ jobs:
         run: |
           pip install sphinx myst_nb pydata-sphinx-theme sphinx_design
           # pip install qiskit[visualization] qiskit-aer qlasskit
-          python setup.py install
+          pip install .
       - name: Sphinx build
         run: |
           sphinx-build docs/source _build
