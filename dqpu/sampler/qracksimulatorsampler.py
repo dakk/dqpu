@@ -18,6 +18,10 @@ from .sampler import Sampler
 
 
 class QrackSimulatorSampler(Sampler):
+    @property
+    def agent(self) -> str:
+        return "qrack"
+
     def sample(self, shots):
         from pyqrack import qrack_simulator  # noqa: F401
         from qiskit.providers.qrack import Qrack
@@ -26,7 +30,7 @@ class QrackSimulatorSampler(Sampler):
 
         qc = qasm2.loads(
             self.circuit, custom_instructions=qasm2.LEGACY_CUSTOM_INSTRUCTIONS
-        )  # .toQasmCircuit())
+        )  # .to_qasm_circuit())
         circ = transpile(qc, simulator)
         result = simulator.run(circ, shots=shots).result()
         counts = result.get_counts(circ)

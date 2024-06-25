@@ -17,6 +17,7 @@ import pickle
 import random
 import time
 import traceback
+from typing import List
 
 from requests.exceptions import ReadTimeout
 
@@ -38,7 +39,7 @@ def handle_pending_validation_job(j, ipfs, nb, base_dir):
 
     # Parse the file using q.Circuit.fromQasm
     try:
-        qc = Circuit.fromQasmCircuit(jf.decode("ascii"))
+        qc = Circuit.from_qasm_circuit(jf.decode("ascii"))
     except Exception as e:
         print("\t", "Failed to parse", j["id"], e)
         nb.set_job_validity(j["id"], False)
@@ -56,7 +57,7 @@ def handle_pending_validation_job(j, ipfs, nb, base_dir):
     trapped_qasm_file = f"{base_dir}/{j['id']}_qc_trapped.qasm"
 
     with open(trapped_qasm_file, "w") as f:
-        f.write(qc2.toQasmCircuit())
+        f.write(qc2.to_qasm_circuit())
 
     # Upload the file
     jf_trapped = ipfs.upload(trapped_qasm_file)
@@ -146,11 +147,22 @@ def verifier_node():  # noqa: C901
 
     print("Verifier node started.")
     stats = repeat_until_done(lambda: nb.get_jobs_stats())
+    assigned_jobs: List[str] = []
 
     while running:
         if first_run:
             first_run = False
             latest_jobs = repeat_until_done(lambda: nb.get_all_jobs())
+
+            # Collect old assigned jobs
+            for j in latest_jobs:
+                if (
+                    j["verifier_id"] == nb.account.account_id
+                    and j["status"] == "executed"
+                    and j["status"] == "invalid"
+                    and assigned_jobs.count(j["id"]) == 0
+                ):
+                    assigned_jobs.append(j["id"])
         else:
             i = 0
             while (
@@ -167,13 +179,21 @@ def verifier_node():  # noqa: C901
         stats = repeat_until_done(lambda: nb.get_jobs_stats())
         random.shuffle(latest_jobs)
 
+        # Check assigned jobs firsts
+        assigned_job_objects = []
+
+        for jid in assigned_jobs:
+            j = repeat_until_done(lambda: nb.get_job(jid))
+            assigned_job_objects.append(j)
+
         # If there is a new job that needs validation, process it
-        for j in latest_jobs:
+        for j in assigned_job_objects + latest_jobs:
             if j["status"] == "pending-validation":
                 try:
                     if handle_pending_validation_job(j, ipfs, nb, base_dir):
                         n_verified += 1
                         stats["pending-validation"] -= 1
+                        assigned_jobs.append(j["id"])
                 except Exception as e:
                     print("\tFailed to handle pending-validation job:", e)
                     traceback.print_exc()
@@ -186,11 +206,13 @@ def verifier_node():  # noqa: C901
                     if handle_validating_result_job(j, ipfs, nb, base_dir):
                         n_vresult += 1
                         stats["validating-result"] -= 1
+                        assigned_jobs.remove(j["id"])
                 except Exception as e:
                     print("\tFailed to handle validating-result job:", e)
                     traceback.print_exc()
 
         print(
             f"Account balance is {nb.balance():0.5f} N, job verified {n_verified}, "
-            + f"result verified {n_vresult}"
+            + f"result verified {n_vresult}, assigned job pending {len(assigned_jobs)}"
         )
+        first_run = False

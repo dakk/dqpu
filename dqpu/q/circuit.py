@@ -88,17 +88,17 @@ class Circuit:
                 print(f"{x[0].iden}({x[1]})", end=" -- ")
         print()
 
-    def buildGraph(self):
+    def build_graph(self):
         import matplotlib.pyplot as plt
         import networkx as nx
 
-        G = nx.Graph()
+        graph = nx.Graph()
 
         for x in self.gates:
             a, p = x
 
             if isinstance(a, Gate) and a.nq > 1:
-                G.add_edge(p[0], p[1])
+                graph.add_edge(p[0], p[1])
 
         options = {
             "font_size": 12,
@@ -108,7 +108,7 @@ class Circuit:
             "linewidths": 1,
             "width": 1,
         }
-        nx.draw_networkx(G, **options)
+        nx.draw_networkx(graph, **options)
 
         # Set margins for the axes so that nodes aren't clipped
         ax = plt.gca()
@@ -117,7 +117,7 @@ class Circuit:
         plt.show()
 
     @staticmethod
-    def fromQasmCircuit(qasm_data: str):  # noqa: C901
+    def from_qasm_circuit(qasm_data: str):  # noqa: C901
         def qubit_to_i(q):
             if not isinstance(q, oast.IndexedIdentifier):
                 raise Exception("only indexed identifier allowed")
@@ -165,7 +165,7 @@ class Circuit:
         qc.gates = gates
         return qc
 
-    def toQasmCircuit(self):
+    def to_qasm_circuit(self):
         qasm = "OPENQASM 2.0;\n"
         qasm += 'include "qelib1.inc";\n'
         qasm += "qreg q[" + str(self.n_qbits) + "];\n"
@@ -188,7 +188,7 @@ class Circuit:
 
         return qasm
 
-    def toQiskitCircuit(self):  # noqa: C901
+    def to_qiskit_circuit(self):  # noqa: C901
         from qiskit import QuantumCircuit
 
         qc = QuantumCircuit(self.n_qbits, 0)

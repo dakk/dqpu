@@ -14,9 +14,9 @@
 
 import { NearBindgen, near, call, view, UnorderedMap, assert, initialize } from 'near-sdk-js';
 import { AccountId } from 'near-sdk-js/lib/types';
-import { Job, JobStatus } from './model';
+import { Job, JobStatus, MAX_SAMPLER_AGENT_LEN } from './model';
 
-const CONTRACT_VERSION = 6;
+const CONTRACT_VERSION = 8;
 
 // const MAX_JOBS_STORED = 128;
 // TODO: add max_job handling
@@ -52,6 +52,8 @@ class DQPU {
 
         const j: Job = {
             id: this.latest_jid.toString(),
+            creation_time: near.blockTimestamp(),
+            
             owner_id: near.predecessorAccountId(),
             reward_amount: reward,
             sampler_deposit: BigInt(0),
@@ -67,6 +69,7 @@ class DQPU {
 
             verifier_id: '',
             sampler_id: '',
+            sampler_agent: ''
         };
         this.jobs_stats[j.status] += 1;
 
@@ -124,7 +127,7 @@ class DQPU {
 
     // Submit a result for a waiting job, with the caution
     @call({ payableFunction: true })
-    submit_job_result({ id, result_file }: { id: string, result_file: string }) {
+    submit_job_result({ id, result_file, sampler_agent }: { id: string, result_file: string, sampler_agent: string }) {
         const j: Job = this.jobs.get(id);
 
         let deposit: bigint = near.attachedDeposit() as bigint;
@@ -133,12 +136,14 @@ class DQPU {
         assert(deposit >= (j.reward_amount / BigInt(10)), `Deposit should be greater than ${j.reward_amount / BigInt(10)}`);
         assert(j.owner_id != near.predecessorAccountId(), `Job owner and Sampler can't be the same account`);
         assert(j.verifier_id != near.predecessorAccountId(), `Sampler and Verifier can't be the same account`);
+        assert(sampler_agent.length <= MAX_SAMPLER_AGENT_LEN, `Sampler agent too long`);
 
         this.jobs_stats[j.status] -= 1;
         j.result_file = result_file;
         j.status = 'validating-result';
         j.sampler_id = near.predecessorAccountId();
         j.sampler_deposit = deposit;
+        j.sampler_agent = sampler_agent;
         this.money_handled += deposit;
         this.jobs_stats[j.status] += 1;
 
@@ -171,6 +176,8 @@ class DQPU {
         } else {
             j.status = 'waiting';
             j.sampler_id = '';
+            j.sampler_agent = '';
+            j.result_file = '';
 
             // Send the sampler deposit to verifier
             const promise = near.promiseBatchCreate(near.predecessorAccountId());
@@ -194,8 +201,7 @@ class DQPU {
             if (j)
                 ret.push(j);
         }
-
-        // .reverse(); we don't reverse here in order to preserve gas
+        
         return ret; 
     }
     
