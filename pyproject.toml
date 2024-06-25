@@ -1,0 +1,67 @@
+[project]
+name = "dqpu"
+dynamic = ["version"]
+description = "Decentralized Quantum Processing Unit)"
+readme = "README.md"
+requires-python = ">= 3.9.2, <3.12"
+license = {text = "Apache 2.0"}
+authors = [
+    {name = "Davide Gessa", email = "gessadavide@gmail.com"},
+]
+dependencies = [
+    "scipy==1.13.0",
+    "matplotlib",
+    "qiskit==1.0.2",
+    "qiskit_aer==0.14.1",
+    "py-near",
+    "requests",
+    "numpy==1.26.4",
+    "openqasm3[parser]",
+    "scikit-build",
+    "base58",
+    "loguru",
+    "pydantic",
+    "nest_asyncio",
+    "pyqrack",
+    "qiskit-qrack-provider>=0.11.0",
+]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/dakk/dqpu"
+"Bug Tracker" = "https://github.com/dakk/dqpu/issues/"
+Documentation = "https://dakk.github.io/dqpu"
+Source = "https://github.com/dakk/dqpu"
+
+[project.scripts]
+dqpu-sim_trap_test_main = "dqpu.sim_trap_test_main:main"
+dqpu-verifier = "dqpu.verifiernode:verifier_node"
+dqpu-sampler = "dqpu.samplernode:sampler_node"
+dqpu-cli = "dqpu.cli:cli"
+
+[tool.setuptools]
+packages = [
+    "dqpu",
+    "dqpu.q",
+    "dqpu.sampler",
+    "dqpu.verifier",
+    "dqpu.blockchain",
+    "dqpu.backends",
+    "dqpu.backends.qiskit",
+]
+zip-safe = false
+
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
