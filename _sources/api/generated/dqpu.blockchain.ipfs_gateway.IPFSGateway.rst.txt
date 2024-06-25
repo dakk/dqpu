@@ -1,0 +1,24 @@
+﻿dqpu.blockchain.ipfs\_gateway.IPFSGateway
+=========================================
+
+.. currentmodule:: dqpu.blockchain.ipfs_gateway
+
+.. autoclass:: IPFSGateway
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~IPFSGateway.__init__
+      ~IPFSGateway.get
+      ~IPFSGateway.upload
+   
+   
+
+   
+   
+   

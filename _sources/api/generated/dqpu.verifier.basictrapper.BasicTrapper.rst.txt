@@ -1,0 +1,26 @@
+﻿dqpu.verifier.basictrapper.BasicTrapper
+=======================================
+
+.. currentmodule:: dqpu.verifier.basictrapper
+
+.. autoclass:: BasicTrapper
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BasicTrapper.__init__
+      ~BasicTrapper.trap
+      ~BasicTrapper.untrap
+      ~BasicTrapper.untrap_results
+      ~BasicTrapper.verify
+   
+   
+
+   
+   
+   

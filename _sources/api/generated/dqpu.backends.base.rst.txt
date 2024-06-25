@@ -1,0 +1,32 @@
+﻿dqpu.backends.base
+==================
+
+.. automodule:: dqpu.backends.base
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      job_remove
+      job_result
+      job_status
+      submit_job
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

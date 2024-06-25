@@ -1,0 +1,30 @@
+﻿dqpu.backends.qiskit.DQPUProvider
+=================================
+
+.. currentmodule:: dqpu.backends.qiskit
+
+.. autoclass:: DQPUProvider
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DQPUProvider.__init__
+      ~DQPUProvider.backends
+      ~DQPUProvider.get_backend
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DQPUProvider.version
+   
+   

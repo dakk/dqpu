@@ -1,0 +1,55 @@
+﻿dqpu.backends.qiskit.DQPUBackend
+================================
+
+.. currentmodule:: dqpu.backends.qiskit
+
+.. autoclass:: DQPUBackend
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DQPUBackend.__init__
+      ~DQPUBackend.acquire_channel
+      ~DQPUBackend.configuration
+      ~DQPUBackend.control_channel
+      ~DQPUBackend.drive_channel
+      ~DQPUBackend.load_account
+      ~DQPUBackend.measure_channel
+      ~DQPUBackend.qubit_properties
+      ~DQPUBackend.run
+      ~DQPUBackend.set_options
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DQPUBackend.coupling_map
+      ~DQPUBackend.dt
+      ~DQPUBackend.dtm
+      ~DQPUBackend.instruction_durations
+      ~DQPUBackend.instruction_schedule_map
+      ~DQPUBackend.instructions
+      ~DQPUBackend.max_circuits
+      ~DQPUBackend.meas_map
+      ~DQPUBackend.num_qubits
+      ~DQPUBackend.operation_names
+      ~DQPUBackend.operations
+      ~DQPUBackend.options
+      ~DQPUBackend.provider
+      ~DQPUBackend.target
+      ~DQPUBackend.version
+      ~DQPUBackend.name
+      ~DQPUBackend.description
+      ~DQPUBackend.online_date
+      ~DQPUBackend.backend_version
+   
+   

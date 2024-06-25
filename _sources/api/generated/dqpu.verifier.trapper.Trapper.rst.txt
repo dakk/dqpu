@@ -1,0 +1,26 @@
+﻿dqpu.verifier.trapper.Trapper
+=============================
+
+.. currentmodule:: dqpu.verifier.trapper
+
+.. autoclass:: Trapper
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Trapper.__init__
+      ~Trapper.trap
+      ~Trapper.untrap
+      ~Trapper.untrap_results
+      ~Trapper.verify
+   
+   
+
+   
+   
+   

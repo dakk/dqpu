@@ -1,0 +1,50 @@
+﻿dqpu.blockchain.near.NearBlockchain
+===================================
+
+.. currentmodule:: dqpu.blockchain.near
+
+.. autoclass:: NearBlockchain
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NearBlockchain.__init__
+      ~NearBlockchain.add_verifier
+      ~NearBlockchain.balance
+      ~NearBlockchain.call
+      ~NearBlockchain.clear_jobs
+      ~NearBlockchain.connect
+      ~NearBlockchain.contract_call
+      ~NearBlockchain.create_account
+      ~NearBlockchain.get_all_jobs
+      ~NearBlockchain.get_handled_amount
+      ~NearBlockchain.get_job
+      ~NearBlockchain.get_job_status
+      ~NearBlockchain.get_jobs
+      ~NearBlockchain.get_jobs_paginated
+      ~NearBlockchain.get_jobs_stats
+      ~NearBlockchain.get_latest_jobs
+      ~NearBlockchain.get_number_of_jobs
+      ~NearBlockchain.get_number_of_verifiers
+      ~NearBlockchain.get_verifiers
+      ~NearBlockchain.is_a_verifier
+      ~NearBlockchain.load_account
+      ~NearBlockchain.remove_job
+      ~NearBlockchain.remove_verifier
+      ~NearBlockchain.set_job_validity
+      ~NearBlockchain.set_owner
+      ~NearBlockchain.set_result_validity
+      ~NearBlockchain.submit_job
+      ~NearBlockchain.submit_job_result
+      ~NearBlockchain.view
+   
+   
+
+   
+   
+   

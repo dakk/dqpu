@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DQPU - Near Smart Contract Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.6.4/dist/vuetify.min.css">
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <v-container>
+            <v-card>
+                <v-card-title>DQPU Near Smart Contract Interface</v-card-title>
+                <v-card-subtitle>This page shows all the quantum sampling jobs of the DQPU smart contract on NEAR
+                    blockchain.</v-card-subtitle>
+                <v-card-text>
+                    <div class="d-flex justify-space">
+                        <v-card class="mx-1" flat>
+                            <v-card-text>
+                                <div class="d-flex align-center">
+                                    <v-icon class="mr-3">fas fa-wallet</v-icon>
+                                    <div class="font-weight-bold display-1">{{ (amount_handled
+                                        /1000000000000000000000000).toFixed(4) }} N</div>
+                                    <div class="text-caption ml-3">Amount Handled</div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                        <v-card class="mx-1" flat>
+                            <v-card-text>
+                                <div class="d-flex align-center">
+                                    <v-icon class="mr-3">fas fa-tasks</v-icon>
+                                    <div class="font-weight-bold display-1">{{ n_jobs }}</div>
+                                    <div class="text-caption ml-3">Total Jobs</div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                        <v-card class="mx-1" flat>
+                            <v-card-text>
+                                <div class="d-flex align-center">
+                                    <v-icon class="mr-3">fas fa-user-check</v-icon>
+                                    <div class="font-weight-bold display-1">{{ n_verifiers }}</div>
+                                    <div class="text-caption ml-3">Verifiers</div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                        <v-card class="mx-1" flat>
+                            <v-card-text>
+                                <div class="d-flex align-center">
+                                    <v-icon class="mr-3">fas fa-money-check</v-icon>
+                                    <div class="font-weight-bold display-1">{{((amount_handled/n_jobs)
+                                        /1000000000000000000000000).toFixed(4)}} N</div>
+                                    <div class="text-caption ml-3">Average Job Price</div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                        <v-card class="mx-1" flat :v-if="max_qubits.length > 0">
+                            <v-card-text>
+                                <div class="d-flex align-center">
+                                    <v-icon class="mr-3">fas fa-crown</v-icon>
+                                    <div class="font-weight-bold display-1">{{max_qubits[0][1]}} </div>
+                                    <div class="text-caption ml-3">Max Simulated Qubits</div>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                    </div>
+
+
+
+                    <v-tabs v-model="tab" align-tabs="center" color="deep-purple-accent-4">
+                        <v-tab value="joblist">Job List</v-tab>
+                        <v-tab value="samplers">Sampler Leaderboard</v-tab>
+                        <v-tab value="verifiers">Verifier Leaderboard</v-tab>
+                    </v-tabs>
+
+                    <v-tabs-window v-model="tab">
+                        <v-tabs-window-item value="joblist">
+                            <div class="d-flex justify-space">
+                                <v-card class="mx-1" flat>
+                                    <v-card-text>
+                                        <div class="d-flex align-center">
+                                            <v-icon class="mr-3" :color="statusIcon('pending-validation').color"
+                                                :icon="statusIcon('pending-validation').icon"></v-icon>
+                                            <div class="font-weight-bold display-1">{{ job_stats['pending-validation']
+                                                }}</div>
+                                            <div class="text-caption ml-3">Pending Validation</div>
+                                        </div>
+                                    </v-card-text>
+                                </v-card>
+
+                                <v-card class="mx-1" flat>
+                                    <v-card-text>
+                                        <div class="d-flex align-center">
+
+                                            <v-icon class="mr-3" :color="statusIcon('waiting').color"
+                                                :icon="statusIcon('waiting').icon"></v-icon>
+                                            <div class="font-weight-bold display-1">{{ job_stats['waiting'] }}</div>
+                                            <div class="text-caption ml-3">Waiting</div>
+                                        </div>
+                                    </v-card-text>
+                                </v-card>
+
+                                <v-card class="mx-1" flat>
+                                    <v-card-text>
+                                        <div class="d-flex align-center">
+
+                                            <v-icon class="mr-3" :color="statusIcon('validating-result').color"
+                                                :icon="statusIcon('validating-result').icon"></v-icon>
+                                            <div class="font-weight-bold display-1">{{ job_stats['validating-result'] }}
+                                            </div>
+                                            <div class="text-caption ml-3">Validating Result</div>
+                                        </div>
+                                    </v-card-text>
+                                </v-card>
+
+
+
+                                <v-card class="mx-1" flat>
+                                    <v-card-text>
+                                        <div class="d-flex align-center">
+                                            <v-icon class="mr-3" :color="statusIcon('executed').color"
+                                                :icon="statusIcon('executed').icon"></v-icon>
+                                            <div class="font-weight-bold display-1">{{ job_stats['executed'] }}</div>
+                                            <div class="text-caption ml-3">Executed</div>
+                                        </div>
+                                    </v-card-text>
+                                </v-card>
+
+                                <v-card class="mx-1" flat>
+                                    <v-card-text>
+                                        <div class="d-flex align-center">
+
+                                            <v-icon class="mr-3" :color="statusIcon('invalid').color"
+                                                :icon="statusIcon('invalid').icon"></v-icon>
+                                            <div class="font-weight-bold display-1">{{ job_stats['invalid'] }}</div>
+                                            <div class="text-caption ml-3">Invalid</div>
+                                        </div>
+                                    </v-card-text>
+                                </v-card>
+                            </div>
+
+                            <v-data-table-server v-model:items="jobs" :items-per-page="itemsPerPage" item-value="id"
+                                :items-length="n_jobs" :headers="table_headers" :loading="loading"
+                                @update:options="loadJobs">
+
+                                <template v-slot:item.reward_amount="{ item }">
+                                    {{(item.reward_amount/1000000000000000000000000).toFixed(4)}}
+                                </template>
+
+                                <template v-slot:item.sampler_deposit="{ item }">
+                                    {{(item.sampler_deposit/1000000000000000000000000).toFixed(4)}}
+                                </template>
+
+                                <template v-slot:item.qubits="{ item }">
+                                    <v-chip size="small" color="green">{{item.qubits}}</v-chip>
+                                </template>
+
+                                <template v-slot:item.shots="{ item }">
+                                    <v-chip size="small" color="primary">{{item.shots}}</v-chip>
+                                </template>
+
+                                <template v-slot:item.depth="{ item }">
+                                    <v-chip size="small" color="yellow">{{item.depth}}</v-chip>
+                                </template>
+
+                                <template v-slot:item.status="{ item }">
+                                    <v-icon :color="statusIcon(item.status).color"
+                                        :icon="statusIcon(item.status).icon"></v-icon>
+                                </template>
+
+                                <template v-slot:item.owner_id="{ item }">
+                                    <a :href="'https://testnet.nearblocks.io/address/' + item.owner_id" target="_blank">
+                                        <!-- <v-icon icon="fa fa-user"></v-icon> -->
+                                        <small>{{item.owner_id.substring(0, 8) + '...'}}</small>
+                                    </a>
+                                </template>
+
+                                <template v-slot:item.verifier_id="{ item }">
+                                    <a v-if="item.verifier_id"
+                                        :href="'https://testnet.nearblocks.io/address/' + item.verifier_id"
+                                        target="_blank">
+                                        <!-- <v-icon icon="fa fa-user"></v-icon> -->
+                                        <small>{{item.verifier_id.substring(0, 8) + '...'}}</small>
+                                    </a>
+                                </template>
+
+                                <template v-slot:item.sampler_id="{ item }">
+                                    <a v-if="item.sampler_id"
+                                        :href="'https://testnet.nearblocks.io/address/' + item.sampler_id"
+                                        target="_blank">
+                                        <!-- <v-icon icon="fa fa-user"></v-icon> -->
+                                        <small>{{item.sampler_id.substring(0, 8) + '...'}}</small>
+                                    </a>
+                                </template>
+
+                                <template v-slot:item.result_file="{ item }">
+                                    <a :href="ipfs_gateway + item.result_file" target="_blank" v-if="item.result_file">
+                                        <v-icon icon="fa fa-file"></v-icon>
+                                    </a>
+                                </template>
+                                <template v-slot:item.job_file="{ item }">
+                                    <a :href="ipfs_gateway + item.job_file" target="_blank" v-if="item.job_file">
+                                        <v-icon icon="fa fa-file"></v-icon>
+                                    </a>
+                                </template>
+                                <template v-slot:item.trap_file="{ item }">
+                                    <a :href="ipfs_gateway + item.trap_file" target="_blank" v-if="item.trap_file">
+                                        <v-icon icon="fa fa-file"></v-icon>
+                                    </a>
+                                </template>
+                            </v-data-table-server>
+                        </v-tabs-window-item>
+
+                        <v-tabs-window-item value="samplers">
+                            <v-data-table :items="samplers">
+                                <template v-slot:header.sampler_id>Sampler</template>
+                                <template v-slot:header.max_qubits>Max Qubits</template>
+
+                                <template v-slot:item.reward="{ item }">
+                                    {{(item.reward/1000000000000000000000000).toFixed(4)}}
+                                </template>
+
+                                <template v-slot:item.sampler_id="{ item }">
+                                    <a v-if="item.sampler_id"
+                                        :href="'https://testnet.nearblocks.io/address/' + item.sampler_id"
+                                        target="_blank">
+                                        <v-icon icon="fa fa-user"></v-icon>
+                                        &nbsp; {{item.sampler_id}}
+                                    </a>
+                                </template>
+                            </v-data-table>
+                        </v-tabs-window-item>
+
+                        <v-tabs-window-item value="verifiers">
+                            <v-data-table :items="verifiers">
+                                <template v-slot:header.verifier_id>Verifier</template>
+
+                                <template v-slot:item.reward="{ item }">
+                                    {{(item.reward/1000000000000000000000000).toFixed(5)}}
+                                </template>
+
+                                <template v-slot:item.verifier_id="{ item }">
+                                    <a v-if="item.verifier_id"
+                                        :href="'https://testnet.nearblocks.io/address/' + item.verifier_id"
+                                        target="_blank">
+                                        <v-icon icon="fa fa-user"></v-icon>
+                                        &nbsp; {{item.verifier_id}}
+                                    </a>
+                                </template>
+                            </v-data-table>
+                        </v-tabs-window-item>
+                    </v-tabs-window>
+                </v-card-text>
+            </v-card>
+        </v-container>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.6.4/dist/vuetify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/near-api-js@3.0.4/dist/near-api-js.min.js"></script>
+    <script src="./main.js"></script>
+</body>
+
+</html>
