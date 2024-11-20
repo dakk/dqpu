@@ -17,7 +17,7 @@ import unittest
 from dqpu.q import Circuit
 
 
-class TestQ_Qasm_parsing(unittest.TestCase):
+class TestQ_Qasm_parsing(unittest.TestCase):  # noqa: N801
     def test_1(self):
         original = (
             "OPENQASM 2.0;\n"
@@ -29,8 +29,8 @@ class TestQ_Qasm_parsing(unittest.TestCase):
             "measure q -> c;"
         )
 
-        qc = Circuit.fromQasmCircuit(original)
-        qc_a = qc.toQasmCircuit()
+        qc = Circuit.from_qasm_circuit(original)
+        qc_a = qc.to_qasm_circuit()
         self.assertEqual(original, qc_a)
 
     def test_2(self):
@@ -44,6 +44,6 @@ class TestQ_Qasm_parsing(unittest.TestCase):
             "measure q -> c;"
         )
 
-        qc = Circuit.fromQasmCircuit(original)
-        qc_a = qc.toQasmCircuit()
+        qc = Circuit.from_qasm_circuit(original)
+        qc_a = qc.to_qasm_circuit()
         self.assertEqual(original, qc_a)

@@ -52,12 +52,12 @@ test('add a job and submit an invalid result', async (t) => {
 
     // Low deposit
     await t.throwsAsync(async () => { await bob.call(contract, 'submit_job_result', {
-        id: jid, result_file: 'b21aa'
+        id: jid, result_file: 'b21aa', sampler_agent: 'uknown'
     }, { attachedDeposit: NEAR.parse('0.01 N') }); });
 
 
     await bob.call(contract, 'submit_job_result', {
-        id: jid, result_file: 'b21aa'
+        id: jid, result_file: 'b21aa', sampler_agent: 'uknown'
     }, { attachedDeposit: NEAR.parse('0.1 N') });
 
     t.is(await contract.view('get_job_status', { id: jid }), 'validating-result');

@@ -55,7 +55,7 @@
 #     print("time spent qse", time.time() - s)
 
 #     trapper = BasicTrapper()
-#     print(qc.toQiskitCircuit().draw())
+#     print(qc.to_qiskit_circuit().draw())
 #     (qc2, t) = trapper.trap(qc)
 
 #     s = time.time()
@@ -63,7 +63,7 @@
 #     print(qsk)
 #     print("time spent qsk", time.time() - s)
 
-#     print(qc2.toQiskitCircuit().draw())
+#     print(qc2.to_qiskit_circuit().draw())
 #     print(t)
 #     print(counts)
 

@@ -19,7 +19,7 @@ def qiskit_execute(c):
     from qiskit import transpile
     from qiskit_aer import AerSimulator
 
-    qc = c.toQiskitCircuit()
+    qc = c.to_qiskit_circuit()
     qc.measure_all()
 
     sim = AerSimulator(method="statevector")

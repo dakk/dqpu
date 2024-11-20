@@ -56,6 +56,7 @@ const app = Vue.createApp({
             table_headers: [
                 { key: "id", title: "#" },
                 { key: "status", title: "Status" },
+                { key: "creation_time", title: "Time" },
                 { key: "qubits", title: "Qubits" },
                 { key: "depth", title: "Depth" },
                 { key: "shots", title: "Shots" },
@@ -64,6 +65,7 @@ const app = Vue.createApp({
                 { key: "owner_id", title: "Owner" },
                 { key: "verifier_id", title: "Verifier" },
                 { key: "sampler_id", title: "Sampler" },
+                { key: "sampler_agent", title: "Sampler Agent" },
                 { key: "job_file", title: "Job" },
                 { key: "result_file", title: "Result" },
                 { key: "trap_file", title: "Trap" },

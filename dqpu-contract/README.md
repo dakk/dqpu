@@ -94,9 +94,9 @@ npx near call dqpu_7.testnet set_job_validity '{"id": 5, "valid": true, "trapped
 ```
 
 ```bash
-npx near call dqpu_7.testnet submit_job_result '{"id": 1, "result_file": "ttr"}' --accountId dqpu_bob.testnet --amount 0.0002
-npx near call dqpu_7.testnet submit_job_result '{"id": 3, "result_file": "ttr"}' --accountId dqpu_bob.testnet --amount 0.0002
-npx near call dqpu_7.testnet submit_job_result '{"id": 4, "result_file": "ttr"}' --accountId dqpu_bob.testnet --amount 0.0002
+npx near call dqpu_7.testnet submit_job_result '{"id": 1, "result_file": "ttr", "sampler_agent": "na"}' --accountId dqpu_bob.testnet --amount 0.0002
+npx near call dqpu_7.testnet submit_job_result '{"id": 3, "result_file": "ttr", "sampler_agent": "na"}' --accountId dqpu_bob.testnet --amount 0.0002
+npx near call dqpu_7.testnet submit_job_result '{"id": 4, "result_file": "ttr", "sampler_agent": "na"}' --accountId dqpu_bob.testnet --amount 0.0002
 ```
 
 

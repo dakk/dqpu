@@ -32,6 +32,10 @@
 #         self.measures = []
 #         self.dtype = dtype
 
+
+# @property
+# def agent(self) -> str:
+#     return f'dask'
 #     def compute(self):
 #         self.hs = da.zeros(((2,) * self.circuit.n_qbits), dtype=self.dtype)
 #         self.hs[(0,) * self.circuit.n_qbits] = 1
